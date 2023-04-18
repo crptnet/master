@@ -21,12 +21,17 @@ async function run(){
         // Connect the client to the server	(optional starting in v4.7)
         await client.connect();
         // Send a ping to confirm a successful connection
-        await client.db("admin").command({ ping: 1 });
-        console.log("Pinged your deployment. You successfully connected to MongoDB!");
+        await client.db("admin").command({ ping: 1 }).then(console.log("Connected to MongoDB!")).catch((e) => console.log("mongodb is not connected"))
       } finally {
         // Ensures that the client will close when you finish/error
         await client.close();
       }
 }
 
+
+//Endpoint /api
+
+app.get('/api', (req, res) => {
+    res.status(500).json({ test: 'test message' })
+  })
 run()
