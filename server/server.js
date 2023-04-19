@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const uri = "mongodb+srv://admin:O4xbLRu9qobdQnGk@cluster0.z7iqllx.mongodb.net/?retryWrites=true&w=majority";
+const coinRouter = require('./routes/coins')
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -15,6 +16,7 @@ const client = new MongoClient(uri, {
 
 const PORT = 5000
 async function run(){
+    app.use('/api/coins', coinRouter)
     try {
         app.listen(PORT, () => console.log("Server started on port " + PORT))
         
@@ -26,12 +28,8 @@ async function run(){
         // Ensures that the client will close when you finish/error
         await client.close();
       }
+
 }
 
 
-//Endpoint /api
-
-app.get('/api', (req, res) => {
-    res.status(500).json({ test: 'test message' })
-  })
 run()
