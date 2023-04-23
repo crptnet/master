@@ -1,17 +1,39 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import {sidebtns} from './sidebtns';
+import BTCPrice from './binanceCoins';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+const Btn = (props) => {
+  const {id, img, title} = props.btn;
+  return(
+    <button className={`sideBtn ${id === 3 ? 'activeSideBtn' : ''}`}>
+      <img src={img} />
+      <h1>
+        {title}
+      </h1>      
+    </button>
+  );
+}
+const SideButtons = sidebtns.map((btn) => {
+  return <Btn key={btn.id} btn={btn}></Btn>;
+});
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+function SideBar () {
+  return (
+    <>
+      <div className='fullSideBar'>
+        <div className='logo'>
+          <img src='./icons/logo.png' />
+        </div>
+        <div className='sideBarWithoutLogo'>
+          {SideButtons}
+        </div>
+      </div>
+    </>
+  );
+}
+ReactDOM.createRoot(document.getElementById('SideBar')).render(<SideBar />);
+//ReactDOM.createRoot(document.getElementById('main')).render(<CryptoPrices />);
+ReactDOM.createRoot(document.getElementById('main')).render(<BTCPrice />);
+//ReactDOM.createRoot(document.getElementById('main')).render(<CryptoPrices2 />);

@@ -1,13 +1,59 @@
-body {
+* {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  padding: 0;
+  box-shadow: none;
+}
+body {
+  background-color: #252525;
+  color: white;
+  font-family: roboto, poppins, sans-serif;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+/*<--SIDEBAR-->*/
+
+.fullSideBar {
+  width: 60px;
+  height: 100vh;
+  position: fixed;
+  background-color: #333333;
+  text-align: center;
+}
+.logo img {
+  width: 50px;
+  margin: 5px;
+}
+.sideBarWithoutLogo {
+  width: 60px;
+  height: calc(100vh - 70px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+.sideBtn {
+  width: 50px;
+  padding: 5px;
+  color: white;
+  background-color: transparent;
+  border: none;
+  border-radius: 5px;
+  font-size: 0.33rem;
+  cursor: pointer;
+}
+.sideBtn:hover {
+  background-color: #4682B4;
+}
+.activeSideBtn{
+  background-color: #4682B4;
+}
+.sideBtn img {
+  width: 30px;
+}
+
+/*<--MAIN-->*/
+
+#main {
+  margin-left: 60px;
+  display: flex;
+  justify-content: center;
 }
