@@ -1,8 +1,22 @@
 const mongoose = require('mongoose');
 
+const coinSchema = new mongoose.Schema({
+  user_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+  },
+  coin: {
+    type: String,
+    required: true,
+  },
+}, {
+  timestamps:true, 
+});
+
+
 //Data schema for User
 const userSchema = new mongoose.Schema({
-    username: {
+  username: {
     type: String,
     required: true
   },
@@ -15,6 +29,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  watchList : {
+    type : [coinSchema],
+    required : false
+  }
 }, 
 {
   timestamps:true, 

@@ -13,13 +13,12 @@ const registerUser = asyncHandler(async (req, res) => {
         res.status(400).send('Invalid user info');
         throw new Error('Invalid user info')
     }
-    
     if(await user.findOne({ email })){
         res.status(409).send('Username already taken');
         throw new Error('User already taken')
     }
     const hashPassword = await bcrypt.hash(password, 8)
-    //console.log(`Hased password ${hashPassword}`)
+
     const newUser = new user({ username, email, password: hashPassword });
     await newUser.save();
 
@@ -49,7 +48,7 @@ const loginUser = asyncHandler(async (req, res) => {
           },
         },
         process.env.ACCESS_TOKEN_SECERT,
-        { expiresIn: "15m" }
+        { expiresIn: "15d" }
       );
       res.status(200).json({ accessToken });
     } else {
