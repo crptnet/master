@@ -1,0 +1,407 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+    box-sizing: border-box;
+}
+
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #252525;
+    color: white;
+    font-family: roboto, poppins, sans-serif;
+}
+
+.right {
+    display: flex;
+    margin-right: 20px;
+}
+
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: white;
+}
+
+/*<--SIDEBAR-->*/
+
+.fullSideBar {
+    width: 60px;
+    height: 100vh;
+    position: fixed;
+    background-color: #333333;
+    text-align: center;
+}
+
+.logo img {
+    width: 50px;
+    margin: 5px;
+}
+
+.sideBarWithoutLogo {
+    width: 60px;
+    height: calc(100vh - 70px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.sideBtn {
+    width: 50px;
+    padding: 5px;
+    color: white;
+    background-color: transparent;
+    border: none;
+    border-radius: 5px;
+    font-size: 0.33rem;
+    cursor: pointer;
+}
+
+.sideBtn:hover {
+    background-color: #4682B4;
+}
+
+.activeSideBtn {
+    background-color: #4682B4;
+}
+
+.sideBtn img {
+    width: 30px;
+}
+
+/*<--MAIN-->*/
+
+#main {
+    width: calc(100vw - 60px);
+    height: 100vh;
+    margin-left: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+/*CONVERT*/
+
+#convert {
+    width: 700px;
+    height: 420px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #333333;
+    border-radius: 10px;
+}
+
+.convertFrom {
+    width: 660px;
+    height: 150px;
+    margin: 20px 20px 10px 20px;
+    background-color: #4682B4;
+    border-radius: 10px;
+}
+
+.convertFrom:hover,  .convertTo:hover{
+    border: 2px solid #252525;
+}
+
+#coinFrom {
+    width: 200px;
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 20px 10px 20px;
+    background-color: #333333;
+    border-radius: 10px;
+}
+
+#coinFrom:hover,  #coinTo:hover{
+    transition: 0.3s ease-in-out;
+    background-color: #252525;
+}
+
+.convertTo {
+    width: 660px;
+    height: 150px;
+    margin: 10px 20px 5px 20px;
+    background-color: #4682B4;
+    border-radius: 10px;
+}
+
+#coinTo {
+    width: 200px;
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 20px 10px 20px;
+    background-color: #333333;
+    border-radius: 10px;
+}
+
+.openListBtn {
+    color: white;
+    border: none;
+    background-color: transparent;
+}
+
+.openListBtn:hover {
+    color: #4682B4;
+}
+
+.coinName {
+    margin-right: 5px;
+    font-weight: bold;
+}
+
+/*INPUT*/
+
+.inputAmount {
+    margin: 20px;
+    color: white;
+    background-color: transparent;
+    border: none;
+    font-size: 1.25rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.inputAmount::placeholder {
+    color: white;
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+/*CONVERT-RATE*/
+
+.innerText {
+    margin-left: 20px;
+    font-weight: bold;
+}
+
+.rate {
+    width: 660px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    margin: 5px 20px 5px 50px;
+    font-weight: bold;
+}
+
+/*CONVERT-BTN*/
+
+.convert-btn {
+    width: 660px;
+    height: 60px;
+    margin: 5px 20px 20px 20px;
+    color: white;
+    background-color: #4682B4;
+    font-weight: bold;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+}
+
+/*SWAP-BTN*/
+
+.swapBtn {
+    position: absolute;
+    margin-top: 160px;
+    background-color: #333333;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.swapBtn {
+    height: 60px;
+    position: absolute;
+    margin-top: 150px;
+    background-color: #333333;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    z-index: 1;
+    transition: transform 0.5s ease-in-out;
+    transform-origin: center center;
+    backface-visibility: hidden;
+}
+
+.swapImg{
+    width: 40px;
+    margin: 10px;
+}
+
+.swapBtn:hover {
+    transform: rotate(180deg);
+    /* Apply 180-degree rotation on hover */
+}
+
+/*OVERLAY-LIST*/
+
+.overlay {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100vw;
+    max-width: 100vw;
+    min-height: 100vh;
+    background-color: #252525;
+    border: none;
+    opacity: 0;
+    overflow: auto;
+    animation: fadeIn 0.5s forwards;
+    z-index: 2;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 0.9;
+    }
+}
+
+.overlayContainer {
+    min-width: 340px;
+    height: auto;
+    margin-top: 40px;
+    padding: 20px;
+    background-color: #333333;
+    border-radius: 3px;
+}
+
+.overlayHeader {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+    width: 300px;
+    display: flex;
+    justify-content: space-between;
+    
+}
+
+.overlayTitle {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.closeOverlay {
+    color: white; 
+    background-color: transparent;
+    font-size: 2.5rem;
+    border: none; 
+    cursor: pointer;
+}
+
+.listOfCrypto {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: auto;
+}
+
+.listElemOverlay {
+    width: 300px;
+    height: 30px;
+    margin: 5px;
+    color: white;
+    background-color: #252525;
+    font-size: 1.25rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.listElemOverlay:hover {
+    color: #4682B4;
+    background-color: white;
+    transition: 0.3s ease-in-out;
+}
+
+.searchSortOverlay {
+    width: 300px;
+    height: 30px;
+    margin: 50px 0 20px 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.input-search {
+    width: 150px;
+    height: 30px;
+    float: left;
+    color: #4682B4;
+    border: none;
+    border-radius: 3px;
+    font-size: 1.25rem;
+    font-weight: bold;   
+}
+
+.input-search::placeholder {
+    color: #4682B4;
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.sortOverlay {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.sortBtns {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.sort-button {
+    margin-left: 5px;
+    color: white;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.sort-button:hover {
+    transition: 0.3s ease-in-out;
+    color: #4682B4;
+}
+
+.active {
+    color: #4682B4;
+}
+
+.active:hover {
+    transition: 0.3s ease-in-out;
+    color: white;
+}

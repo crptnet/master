@@ -1,0 +1,106 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+    box-sizing: border-box;
+}
+
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #252525;
+    color: white;
+    font-family: roboto, poppins, sans-serif;
+}
+
+main {
+    width: calc(100vw - 60px);
+    margin-left: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+}
+
+.mainDataContainer {
+    min-width: 500px;
+    min-height: 300px;
+    margin: 20px;
+    background-color: #4682B4;
+    border-radius: 15px;
+}
+
+.sideDataContainer {
+    min-width: 500px;
+    min-height: 300px;
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: #4682B4;
+    border-radius: 15px;
+}
+
+/*MAIN-DATA*/
+
+.userNameOuter, .emailOuter, .accLevelOuter {
+    color: #252525;
+}
+
+/*SIDE-DATA*/
+
+.sideDiv {
+    width: 460px;
+    display: flex;
+    justify-content: space-between;
+    margin: 20px;
+}
+
+.sideLeft, .sideRight {
+    display: flex;
+}
+
+.sideTitle, .sideStatus {
+    display: flex;
+    align-items: center;
+}
+
+.sideImg {
+    width: 20px;
+    margin: 5px;
+}
+
+.sideStatus {
+    min-width: 100px;
+    float: right;
+}
+
+.sideBtnData {
+    min-width: 75px;
+    min-height: 30px;
+    background-color: #333333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.sideBtnInner {
+    background-color: #252525;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+ 
+/*LOGIN*/
+
+.login {
+    width: calc(100vw - 60px);
+    min-height: 100vh;
+    margin-left: -60px;
+    background-color: #252525;
+    opacity: 2;
+}

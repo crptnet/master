@@ -1,39 +1,23 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import {sidebtns} from './sidebtns';
-import BTCPrice from './binanceCoins';
+import './settings.css';
+import SideBar from './sideBar';
+import MainUserData from './mainUserData';
+import SideUserData from './sideUserData';
+import NotRegistered from './notRegistered';
 
-const Btn = (props) => {
-  const {id, img, title} = props.btn;
-  return(
-    <button className={`sideBtn ${id === 3 ? 'activeSideBtn' : ''}`}>
-      <img src={img} />
-      <h1>
-        {title}
-      </h1>      
-    </button>
-  );
-}
-const SideButtons = sidebtns.map((btn) => {
-  return <Btn key={btn.id} btn={btn}></Btn>;
-});
+let registered = false;
+ReactDOM.createRoot(document.getElementById('sidebar')).render(<SideBar active={11} />);
+ReactDOM.createRoot(document.getElementById('main')).render(<NotRegistered submitUser={submitUser}/>);
 
-function SideBar () {
-  return (
-    <>
-      <div className='fullSideBar'>
-        <div className='logo'>
-          <img src='./icons/logo.png' />
-        </div>
-        <div className='sideBarWithoutLogo'>
-          {SideButtons}
-        </div>
-      </div>
-    </>
-  );
+function submitUser () {
+    document.getElementById('main').innerHTML = '';
+    ReactDOM.createRoot(document.getElementById('user-main')).render(<MainUserData deleteUser={deleteUser}/>);
+    ReactDOM.createRoot(document.getElementById('user-side')).render(<SideUserData />);
 }
-ReactDOM.createRoot(document.getElementById('SideBar')).render(<SideBar />);
-//ReactDOM.createRoot(document.getElementById('main')).render(<CryptoPrices />);
-ReactDOM.createRoot(document.getElementById('main')).render(<BTCPrice />);
-//ReactDOM.createRoot(document.getElementById('main')).render(<CryptoPrices2 />);
+
+function deleteUser () {
+    ReactDOM.createRoot(document.getElementById('main')).render(<NotRegistered submitUser={submitUser}/>);
+    document.getElementById('user-main').innerHTML = '';
+    document.getElementById('user-side').innerHTML = '';
+}
