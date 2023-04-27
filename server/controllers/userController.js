@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken')
 ///Route POST /api/register
 ///access public
 const registerUser = asyncHandler(async (req, res) => {
+    console.log(req)
     const {username, email, password} = req.body
     if(!username || !email || !password || password.length > 72){
         console.log('test2')
@@ -57,7 +58,7 @@ const loginUser = asyncHandler(async (req, res) => {
     }
   });
 ///desc Get current user
-///Route POST /api/current
+///Route GET /api/current
 ///access private
 const getUser = asyncHandler(async (req, res) => {
     res.json(req.user);

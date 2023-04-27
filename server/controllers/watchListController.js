@@ -1,5 +1,5 @@
 const asyncHandler = require('express-async-handler')
-const user = require('../models/userModel') 
+const User = require('../models/userModel') 
 const jwt = require('jsonwebtoken')
 
 ///desc Add new coin to the user watch list 
@@ -7,25 +7,52 @@ const jwt = require('jsonwebtoken')
 ///Request "symbol"
 ///access private
 const addCoin = asyncHandler(async (req, res) => {
-    const searchUser = user.findById({user_id: req.user.id})
-    if(!searchUser){
-        res.status(400).send('Invalid user info');
-        throw new Error('Invalid user info')
+    const userId = req.user.id;
+  
+    const user = await User.findById(userId);
+  
+    if (!user) {
+      res.status(400).send('Invalid user info');
+      throw new Error('Invalid user info');
     }
-    console.log(req.body)
-    const coin = {
-        user_id : req.user.id, 
-        coin : req.body.symbol
-    }
-    searchUser.watchList.push(coin)
-
-    res.status(200).json(searchUser.watchList)
-})
+  
+    const newCoin = {
+      user_id: userId,
+      coin: req.body.symbol
+    };
+  
+    user.watchList.push(newCoin);
+    const updatedUser = await user.save();
+  
+    console.log(updatedUser);
+  
+    res.status(200).json(updatedUser.watchList);
+  });
+  
 ///desc Remove coin to the user watch list 
 ///Route POST /api/watchList/remove/:id
 ///access private
 const removeCoin = asyncHandler(async (req, res) => {
-
+    const userId = req.user.id;
+  
+    const user = await User.findById(userId);
+  
+    if (!user) {
+      res.status(400).send('Invalid user info');
+      throw new Error('Invalid user info');
+    }
+  
+    const newCoin = {
+      user_id: userId,
+      coin: req.body.symbol
+    };
+  
+    user.watchList.push(newCoin);
+    const updatedUser = await user.save();
+  
+    console.log(updatedUser);
+  
+    res.status(200).json(updatedUser.watchList);
 })
 ///desc Remove coin to the user watch list 
 ///Route POST /api/watchList/
