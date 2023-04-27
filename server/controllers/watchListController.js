@@ -34,7 +34,7 @@ const addCoin = asyncHandler(async (req, res) => {
 ///access private
 const removeCoin = asyncHandler(async (req, res) => {
     const userId = req.user.id;
-  
+
     const user = await User.findById(userId);
   
     if (!user) {
@@ -42,12 +42,13 @@ const removeCoin = asyncHandler(async (req, res) => {
       throw new Error('Invalid user info');
     }
   
-    const newCoin = {
-      user_id: userId,
-      coin: req.body.symbol
-    };
-  
-    user.watchList.push(newCoin);
+    const symbol = req.body.symbol;
+    if(!user.watchList.find(coin => coin.coin === symbol)){
+        res.status(400).send('Invalid coin info');
+        throw new Error('Invalid coin info');      
+    }
+
+    user.watchList = user.watchList.filter(coin => coin.coin !== symbol);
     const updatedUser = await user.save();
   
     console.log(updatedUser);
@@ -58,7 +59,8 @@ const removeCoin = asyncHandler(async (req, res) => {
 ///Route POST /api/watchList/
 ///access private
 const getCoin = asyncHandler(async (req, res) => {
-    res.status(200).json(user.find({ user_id: req.user.id }).watchList)
+    const user = await User.findById(req.user.id)
+    res.status(200).json(user.watchList)
 })
 
 
