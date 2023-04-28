@@ -32,6 +32,10 @@ const userSchema = new mongoose.Schema({
   watchList : {
     type : [coinSchema],
     required : false
+  },
+  profilePicture: {
+    type: String,
+    required: false
   }
 }, 
 {

@@ -3,6 +3,7 @@ const user = require('../models/userModel')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
+
 ///desc Register a user
 ///Route POST /api/register
 ///access public
@@ -64,9 +65,33 @@ const getUser = asyncHandler(async (req, res) => {
     res.json(req.user);
   });
 
+///desc Delete User
+///Route DELETE /api/delete
+///access private
+const deleteUser = asyncHandler(async (req, res) => {
+  const result = user.deleteOne({ id : req.user.id })
+  if(result == 0){
+    res.status(404)
+    throw new Error('User not found')
+  }
+  res.status(200).json(req.user)
+})
+
+
+  
+///desc Set profile Picture to the user
+///Route POST /api/setProfilePicture
+///access private
+const setProfilePicture = asyncHandler(async (req, res) => {
+  
+});
+
+
+
 
 module.exports = {
     registerUser,
     loginUser,
-    getUser
+    getUser,
+    deleteUser
 }
