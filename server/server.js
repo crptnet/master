@@ -1,10 +1,11 @@
 const express = require('express')
+const cors = require('cors')
 const app = express()
 const env = require('dotenv').config()
 const connectToDb = require('./config/connectDB')
 const redisClient = require('./config/connectRedis')
 const errorHandler = require('./middleware/errorHandler')
-
+app.use(cors())
 app.use(errorHandler)
 
 connectToDb()
