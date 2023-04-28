@@ -6,7 +6,7 @@ import MainUserData from './mainUserData';
 import SideUserData from './sideUserData';
 import NotRegistered from './notRegistered';
 
-let registered = false;
+
 ReactDOM.createRoot(document.getElementById('sidebar')).render(<SideBar active={11} />);
 ReactDOM.createRoot(document.getElementById('main')).render(<NotRegistered submitUser={submitUser}/>);
 
