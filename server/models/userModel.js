@@ -29,13 +29,13 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  watchList : {
-    type : [coinSchema],
-    required : false
-  },
   profilePicture: {
     type: String,
     required: false
+  },
+  watchList : {
+    type : [coinSchema],
+    required : false
   }
 }, 
 {

@@ -19,7 +19,7 @@ const registerUser = asyncHandler(async (req, res) => {
     }
     const hashPassword = await bcrypt.hash(password, 8)
 
-    const newUser = new user({ username, email, password: hashPassword });
+    const newUser = new user({ username, email, password: hashPassword, profilePicture: 'null' });
     await newUser.save();
 
     if(newUser){
@@ -56,6 +56,27 @@ const loginUser = asyncHandler(async (req, res) => {
       throw new Error("email or password is not valid");
     }
   });
+
+const fileFilterMiddleware = require('../middleware/multerHandler')
+const multer = require('multer')
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, './uploads/')
+    },
+    filename: function (req, file, cb) {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+      cb(null, file.fieldname + '-' + uniqueSuffix + '-' + file.originalname)
+    }
+  })
+const upload = multer({ 
+    storage : storage,
+    limits:{
+        fileSize: 108*1024,
+    },
+    fileFilter : fileFilterMiddleware
+    
+})
+
 ///desc Get current user
 ///Route GET /api/current
 ///access private
@@ -81,10 +102,9 @@ const deleteUser = asyncHandler(async (req, res) => {
 ///desc Set profile Picture to the user
 ///Route POST /api/profilePicture
 ///access private
-const setProfilePicture = asyncHandler(async (req, res, file) =>{
-  const User = await user.findById(req.user.id)
-  User.profilePicture = file.path
-  await User.save()
+const setProfilePicture = asyncHandler(async (req, res) =>{
+  console.log(req.file)
+  await user.findByIdAndUpdate(req.user.id, { profilePicture : file.path})
   res.status(200).json('success')
 });
 
@@ -92,14 +112,17 @@ const setProfilePicture = asyncHandler(async (req, res, file) =>{
 ///Route DELETE /api/profilePicture
 ///access private
 const deleteProfilePicture = asyncHandler(async (req, res) =>{
-  const User = await user.findById(req.user.id)
-  if(!User.profilePicture){
-    res.status(400).json(req.user)
-  }
-  profilePicture
-  res.status(200).json('success')
+
 });
 
+///desc GET profile Picture to the user
+///Route GET /api/profilePicture
+///access public
+const getProfilePicture = asyncHandler(async (req, res) =>{
+  const User = await user.findById(req.user.id)
+  console.log(User)
+  res.status(200).json({})
+});
 
 
 
@@ -109,6 +132,7 @@ module.exports = {
     registerUser,
     loginUser,
     getUser,
+    getProfilePicture,
     deleteUser,
     setProfilePicture
 }

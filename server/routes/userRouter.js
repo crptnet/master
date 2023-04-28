@@ -5,7 +5,8 @@ const {
     loginUser,
     getUser,
     deleteUser,
-    setProfilePicture
+    setProfilePicture,
+    getProfilePicture,
 } = require('../controllers/userController')
 const validateToken = require('../middleware/validateToken')
 const fileFilterMiddleware = require('../middleware/multerHandler')
@@ -34,7 +35,11 @@ router.post('/login', loginUser)
 
 router.get('/current', validateToken,getUser)
 
-router.post('/profilePicture', validateToken, upload.single('profilePicture'), setProfilePicture)
+router.post('/profilePicture', validateToken, upload.single('profilePicture'), async (req, res) => {
+    console.log(req.file)
+    await user.findById(req.user.id)
+    res.status(200).json('success')
+})
 
 router.delete('/delete', validateToken, deleteUser)
 
