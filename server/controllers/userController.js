@@ -69,8 +69,9 @@ const getUser = asyncHandler(async (req, res) => {
 ///Route DELETE /api/delete
 ///access private
 const deleteUser = asyncHandler(async (req, res) => {
-  const result = user.deleteOne({ id : req.user.id })
-  if(result == 0){
+  const result = await user.findByIdAndRemove(req.user.id)
+  console.log(result)
+  if(!result){
     res.status(404)
     throw new Error('User not found')
   }
@@ -84,6 +85,7 @@ const deleteUser = asyncHandler(async (req, res) => {
 ///access private
 const setProfilePicture = asyncHandler(async (req, res) => {
   
+
 });
 
 
