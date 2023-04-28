@@ -22,4 +22,3 @@
 ///param SYMBOL - crypto coin symbol
 ///access public
 
-///

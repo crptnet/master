@@ -7,10 +7,9 @@
     <title>Document</title>
 </head>
 <body>
-    <form method="POST" enctype="multipart/form-data">
-        <label for="picture">Upload a picture:</label>
-        <input type="file" id="picture" name="picture">
+    <form action="http://localhost:5000/api/upload" method="POST" enctype="multipart/form-data">
+        <input type="file" name="image" />
         <button type="submit">Upload</button>
-      </form>
+    </form>
 </body>
 </html>

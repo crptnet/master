@@ -2,8 +2,6 @@ const asyncHandler = require('express-async-handler')
 const user = require('../models/userModel') 
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-
-
 ///desc Register a user
 ///Route POST /api/register
 ///access public
@@ -81,12 +79,28 @@ const deleteUser = asyncHandler(async (req, res) => {
 
   
 ///desc Set profile Picture to the user
-///Route POST /api/setProfilePicture
+///Route POST /api/profilePicture
 ///access private
-const setProfilePicture = asyncHandler(async (req, res) => {
-  
-
+const setProfilePicture = asyncHandler(async (req, res, file) =>{
+  const User = await user.findById(req.user.id)
+  User.profilePicture = file.path
+  await User.save()
+  res.status(200).json('success')
 });
+
+///desc DELETE profile Picture to the user
+///Route DELETE /api/profilePicture
+///access private
+const deleteProfilePicture = asyncHandler(async (req, res) =>{
+  const User = await user.findById(req.user.id)
+  if(!User.profilePicture){
+    res.status(400).json(req.user)
+  }
+  profilePicture
+  res.status(200).json('success')
+});
+
+
 
 
 
@@ -95,5 +109,6 @@ module.exports = {
     registerUser,
     loginUser,
     getUser,
-    deleteUser
+    deleteUser,
+    setProfilePicture
 }
