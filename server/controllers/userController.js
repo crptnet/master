@@ -26,6 +26,16 @@ const upload = multer({
 })
 
 
+function isEmail(str) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(str);
+}
+
+function isValidPassword(password) {
+  const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+  return regex.test(password);
+}
+
 ///desc Register a user
 ///Route POST /api/register
 ///access public
@@ -33,18 +43,37 @@ const registerUser = asyncHandler(async (req, res) => {
     console.log(req)
     const {username, email, password} = req.body
     if(!username || !email || !password || password.length > 72){
-        console.log('test2')
-        res.status(400).send('Invalid user info');
+        res.status(400);
         throw new Error('Invalid user info')
     }
+    //Email pattern check
+    if(!isEmail(email)){
+      res.status(400);
+      throw new Error('Invalid email')
+    }
+
+    //Password pattern check
+    if(!isValidPassword(password)){
+      res.status(400);
+      throw new Error('Invalid password, password msut matche criteria such as having at least 8 characters, at least 1 uppercase letter, and at least 1 lowercase letter')
+    }
+
+    //Username length check
+    if(username.length < 3){
+      res.status(400);
+      throw new Error('Username must be at least 3 characters long')  
+    }
+
     if(await user.findOne({ email })){
         res.status(409).send('Email already taken');
         throw new Error('User already taken')
     }
+    
     if(await user.findOne({ username })){
       res.status(409).send('Username already taken');
       throw new Error('Username already taken')
     }
+
     const hashPassword = await bcrypt.hash(password, 8)
 
     const newUser = new user({ username, email, password: hashPassword, profilePicture: 'null' });
@@ -64,6 +93,7 @@ const loginUser = asyncHandler(async (req, res) => {
       res.status(400);
       throw new Error("All fields are mandatory!");
     }
+    
     const searchUser = await user.findOne({ email });
     //compare password with hashedpassword
     if (searchUser && (await bcrypt.compare(password, searchUser.password))) {
@@ -79,10 +109,14 @@ const loginUser = asyncHandler(async (req, res) => {
         { expiresIn: "15d" }
       );
       res.status(200).json({ accessToken });
-    } else {
+    } 
+    
+    else 
+    {
       res.status(401);
       throw new Error("email or password is not valid");
     }
+
   });
 
 ///desc Get current user
