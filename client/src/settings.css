@@ -17,6 +17,7 @@ body {
 
 main {
     width: calc(100vw - 60px);
+    min-height: 100vh;
     margin-left: 60px;
     display: flex;
     flex-direction: column;
@@ -28,8 +29,12 @@ main {
 .mainDataContainer {
     min-width: 500px;
     min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     margin: 20px;
-    background-color: #4682B4;
+    background-color: #333333;
     border-radius: 15px;
 }
 
@@ -40,14 +45,46 @@ main {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    background-color: #4682B4;
+    background-color: #333333;
     border-radius: 15px;
 }
 
 /*MAIN-DATA*/
 
+.userName, .email, .accLevel {
+    min-width: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
 .userNameOuter, .emailOuter, .accLevelOuter {
-    color: #252525;
+    margin: 2px;
+    color: #4682B4;
+    font-weight: bold;
+}
+.userNameInner,.emailInner,.accLevelInner {
+    margin: 2px;
+    color: white;
+    font-weight:bold;
+}
+
+.deleteUserBtn {
+    margin: 5px;
+    padding: 5px;
+    color: white;
+    background-color: #DC4C41;
+    border: 2px #DC4C41 solid;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+.deleteUserBtn:hover {
+    color: #DC4C41;
+    background-color: white;
 }
 
 /*SIDE-DATA*/
@@ -81,7 +118,7 @@ main {
 .sideBtnData {
     min-width: 75px;
     min-height: 30px;
-    background-color: #333333;
+    background-color: #4682B4;
     color: white;
     border: none;
     border-radius: 5px;
@@ -98,9 +135,237 @@ main {
 /*LOGIN*/
 
 .login {
-    width: calc(100vw - 60px);
-    min-height: 100vh;
+    width: 400px;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     margin-left: -60px;
-    background-color: #252525;
+    background-color: #333333;
+    border-radius: 15px;
     opacity: 2;
+}
+
+.login img {
+    width: 50px;
+}
+
+.emailLogin, .passwordLogin, .submitLogin {
+    margin: 20px;
+}
+
+.emailLoginTitle, .passwordLoginTitle {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.emailLoginInput, .passwordLoginInput {
+    margin: 5px 0 5px 0;
+    padding: 5px;
+    color: #333333;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 5px;
+}
+
+.emailLoginInput::placeholder, .passwordLoginInput::placeholder {
+    color: #333333;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 5px;
+    margin: 5px;
+}
+
+.submitLogin {
+    padding: 10px;
+    color: white;
+    background-color: #4682B4;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+.submitLogin:hover {
+    color: #4682B4;
+    background-color: white;
+    border: 2px #4682B4 solid;
+}
+
+/*DELETE-CONFIRMATION*/
+
+.delete-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 998;
+    display: none;
+
+}
+
+@-webkit-keyframes slideDown {
+    0%,
+    100% {
+        -webkit-transform: translateY(-50px);
+    }
+    10%,
+    90% {
+        -webkit-transform: translateY(0px);
+    }
+}
+
+@-moz-keyframes slideDown {
+    0%,
+    100% {
+        -moz-transform: translateY(-50px);
+    }
+    10%,
+    90% {
+        -moz-transform: translateY(0px);
+    }
+}
+
+@keyframes slideDown {
+    0% {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+
+    60% {
+        transform: translateY(5%);
+        opacity: 1;
+    }
+
+    80% {
+        transform: translateY(-2%);
+    }
+
+    100% {
+        transform: translateY(0);
+    }
+}
+
+.delete-content {
+    left: calc(50% - 200px);
+    top: 10%;
+    width: 400px;
+    position: absolute;
+    background-color: #252525;
+    border: 1px solid white;
+    border-radius: 5px;
+    padding: 20px;
+    text-align: center;
+    animation-duration: 0.5s;
+    animation-timing-function: ease-in-out;
+    -webkit-animation-name: slideDown;
+    -moz-animation-name: slideDown;
+    animation-name: slideDown;
+}
+.delete-content img {
+    width: 50px;
+    margin: 10px;
+}
+
+
+
+.delete-content button {
+    margin: 15px 15px 0 15px;
+    padding: 5px;
+    color: white;
+    border-radius: 5px;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+.deleteConfirmBtn {
+    background-color: #DC4C41;
+    border: 2px #DC4C41 solid;
+    transition: all 0.3s ease-in-out;
+}
+
+.deleteConfirmBtn:hover {
+    color: #DC4C41;
+    background-color: white;
+    border: 2px #DC4C41 solid;
+}
+
+.deleteCancelBtn {
+    background-color: #4682B4;
+    border: 2px #4682B4 solid;
+    transition: all 0.3s ease-in-out;
+}
+
+.deleteCancelBtn:hover {
+    color: #4682B4;
+    background-color: white;
+    border: 2px #4682B4 solid;
+}
+
+/*CIRCLE-ANIMATION*/
+
+.circcontainer {
+    position: absolute;
+    /* display: flex;
+    justify-content: center;
+    align-items: center; */
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    z-index: 999;
+}
+
+.circle {
+    min-width: calc(100vw + 100vh);
+    min-height: calc(100vw + 100vh);
+    border-radius: 50%;
+    background-color: #333333;
+    animation-name: shrink-fade;
+    animation-duration: 0.8s;
+    animation-fill-mode: forwards;
+}
+
+.shrink {
+    width: 150vw;
+    height: 150vw;
+}
+
+.hidden {
+    max-width: 0;
+    max-height: 0;
+    border-radius: 50%;
+    animation-name: anti-shrink-fade;
+    animation-duration: 0.8s;
+    animation-fill-mode: forwards;
+}
+
+
+@keyframes shrink-fade {
+    0% {
+        transform: scale(0);
+    }
+    50% {
+        transform: scale(0.5);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+@keyframes anti-shrink-fade {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(0.5);
+    }
+
+    100% {
+        transform: scale(0);
+    }
 }

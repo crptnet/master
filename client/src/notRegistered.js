@@ -101,13 +101,18 @@ class NotRegistered extends React.Component {
   render() {
     return (
       <div className='login'>
+        <img src='./icons/logo.png' />
         <div className="emailLogin">
           <p className='emailLoginTitle'>Email</p>
-          <input type='email' name='email' value={this.state.email} onChange={this.handleChange} placeholder='email' className='emailLoginInput'/>
+          <input type='email' name='email' value={this.state.email} onChange={this.handleChange} placeholder='example@gmail.com' className='emailLoginInput'/>
         </div>    
         <div className="passwordLogin">
           <p className='passwordLoginTitle'>Password</p>
           <input type='password' name='password' value={this.state.password} onChange={this.handleChange} placeholder='password' className='passwordLoginInput'/>
+        </div>
+        <div className="haveAcc">
+          <p className='haveAccTitle'>Already have an account? </p>
+          <button className='haveAddBtn'>Register</button>
         </div>
         <button className='submitLogin' onClick={this.handleSubmit}>Submit</button>
       </div>
