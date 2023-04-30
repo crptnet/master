@@ -4,7 +4,6 @@ import './settings.css';
 import SideBar from './sideBar';
 
 import NotRegistered from './notRegistered';
-import { submitUser } from './mainUserData';
 import MainUserData from './mainUserData';
 import SideUserData from './sideUserData';
 
@@ -16,7 +15,7 @@ const modelRoot = ReactDOM.createRoot(document.getElementById('model'));
 sidebarRoot.render(<SideBar active={11} />);
 const mainRoot = ReactDOM.createRoot(document.getElementById('main'));
 if(!localStorage.getItem('token')) {
-    mainRoot.render(<NotRegistered submitUser={submitUser}/>);
+    mainRoot.render(<NotRegistered />);
 } else {
     mainRoot.render(<></>);
     usermainRoot.render(<MainUserData />);

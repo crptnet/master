@@ -2,14 +2,29 @@ import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom/client';
 import { sidebarRoot, mainRoot, usermainRoot, usersideRoot, modelRoot } from './index';
 import SideUserData from './sideUserData';
-import { getData } from './notRegistered';
 import NotRegistered from './notRegistered';
 import './settings.css';
 
-function submitUser () {
-  mainRoot.render(<></>);
-  usermainRoot.render(<MainUserData />);
-  usersideRoot.render(<SideUserData />);
+const getData = async () => {
+  try {
+    const headersList = {
+      "Accept": "*/*",
+      "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+      "Authorization": `Bearer ${localStorage.getItem('token')}`,
+    };
+    if(localStorage.getItem('token')) {
+      const response = await fetch("http://localhost:5000/api/current", {
+        method: 'GET',
+        headers: headersList
+      });
+      const userData = await response.json();
+      return userData;
+    } else {
+      return {email:'Unauthorized', password: 'Unauthorized'};
+    }
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 function MainUserData () {
@@ -81,7 +96,7 @@ function MainUserData () {
     setTimeout(() => {
       usermainRoot.render(<></>);
       usersideRoot.render(<></>);
-      mainRoot.render(<NotRegistered submitUser={submitUser}/>);
+      mainRoot.render(<NotRegistered/>);
     }, 800);
     setTimeout(() => {
       modelRoot.render(
@@ -141,5 +156,4 @@ function MainUserData () {
 }
 
 
-export { submitUser };
 export default MainUserData;
