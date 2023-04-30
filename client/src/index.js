@@ -2,22 +2,25 @@ import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import './settings.css';
 import SideBar from './sideBar';
+
+import NotRegistered from './notRegistered';
+import { submitUser } from './mainUserData';
 import MainUserData from './mainUserData';
 import SideUserData from './sideUserData';
-import NotRegistered from './notRegistered';
 
+const sidebarRoot = ReactDOM.createRoot(document.getElementById('sidebar'));
+const usermainRoot = ReactDOM.createRoot(document.getElementById('user-main'));
+const usersideRoot = ReactDOM.createRoot(document.getElementById('user-side'));
+const modelRoot = ReactDOM.createRoot(document.getElementById('model'));
 
-ReactDOM.createRoot(document.getElementById('sidebar')).render(<SideBar active={11} />);
-ReactDOM.createRoot(document.getElementById('main')).render(<NotRegistered submitUser={submitUser}/>);
-
-function submitUser () {
-    document.getElementById('main').innerHTML = '';
-    ReactDOM.createRoot(document.getElementById('user-main')).render(<MainUserData deleteUser={deleteUser}/>);
-    ReactDOM.createRoot(document.getElementById('user-side')).render(<SideUserData />);
+sidebarRoot.render(<SideBar active={11} />);
+const mainRoot = ReactDOM.createRoot(document.getElementById('main'));
+if(!localStorage.getItem('token')) {
+    mainRoot.render(<NotRegistered submitUser={submitUser}/>);
+} else {
+    mainRoot.render(<></>);
+    usermainRoot.render(<MainUserData />);
+    usersideRoot.render(<SideUserData />);
 }
 
-function deleteUser () {
-    ReactDOM.createRoot(document.getElementById('main')).render(<NotRegistered submitUser={submitUser}/>);
-    document.getElementById('user-main').innerHTML = '';
-    document.getElementById('user-side').innerHTML = '';
-}
+export {sidebarRoot,mainRoot,usermainRoot,usersideRoot,modelRoot};
