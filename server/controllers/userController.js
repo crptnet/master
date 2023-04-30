@@ -4,6 +4,16 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const fs = require('fs');
 const path = require('path')
+const nodemailer = require('nodemailer')
+
+// Create a nodemailer transporter object with your email service provider settings
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL,
+    pass: process.env.EMAIL_PASS
+  }
+});
 
 const fileFilterMiddleware = require('../middleware/multerHandler')
 const multer = require('multer')
@@ -40,7 +50,7 @@ function isValidPassword(password) {
 ///Route POST /api/register
 ///access public
 const registerUser = asyncHandler(async (req, res) => {
-    console.log(req)
+    //console.log(req)
     const {username, email, password} = req.body
     if(!username || !email || !password || password.length > 72){
         res.status(400);
@@ -76,13 +86,29 @@ const registerUser = asyncHandler(async (req, res) => {
 
     const hashPassword = await bcrypt.hash(password, 8)
 
-    const newUser = new user({ username, email, password: hashPassword, profilePicture: 'null' });
+    const newUser = new user({ username, email, password: hashPassword, profilePicture: 'null', active : false });
     await newUser.save();
 
+    const emailMessage = {
+      from: process.env.EMAIL,
+      to: email,
+      subject: 'Verify your email address',
+      html: `<p>Please click <a href=/api/activate?key="${hashPassword}">here</a> to verify your email address.</p>`
+    };
+    
+
     if(newUser){
-        return res.status(201).json({ 'email' : email, 'id' : newUser.id})
+      transporter.sendMail(emailMessage, (error, info) => {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+      });
+
+      return res.status(201).json({ 'email' : email, 'id' : newUser.id})
     }
-    return res.status(200).send()
+    res.status(500).send()
 })
 ///desc Login a user
 ///Route POST /api/login
@@ -93,21 +119,27 @@ const loginUser = asyncHandler(async (req, res) => {
       res.status(400);
       throw new Error("All fields are mandatory!");
     }
-    
+
     const searchUser = await user.findOne({ email });
+    
     //compare password with hashedpassword
+    
     if (searchUser && (await bcrypt.compare(password, searchUser.password))) {
       const accessToken = jwt.sign(
         {
           user: {
             username: searchUser.username,
             email: searchUser.email,
-            id: searchUser.id,
+            //active : searchUser.active,
+            id: searchUser.id
           },
         },
         process.env.ACCESS_TOKEN_SECERT,
         { expiresIn: "15d" }
       );
+
+      console.log(accessToken)
+
       res.status(200).json({ accessToken });
     } 
     
@@ -130,12 +162,12 @@ const getUser = asyncHandler(async (req, res) => {
 ///Route DELETE /api/delete
 ///access private
 const deleteUser = asyncHandler(async (req, res) => {
-  const result = await user.findByIdAndRemove(req.user.id)
-  console.log(result)
-  if(!result){
+  const User = await user.findById(req.user.id)
+  if(!User){
     res.status(404)
     throw new Error('User not found')
   }
+  
   if(User.profilePicture !== 'null'){
     try{
       fs.unlink(User.profilePicture);  
@@ -144,7 +176,23 @@ const deleteUser = asyncHandler(async (req, res) => {
       console.log('Picture not found')
     }
   }
+  
+  await User.deleteOne()
   res.status(200).json(req.user)
+  
+})
+
+//Activate user
+//Route PUT api/activate/:key
+//Access Public
+const updateActiveStatus = asyncHandler(async (req, res) =>{
+  const User = await user.findOne({ password : req.params.key})
+  if(!User){
+    res.status(404)
+    throw new Error('User not found')
+  }
+  await User.updateOne({ active : true })
+  res.status(200).json('User activated')
 })
 
 
@@ -235,5 +283,6 @@ module.exports = {
     deleteUser,
     setProfilePicture,
     getProfilePictureByUserName,
-    deleteProfilePicture
+    deleteProfilePicture,
+    updateActiveStatus
 }

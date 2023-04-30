@@ -8,7 +8,8 @@ const {
     setProfilePicture,
     getProfilePicture,
     getProfilePictureByUserName,
-    deleteProfilePicture
+    deleteProfilePicture,
+    updateActiveStatus
     
 } = require('../controllers/userController')
 const user = require('../models/userModel')
@@ -49,5 +50,6 @@ router.get('/userProfilePicture/:username', getProfilePictureByUserName)
 
 router.delete('/delete', validateToken, deleteUser)
 
+router.put('activate/:key', updateActiveStatus)
 
 module.exports = router
