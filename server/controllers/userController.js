@@ -10,8 +10,8 @@ const nodemailer = require('nodemailer')
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'cnrtnoreply@gmail.com',
-    pass: 'fzynmdlzboahysoy'
+    user: process.env.EMAIL,
+    pass: process.env.EMAIL_PASS
   }
 });
 
@@ -87,29 +87,29 @@ const registerUser = asyncHandler(async (req, res) => {
 
     const hashPassword = await bcrypt.hash(password, 8)
 
-    const newUser = new user({ username, email, password: hashPassword, profilePicture: 'null', active : false });
+    const newUser = new user({ username, email, password: hashPassword, active : false, profilePicture: 'null' });
     await newUser.save();
 
 
-    const emailMessage = {
-      from: process.env.EMAIL,
-      to: email,
-      subject: 'Verify your email address',
-      html: `<p>Please click <a href="/api/activate?key=${hashPassword}&id=${newUser.id}">here</a> to verify your email address.</p>`
-    };
+    // const emailMessage = {
+    //   from: process.env.EMAIL,
+    //   to: email,
+    //   subject: 'Verify your email address',
+    //   html: `<p>Please click <a href="/api/activate?key=${hashPassword}&id=${newUser.id}">here</a> to verify your email address.</p>`
+    // };
     
     
-    if(newUser){
-      transporter.sendMail(emailMessage, (error, info) => {
-        if (error) {
-          console.log(error);
-        } else {
-          console.log('Email sent: ' + info.response);
-        }
-      });
+    // if(newUser){
+    //   transporter.sendMail(emailMessage, (error, info) => {
+    //     if (error) {
+    //       console.log(error);
+    //     } else {
+    //       console.log('Email sent: ' + info.response);
+    //     }
+    //   });
 
-      return res.status(201).json({ 'email' : email, 'id' : newUser.id})
-    }
+    //   return res.status(201).json({ 'email' : email, 'id' : newUser.id})
+    // }
 
     res.status(500).send()
 })
