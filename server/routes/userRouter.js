@@ -28,7 +28,7 @@ const storage = multer.diskStorage({
 const upload = multer({ 
     storage : storage,
     limits:{
-        fileSize: 108*1024,
+        fileSize: 8*1024,
     },
     fileFilter : fileFilterMiddleware
     
@@ -36,20 +36,21 @@ const upload = multer({
 
 router.post('/register', registerUser)
 
+router.put('/activate', updateActiveStatus)
+
 router.post('/login', loginUser)
 
 router.get('/current', validateToken,getUser)
 
-router.post('/profilePicture', validateToken, upload.single('profilePicture'), setProfilePicture)
+router.post('/profile-picture', validateToken, upload.single('profilePicture'), setProfilePicture)
 
-router.get('/profilePicture', validateToken, getProfilePicture)
+router.get('/profile-picture', validateToken, getProfilePicture)
 
-router.delete('/profilePicture', validateToken, deleteProfilePicture)
+router.delete('/profile-picture', validateToken, deleteProfilePicture)
 
-router.get('/userProfilePicture/:username', getProfilePictureByUserName)
+router.get('/user-profile-picture/:username', getProfilePictureByUserName)
 
 router.delete('/delete', validateToken, deleteUser)
 
-router.put('activate/:key', updateActiveStatus)
 
 module.exports = router

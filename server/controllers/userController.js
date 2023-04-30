@@ -10,8 +10,8 @@ const nodemailer = require('nodemailer')
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: process.env.EMAIL,
-    pass: process.env.EMAIL_PASS
+    user: 'cnrtnoreply@gmail.com',
+    pass: 'fzynmdlzboahysoy'
   }
 });
 
@@ -50,7 +50,6 @@ function isValidPassword(password) {
 ///Route POST /api/register
 ///access public
 const registerUser = asyncHandler(async (req, res) => {
-    //console.log(req)
     const {username, email, password} = req.body
     if(!username || !email || !password || password.length > 72){
         res.status(400);
@@ -74,11 +73,13 @@ const registerUser = asyncHandler(async (req, res) => {
       throw new Error('Username must be at least 3 characters long')  
     }
 
+    //Check if user with the same email exists
     if(await user.findOne({ email })){
         res.status(409).send('Email already taken');
         throw new Error('User already taken')
     }
     
+    //Check if user with the same username exists
     if(await user.findOne({ username })){
       res.status(409).send('Username already taken');
       throw new Error('Username already taken')
@@ -89,14 +90,15 @@ const registerUser = asyncHandler(async (req, res) => {
     const newUser = new user({ username, email, password: hashPassword, profilePicture: 'null', active : false });
     await newUser.save();
 
+
     const emailMessage = {
       from: process.env.EMAIL,
       to: email,
       subject: 'Verify your email address',
-      html: `<p>Please click <a href=/api/activate?key="${hashPassword}">here</a> to verify your email address.</p>`
+      html: `<p>Please click <a href="/api/activate?key=${hashPassword}&id=${newUser.id}">here</a> to verify your email address.</p>`
     };
     
-
+    
     if(newUser){
       transporter.sendMail(emailMessage, (error, info) => {
         if (error) {
@@ -108,6 +110,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
       return res.status(201).json({ 'email' : email, 'id' : newUser.id})
     }
+
     res.status(500).send()
 })
 ///desc Login a user
@@ -124,13 +127,14 @@ const loginUser = asyncHandler(async (req, res) => {
     
     //compare password with hashedpassword
     
+    console.log(searchUser.active)
+
     if (searchUser && (await bcrypt.compare(password, searchUser.password))) {
       const accessToken = jwt.sign(
         {
           user: {
             username: searchUser.username,
             email: searchUser.email,
-            //active : searchUser.active,
             id: searchUser.id
           },
         },
@@ -138,7 +142,6 @@ const loginUser = asyncHandler(async (req, res) => {
         { expiresIn: "15d" }
       );
 
-      console.log(accessToken)
 
       res.status(200).json({ accessToken });
     } 
@@ -183,18 +186,34 @@ const deleteUser = asyncHandler(async (req, res) => {
 })
 
 //Activate user
-//Route PUT api/activate/:key
+//Route PUT api/activate/:key/:id:
 //Access Public
 const updateActiveStatus = asyncHandler(async (req, res) =>{
-  const User = await user.findOne({ password : req.params.key})
-  if(!User){
+  const User = await user.findById(req.query.id)
+  console.log(req.query)
+  if(!User || User.pasьsword !== req.query.key){
     res.status(404)
     throw new Error('User not found')
   }
   await User.updateOne({ active : true })
+
   res.status(200).json('User activated')
 })
 
+/// desc update user  info
+/// Route PUT api/updateUser
+/// Access private
+const updateUserInfo = asyncHandler(async (req, res) =>{
+  const User = await user.findById(req.user.id)
+  if(req.body.newUsername){
+    await User.updateOne({ username : req.body.newUsername })
+  }
+
+  if(req.body.newPassword){
+    await User.updateOne({ username : req.body.newPassword })
+  }
+
+})
 
   
 ///desc Set profile Picture to the user
