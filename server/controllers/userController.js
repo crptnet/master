@@ -95,7 +95,7 @@ const registerUser = asyncHandler(async (req, res) => {
       from: process.env.EMAIL,
       to: email,
       subject: 'Verify your email address',
-      html: `<p>Please click <a href="/api/activate?key=${hashPassword}&id=${newUser.id}">here</a> to verify your email address.</p>`
+      html: `<p>Please click <a href="http://localhost:3000/activate?key=${hashPassword}&id=${newUser.id}">here</a> to verify your email address.</p>`
     };
     
     
@@ -182,19 +182,38 @@ const deleteUser = asyncHandler(async (req, res) => {
   
   await User.deleteOne()
   res.status(200).json(req.user)
-    
+
 })
+
+// Get user info to display on password reset UI
+// Route GET api/email-active
+// access public
+const getUserInfoForActivation = asyncHandler(async (req, res) =>{
+  const User = await user.findById(req.query.id)
+  if(!User || User.pasьsword !== req.query.key){
+    res.status(404).json({message: ('User not found')});
+    throw new Error('User not found')
+  }
+  
+  res.status(200).json(
+    {
+      email : User.email,
+    }
+  )
+
+})
+
 
 //Activate user
 //Route PUT api/activate/:key/:id:
 //Access Public
 const updateActiveStatus = asyncHandler(async (req, res) =>{
   const User = await user.findById(req.query.id)
-  console.log(req.query)
   if(!User || User.pasьsword !== req.query.key){
     res.status(404).json({message: ('User not found')});
     throw new Error('User not found')
   }
+  
   await User.updateOne({ active : true })
 
   res.status(200).json('User activated')
@@ -298,6 +317,7 @@ const getProfilePictureByUserName = asyncHandler(async (req, res) =>{
 
 module.exports = {
     registerUser,
+    getUserInfoForActivation,
     loginUser,
     getUser,
     getProfilePicture,

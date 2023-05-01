@@ -40,6 +40,8 @@ router.put('/activate', updateActiveStatus)
 
 router.post('/login', loginUser)
 
+router.get('/email-active', )
+
 router.get('/current', validateToken,getUser)
 
 router.post('/profile-picture', validateToken, upload.single('profilePicture'), setProfilePicture)
