@@ -10,7 +10,7 @@ const { ConnectionPoolClosedEvent } = require('mongodb')
 
 
 app.use(errorHandler)
-app.use(cors)
+//app.use(cors)
 
 connectToDb()
 

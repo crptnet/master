@@ -91,25 +91,25 @@ const registerUser = asyncHandler(async (req, res) => {
     await newUser.save();
 
 
-    // const emailMessage = {
-    //   from: process.env.EMAIL,
-    //   to: email,
-    //   subject: 'Verify your email address',
-    //   html: `<p>Please click <a href="/api/activate?key=${hashPassword}&id=${newUser.id}">here</a> to verify your email address.</p>`
-    // };
+    const emailMessage = {
+      from: process.env.EMAIL,
+      to: email,
+      subject: 'Verify your email address',
+      html: `<p>Please click <a href="/api/activate?key=${hashPassword}&id=${newUser.id}">here</a> to verify your email address.</p>`
+    };
     
     
-    // if(newUser){
-    //   transporter.sendMail(emailMessage, (error, info) => {
-    //     if (error) {
-    //       console.log(error);
-    //     } else {
-    //       console.log('Email sent: ' + info.response);
-    //     }
-    //   });
+    if(newUser){
+      transporter.sendMail(emailMessage, (error, info) => {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+      });
 
-    //   return res.status(201).json({ 'email' : email, 'id' : newUser.id})
-    // }
+      return res.status(201).json({ 'email' : email, 'id' : newUser.id})
+    }
 
     res.status(500).send()
 })
@@ -182,7 +182,7 @@ const deleteUser = asyncHandler(async (req, res) => {
   
   await User.deleteOne()
   res.status(200).json(req.user)
-  
+    
 })
 
 //Activate user
@@ -215,7 +215,9 @@ const updateUserInfo = asyncHandler(async (req, res) =>{
 
 })
 
-  
+
+
+
 ///desc Set profile Picture to the user
 ///Route POST /api/profilePicture
 ///access private
