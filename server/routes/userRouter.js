@@ -13,9 +13,13 @@ const {
     changePasswordRequest,
     changePasswordVerification,
     changePassword,
+    changeEmailRequest,
+    changeEmailVerification, 
+    changeEmail,
+    getUserInfoForActivation
+
     
 } = require('../controllers/userController')
-const user = require('../models/userModel')
 const validateToken = require('../middleware/validateToken')
 const fileFilterMiddleware = require('../middleware/multerHandler')
 const multer = require('multer')
@@ -45,11 +49,17 @@ router.get('/profile-picture', validateToken, getProfilePicture)
 
 router.get('/user-profile-picture/:username', getProfilePictureByUserName)
 
+router.get('/active', getUserInfoForActivation)
+
 router.get('/change-password', changePasswordVerification )
+
+router.get('/change-email', changeEmailVerification)
 
 router.post('/register', registerUser)
 
 router.post('/login', loginUser)
+
+router.post('/change-email', validateToken, changeEmailRequest)
 
 router.post('/profile-picture', validateToken, upload.single('profilePicture'), setProfilePicture)
 
@@ -57,10 +67,13 @@ router.post('/change-password', changePasswordRequest)
 
 router.put('/change-password', changePassword)
 
+router.put('/change-email', changeEmail)
+
 router.put('/activate', updateActiveStatus)
 
 router.delete('/profile-picture', validateToken, deleteProfilePicture)
 
 router.delete('/delete', validateToken, deleteUser)
+
 
 module.exports = router

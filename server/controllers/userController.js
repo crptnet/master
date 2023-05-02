@@ -16,7 +16,8 @@ const transporter = nodemailer.createTransport({
 });
 
 const fileFilterMiddleware = require('../middleware/multerHandler')
-const multer = require('multer')
+const multer = require('multer');
+const { decode } = require('punycode');
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
       cb(null, './uploads/')
@@ -52,37 +53,31 @@ function isValidPassword(password) {
 const registerUser = asyncHandler(async (req, res) => {
     const {username, email, password} = req.body
     if(!username || !email || !password || password.length > 72){
-        res.status(400).json({ message: 'Invalid user info'})
-        throw new Error('Invalid user info')
+      return res.status(400).json({ message: 'Invalid user info'})
     }
     //Email pattern check
     if(!isEmail(email)){
-      res.status(400).json({ message: 'Invalid email'})
-      throw new Error('Invalid email')
+      return res.status(400).json({ message: 'Invalid email'})
     }
 
     //Password pattern check
     if(!isValidPassword(password)){
-      res.status(400).json({ message: 'Invalid password'})
-      throw new Error('Invalid password')
+      return res.status(400).json({ message: 'Invalid password'})
     }
 
     //Username length check
     if(username.length < 3){
-      res.status(400).json({ message: 'Username must be at least 3 characters long'})
-      throw new Error('Username must be at least 3 characters long')  
+      return res.status(400).json({ message: 'Username must be at least 3 characters long'})
     }
 
     //Check if user with the same email exists
     if(await user.findOne({ email })){
-        res.status(409).json({ message: 'User already taken'})
-        throw new Error('User already taken')
+        return res.status(409).json({ message: 'User already taken'})
     }
     
     //Check if user with the same username exists
     if(await user.findOne({ username })){
-      res.status(409).json({ message: 'Username already taken'})
-      throw new Error('Username already taken')
+      return res.status(409).json({ message: 'Username already taken'})
     }
 
     const hashPassword = await bcrypt.hash(password, 8)
@@ -118,6 +113,7 @@ const registerUser = asyncHandler(async (req, res) => {
 ///access public
 const loginUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
+
     if (!email || !password) {
       res.status(400).json({message: ("All fields are mandatory!")})
       throw new Error("All fields are mandatory!")
@@ -127,7 +123,6 @@ const loginUser = asyncHandler(async (req, res) => {
     
     //compare password with hashedpassword
     
-    console.log(searchUser)
 
     if (searchUser && (await bcrypt.compare(password, searchUser.password))) {
       const accessToken = jwt.sign(
@@ -189,18 +184,13 @@ const deleteUser = asyncHandler(async (req, res) => {
 // Route GET api/email-active
 // access public
 const getUserInfoForActivation = asyncHandler(async (req, res) =>{
-  const User = await user.findById(req.query.id)
-  if(!User || User.pasьsword !== req.query.key){
+  const { key, id } = req.query
+  const User = await user.findById(id)
+  if(!User || User.password !== key){
     res.status(404).json({message: ('User not found')});
     throw new Error('User not found')
   }
-  
-  res.status(200).json(
-    {
-      email : User.email,
-    }
-  )
-
+  res.redirect(`https:///${process.env.DOMEN}/activate`)
 })
 
 
@@ -210,8 +200,8 @@ const getUserInfoForActivation = asyncHandler(async (req, res) =>{
 //Access Public
 const updateActiveStatus = asyncHandler(async (req, res) =>{
   const User = await user.findById(req.query.id)
-  if(!User || User.pasьsword !== req.query.key){
-    res.status(404).json({message: ('User not found')});
+  if(!User || User.password !== req.query.key){
+    res.status(404)
     throw new Error('User not found')
   }
   
@@ -368,23 +358,23 @@ const changePasswordVerification = asyncHandler(async (req, res) => {
     res.status(404)
     throw new Error('Not found')
   }
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECERT, async (err, decoded) => {
-    if (err) 
-    {
-      return res.status(403).send('Token expired or does not exist')
-    }
+  var decoded
+  try{
+    decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECERT) 
+  }
+  catch(err){
+    throw new Error(err.message)
+  }
+  const User = await user.findById(decoded.userId) 
+  if (!User || User.PasswordResetToken !== token || User.PasswordResetToken === 'null') 
+  {
+    res.status(404);
+    throw new Error('User not found')
+  }
 
-    
-    const User = await user.findById(decoded.userId) 
-    if (!User || User.PasswordResetToken !== token || User.PasswordResetToken === 'null') 
-    {
-      res.status(404);
-      throw new Error('User not found')
-    }
-
-    res.status(200).send('/change-passowrd')
-  });
-  res.status(500)
+  res.sendStatus(200)
+  //UNCOMENT 
+  //res.status(200).redirect(`http:///${process.env.DOMEN}/`)
   
 })
 
@@ -401,26 +391,25 @@ const changePassword = asyncHandler(async (req, res) =>{
     throw new Error('Invalid password')
   }
 
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECERT, async (err, decoded) => {
-    if (err) {
-      console.error(err);
-      res.status(403);
-      throw new Error(err.message)
-    }
-
-    const User = await user.findById(decoded.userId)
-    if (!User || User.PasswordResetToken !== token || User.PasswordResetToken === 'null') {
-      res.status(404).json('User not found');
-      throw new Error('User not found')
-    }
-    await User.updateOne({PasswordResetToken : 'null'})
-    const hashPassword = await bcrypt.hash(password, 8)
-    User.password = hashPassword
-    await User.save()
-    res.sendStatus(200)
-  });
-
-  res.status(404)
+  var decoded
+  try{
+    decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECERT) 
+  }
+  catch(err){
+    res.status(403)
+    throw new Error(err.message)
+  }
+  
+  const User = await user.findById(decoded.userId)
+  if (!User || User.PasswordResetToken !== token || User.PasswordResetToken === 'null') {
+    res.status(404).json('User not found');
+    throw new Error('User not found')
+  }
+  await User.updateOne({PasswordResetToken : 'null'})
+  const hashPassword = await bcrypt.hash(password, 8)
+  User.password = hashPassword
+  await User.save()
+  res.sendStatus(200)
 })
 
 // Send request to change email
@@ -465,21 +454,22 @@ const changeEmailRequest = asyncHandler(async (req, res) =>{
 // Router GET api/change-password
 // access private
 const changeEmailVerification = asyncHandler(async (req, res) => {
-const { token } = req.query 
 
-//console.log(token)  
+  const { token } = req.query 
 
-if(!token){
-  res.status(404)
-  throw new Error('Not found')
-}
-jwt.verify(token, process.env.RESET_TOKEN, async (err, decoded) => {
-  if (err) 
-  {
-    return res.status(403).send('Token expired or does not exist')
+  if(!token){
+    res.status(404)
+    throw new Error('Not found')
   }
-
-  
+  var decoded
+  try 
+  {
+    decoded = jwt.verify(token, process.env.RESET_TOKEN)
+  } 
+  catch (err) {
+    res.status(403)
+    throw new Error(err.message)
+  }
   const User = await user.findById(decoded.userId) 
   if (!User || User.emailResetToken !== token || User.emailResetToken === 'null') 
   {
@@ -487,43 +477,62 @@ jwt.verify(token, process.env.RESET_TOKEN, async (err, decoded) => {
     throw new Error('User not found')
   }
 
-  res.status(200).send('/change-passowrd')
-});
-res.status(500)
+  res.status(200).redirect('http://google.com')
+
+
 
 })
 
-// Desc change user password
+// Desc change user email
 // Router PUT /api/change-password
 // access private
 const changeEmail = asyncHandler(async (req, res) =>{
-const { token, email } = req.query
+  const { token, email } = req.query
 
-//console.log(token, password)
+  //console.log(token, password)
 
-if(!isEmail(email)){
-  res.status(400)
-  throw new Error('Invalid email')
-}
-
-jwt.verify(token, process.env.RESET_TOKEN, async (err, decoded) => {
-  if (err) {
-    console.error(err);
-    res.status(403);
+  if(!isEmail(email)){
+    res.status(400)
+    throw new Error('Invalid email')
+  }
+  var decoded = {}
+  try{
+    decoded = jwt.verify(token, process.env.RESET_TOKEN)
+  }
+  catch(err){
+    res.status(403)
     throw new Error(err.message)
   }
-
   const User = await user.findById(decoded.userId)
   if (!User || User.emailResetToken !== token || User.emailResetToken === 'null') {
-    res.status(404).json('User not found');
+    res.status(404)
     throw new Error('User not found')
   }
 
-  await User.updateMany({emailResetToken : 'null', email : email})
-  res.sendStatus(200)
-});
+  if(User.email === email){
+    res.status(405);
+    throw new Error('Provided email the same')
+    
+  }
 
-res.status(404)
+  await User.updateOne({emailResetToken : 'null', email : email, active : false})
+  const emailMessage = {
+    from: process.env.EMAIL,
+    to: email,
+    subject: 'Verify your email address',
+    html: `<p>Please click <a href="http://${process.env.DOMEN}/activate?key=${User.password}&id=${User.id}">here</a> to verify your email address.</p>`
+  };
+  
+  transporter.sendMail(emailMessage, (error, info) => {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+  })
+    
+  
+  res.sendStatus(200)
 })
 
 
@@ -543,5 +552,7 @@ module.exports = {
     changePasswordRequest,
     changePasswordVerification,
     changePassword,
-
+    changeEmailRequest,
+    changeEmailVerification, 
+    changeEmail
   }

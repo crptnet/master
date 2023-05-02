@@ -1,6 +1,7 @@
 const { constants } = require("../constants");
 const errorHandler = (err, req, res, next) => {
   const statusCode = res.statusCode ? res.statusCode : 500;
+  console.log(statusCode)
   switch (statusCode) {
     case constants.VALIDATION_ERROR:
       res.json({
@@ -33,8 +34,14 @@ const errorHandler = (err, req, res, next) => {
         message: err.message,
         stackTrace: err.stack,
       });
+    case constants.COLISION:
+      res.json({
+        title: "Colision in DB Error",
+        message: err.message,
+        stackTrace: err.stack,
+      });
     default:
-      console.log(err.message);
+      //console.log(err.message);
       break;
   }
 };
