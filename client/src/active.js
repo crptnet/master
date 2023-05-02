@@ -1,0 +1,42 @@
+import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom/client';
+const mainRoot = document.getElementById('main');
+
+
+const ActiveAccountPage = (props) => {
+  const [message, setMessage] = useState("Verifying account...");
+
+  useEffect(() => {
+    const verifyAccount = async () => {
+        const queryParams = new URLSearchParams(props.location.search);
+        const key = queryParams.get("key");
+        const id = queryParams.get("id");
+        try {
+            const response = await fetch(`http://localhost:5000/api/activate/:${key}/:${id}:`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if(response.status == 200)
+            {
+                setMessage("Account verified");
+            } else {
+                setMessage("Account verification failed");
+            }
+        } catch (error) {
+            setMessage("An error occurred while verifying your account");
+        }
+    };
+
+    verifyAccount();
+  }, []);
+
+  return (
+    <div className="container">
+      <h1>{message}</h1>
+    </div>
+  );
+};
+
+ReactDOM.createRoot(mainRoot).render(<ActiveAccountPage />);
