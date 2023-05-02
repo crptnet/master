@@ -331,9 +331,10 @@ const changePasswordRequest = asyncHandler(async (req, res) =>{
     }
 
     const token = jwt.sign({ userId: User.id }, process.env.ACCESS_TOKEN_SECERT, {
-      expiresIn: '12h'
+      expiresIn: '1h'
     });
-    //console.log(email)
+
+    await User.updateOne({$set: { emailResetToken : token }})
     const resetUrl = `/password-reset?token=${token}`;
     const emailMessage = {
       from: process.env.EMAIL,
@@ -342,17 +343,17 @@ const changePasswordRequest = asyncHandler(async (req, res) =>{
       html: `<p>Please click <a href="http://localhost:3000/password-reset?token=${token}">here</a> to reset your password.</p>`
     };
 
-    // Send the password reset email
-    await transporter.sendMail(emailMessage, (error, info) => {
-      if (error) {
-        console.error(error);
-        res.sendStatus(500);
-      } else {
-        console.log('Password reset email sent: ' + info.response);
-        res.sendStatus(200);
-      }
-    });
-    res.status(500)
+    // // Send the password reset email
+    // await transporter.sendMail(emailMessage, (error, info) => {
+    //   if (error) {
+    //     console.error(error);
+    //     res.sendStatus(500);
+    //   } else {
+    //     console.log('Password reset email sent: ' + info.response);
+    //     res.sendStatus(200);
+    //   }
+    // });
+    res.status(500).json(token)
 })
 
 // Desc verifying the password reset token
@@ -375,7 +376,7 @@ const changePasswordVerification = asyncHandler(async (req, res) => {
 
     
     const User = await user.findById(decoded.userId) 
-    if (!User) 
+    if (!User || User.emailResetToken !== token || User.emailResetToken === 'null') 
     {
       res.status(404);
       throw new Error('User not found')
@@ -408,11 +409,11 @@ const changePassword = asyncHandler(async (req, res) =>{
     }
 
     const User = await user.findById(decoded.userId)
-    if (!User) {
-      res.status(404);
+    if (!User || User.emailResetToken !== token || User.emailResetToken === 'null') {
+      res.status(404).json('User not found');
       throw new Error('User not found')
     }
-
+    await User.updateOne({emailResetToken : 'null'})
     const hashPassword = await bcrypt.hash(password, 8)
     User.password = hashPassword
     await User.save()
