@@ -334,7 +334,7 @@ const changePasswordRequest = asyncHandler(async (req, res) =>{
       expiresIn: '1h'
     });
 
-    await User.updateOne({$set: { emailResetToken : token }})
+    await User.updateOne({$set: { PasswordResetToken : token }})
     const resetUrl = `/password-reset?token=${token}`;
     const emailMessage = {
       from: process.env.EMAIL,
@@ -356,7 +356,7 @@ const changePasswordRequest = asyncHandler(async (req, res) =>{
     res.status(500).json(token)
 })
 
-// Desc verifying the password reset token
+// Desc verifying the password reset token, redirect to UI
 // Router GET api/change-password
 // access private
 const changePasswordVerification = asyncHandler(async (req, res) => {
@@ -376,7 +376,7 @@ const changePasswordVerification = asyncHandler(async (req, res) => {
 
     
     const User = await user.findById(decoded.userId) 
-    if (!User || User.emailResetToken !== token || User.emailResetToken === 'null') 
+    if (!User || User.PasswordResetToken !== token || User.PasswordResetToken === 'null') 
     {
       res.status(404);
       throw new Error('User not found')
@@ -409,11 +409,11 @@ const changePassword = asyncHandler(async (req, res) =>{
     }
 
     const User = await user.findById(decoded.userId)
-    if (!User || User.emailResetToken !== token || User.emailResetToken === 'null') {
+    if (!User || User.PasswordResetToken !== token || User.PasswordResetToken === 'null') {
       res.status(404).json('User not found');
       throw new Error('User not found')
     }
-    await User.updateOne({emailResetToken : 'null'})
+    await User.updateOne({PasswordResetToken : 'null'})
     const hashPassword = await bcrypt.hash(password, 8)
     User.password = hashPassword
     await User.save()
@@ -422,6 +422,110 @@ const changePassword = asyncHandler(async (req, res) =>{
 
   res.status(404)
 })
+
+// Send request to change email
+// Route POST /api/change-email
+// access private
+const changeEmailRequest = asyncHandler(async (req, res) =>{
+
+  const User = await user.findById(req.user.id)
+
+  if(!User){
+    res.status(404)
+    throw new Error('User not found')
+  }
+
+  const token = jwt.sign({ userId: User.id }, process.env.RESET_TOKEN, {
+    expiresIn: '1h'
+  });
+
+  await User.updateOne({$set: { emailResetToken : token }})
+  const resetUrl = `http:///${process.env.DOMEN}/password-reset?token=${token}`;
+  const emailMessage = {
+    from: process.env.EMAIL,
+    to: User.email,
+    subject: 'Reset password',
+    html: `<p>Please click <a href="http:///${process.env.DOMEN}/password-reset?token=${token}">here</a> to reset your password.</p>`
+  };
+
+  // // Send the password reset email
+  // await transporter.sendMail(emailMessage, (error, info) => {
+  //   if (error) {
+  //     console.error(error);
+  //     res.sendStatus(500);
+  //   } else {
+  //     console.log('Password reset email sent: ' + info.response);
+  //     res.sendStatus(200);
+  //   }
+  // });
+  res.status(500).json(token)
+})
+
+// Desc verifying the email reset token and redirect to UI
+// Router GET api/change-password
+// access private
+const changeEmailVerification = asyncHandler(async (req, res) => {
+const { token } = req.query 
+
+//console.log(token)  
+
+if(!token){
+  res.status(404)
+  throw new Error('Not found')
+}
+jwt.verify(token, process.env.RESET_TOKEN, async (err, decoded) => {
+  if (err) 
+  {
+    return res.status(403).send('Token expired or does not exist')
+  }
+
+  
+  const User = await user.findById(decoded.userId) 
+  if (!User || User.emailResetToken !== token || User.emailResetToken === 'null') 
+  {
+    res.status(404);
+    throw new Error('User not found')
+  }
+
+  res.status(200).send('/change-passowrd')
+});
+res.status(500)
+
+})
+
+// Desc change user password
+// Router PUT /api/change-password
+// access private
+const changeEmail = asyncHandler(async (req, res) =>{
+const { token, email } = req.query
+
+//console.log(token, password)
+
+if(!isEmail(email)){
+  res.status(400)
+  throw new Error('Invalid email')
+}
+
+jwt.verify(token, process.env.RESET_TOKEN, async (err, decoded) => {
+  if (err) {
+    console.error(err);
+    res.status(403);
+    throw new Error(err.message)
+  }
+
+  const User = await user.findById(decoded.userId)
+  if (!User || User.emailResetToken !== token || User.emailResetToken === 'null') {
+    res.status(404).json('User not found');
+    throw new Error('User not found')
+  }
+
+  await User.updateMany({emailResetToken : 'null', email : email})
+  res.sendStatus(200)
+});
+
+res.status(404)
+})
+
 
 
 
