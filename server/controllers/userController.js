@@ -29,7 +29,7 @@ const storage = multer.diskStorage({
 const upload = multer({ 
     storage : storage,
     limits:{
-        fileSize: 108*1024,
+        fileSize: 8*1024*1024,
     },
     fileFilter : fileFilterMiddleware
     
@@ -127,7 +127,7 @@ const loginUser = asyncHandler(async (req, res) => {
     
     //compare password with hashedpassword
     
-    console.log(searchUser.active)
+    console.log(searchUser)
 
     if (searchUser && (await bcrypt.compare(password, searchUser.password))) {
       const accessToken = jwt.sign(
@@ -202,6 +202,7 @@ const getUserInfoForActivation = asyncHandler(async (req, res) =>{
   )
 
 })
+
 
 
 //Activate user
@@ -302,6 +303,7 @@ const getProfilePicture = asyncHandler(async (req, res) =>{
   console.log(imagePath)
   res.status(200).sendFile(imagePath)
 });
+
 ///desc GET profile Picture to the user
 ///Route GET /api/profilePicture/:username
 ///access public
@@ -315,6 +317,113 @@ const getProfilePictureByUserName = asyncHandler(async (req, res) =>{
   res.status(200).sendFile(imagePath)
 });
 
+// Send request to change password
+// Route POST /api/change-password
+// access public
+const changePasswordRequest = asyncHandler(async (req, res) =>{
+    const { email } = req.body
+
+    const User = await user.findOne({ email : email })
+
+    if(!User){
+      res.status(404)
+      throw new Error('User not found')
+    }
+
+    const token = jwt.sign({ userId: User.id }, process.env.ACCESS_TOKEN_SECERT, {
+      expiresIn: '12h'
+    });
+    //console.log(email)
+    const resetUrl = `/password-reset?token=${token}`;
+    const emailMessage = {
+      from: process.env.EMAIL,
+      to: email,
+      subject: 'Reset password',
+      html: `<p>Please click <a href="http://localhost:3000/password-reset?token=${token}">here</a> to reset your password.</p>`
+    };
+
+    // Send the password reset email
+    await transporter.sendMail(emailMessage, (error, info) => {
+      if (error) {
+        console.error(error);
+        res.sendStatus(500);
+      } else {
+        console.log('Password reset email sent: ' + info.response);
+        res.sendStatus(200);
+      }
+    });
+    res.status(500)
+})
+
+// Desc verifying the password reset token
+// Router GET api/change-password
+// access private
+const changePasswordVerification = asyncHandler(async (req, res) => {
+  const { token } = req.query 
+  
+  //console.log(token)  
+  
+  if(!token){
+    res.status(404)
+    throw new Error('Not found')
+  }
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECERT, async (err, decoded) => {
+    if (err) 
+    {
+      return res.status(403).send('Token expired or does not exist')
+    }
+
+    
+    const User = await user.findById(decoded.userId) 
+    if (!User) 
+    {
+      res.status(404);
+      throw new Error('User not found')
+    }
+
+    res.status(200).send('/change-passowrd')
+  });
+  res.status(500)
+  
+})
+
+// Desc change user password
+// Router PUT /api/change-password
+// access private
+const changePassword = asyncHandler(async (req, res) =>{
+  const { token, password } = req.query
+  
+  //console.log(token, password)
+
+  if(!isValidPassword(password)){
+    res.status(400).json({ message: 'Invalid password'})
+    throw new Error('Invalid password')
+  }
+
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECERT, async (err, decoded) => {
+    if (err) {
+      console.error(err);
+      res.status(403);
+      throw new Error(err.message)
+    }
+
+    const User = await user.findById(decoded.userId)
+    if (!User) {
+      res.status(404);
+      throw new Error('User not found')
+    }
+
+    const hashPassword = await bcrypt.hash(password, 8)
+    User.password = hashPassword
+    await User.save()
+    res.sendStatus(200)
+  });
+
+  res.status(404)
+})
+
+
+
 module.exports = {
     registerUser,
     getUserInfoForActivation,
@@ -325,5 +434,9 @@ module.exports = {
     setProfilePicture,
     getProfilePictureByUserName,
     deleteProfilePicture,
-    updateActiveStatus
-}
+    updateActiveStatus,
+    changePasswordRequest,
+    changePasswordVerification,
+    changePassword,
+
+  }

@@ -7,6 +7,7 @@ const redisClient = require('./config/connectRedis')
 const errorHandler = require('./middleware/errorHandler')
 const path = require('path');
 const { ConnectionPoolClosedEvent } = require('mongodb')
+const bodyParser = require('body-parser');
 
 
 app.use(errorHandler)
@@ -18,6 +19,7 @@ redisClient.emit('connect')
 
 const PORT = 5000
 
+app.use(bodyParser.json());
 app.use(express.json());
 app.use('/api', require('./routes/userRouter'))
 app.use('/api', require('./routes/watchListRouter'))

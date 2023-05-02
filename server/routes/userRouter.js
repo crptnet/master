@@ -9,7 +9,10 @@ const {
     getProfilePicture,
     getProfilePictureByUserName,
     deleteProfilePicture,
-    updateActiveStatus
+    updateActiveStatus,
+    changePasswordRequest,
+    changePasswordVerification,
+    changePassword,
     
 } = require('../controllers/userController')
 const user = require('../models/userModel')
@@ -28,31 +31,36 @@ const storage = multer.diskStorage({
 const upload = multer({ 
     storage : storage,
     limits:{
-        fileSize: 8*1024,
+        fileSize: 8*1024*1024,
     },
     fileFilter : fileFilterMiddleware
     
 })
 
-router.post('/register', registerUser)
-
-router.put('/activate', updateActiveStatus)
-
-router.post('/login', loginUser)
-
 router.get('/email-active', )
 
 router.get('/current', validateToken,getUser)
 
-router.post('/profile-picture', validateToken, upload.single('profilePicture'), setProfilePicture)
-
 router.get('/profile-picture', validateToken, getProfilePicture)
-
-router.delete('/profile-picture', validateToken, deleteProfilePicture)
 
 router.get('/user-profile-picture/:username', getProfilePictureByUserName)
 
-router.delete('/delete', validateToken, deleteUser)
+router.get('/change-password', changePasswordVerification )
 
+router.post('/register', registerUser)
+
+router.post('/login', loginUser)
+
+router.post('/profile-picture', validateToken, upload.single('profilePicture'), setProfilePicture)
+
+router.post('/change-password', changePasswordRequest)
+
+router.put('/change-password', changePassword)
+
+router.put('/activate', updateActiveStatus)
+
+router.delete('/profile-picture', validateToken, deleteProfilePicture)
+
+router.delete('/delete', validateToken, deleteUser)
 
 module.exports = router
