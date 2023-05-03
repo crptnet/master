@@ -478,7 +478,7 @@ const changeEmailRequest = asyncHandler(async (req, res) =>{
     from: process.env.EMAIL,
     to: User.email,
     subject: 'Reset email',
-    html: `<p>Please click <a href="http:///localhost:5000/change-email?token=${token}">here</a> to reset your password.</p>`
+    html: `<p>Please click <a href="http:///localhost:5000/api/change-email?token=${token}">here</a> to reset your password.</p>`
   };
 
   // Send the password reset email
@@ -487,7 +487,7 @@ const changeEmailRequest = asyncHandler(async (req, res) =>{
       console.error(error);
       res.sendStatus(500);
     } else {
-      console.log('Password reset email sent: ' + info.response);
+      console.log('Email reset email sent: ' + info.response);
       res.sendStatus(200);
     }
   });
@@ -521,7 +521,7 @@ const changeEmailVerification = asyncHandler(async (req, res) => {
     throw new Error('User not found')
   }
 
-  res.status(200).redirect(`http://localhost:3000/api/email-reset?token=${token}`)
+  res.status(200).redirect(`http://localhost:3000/email-reset?token=${token}`)
 
 })
 
@@ -558,21 +558,6 @@ const changeEmail = asyncHandler(async (req, res) =>{
   }
 
   await User.updateOne({emailResetToken : 'null', email : email, active : false})
-  const emailMessage = {
-    from: process.env.EMAIL,
-    to: email,
-    subject: 'Verify your email address',
-    html: `<p>Please click <a href="http://${process.env.DOMAIN}/activate?key=${User.password}&id=${User.id}">here</a> to verify your email address.</p>`
-  };
-  
-  transporter.sendMail(emailMessage, (error, info) => {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log('Email sent: ' + info.response);
-    }
-  })
-    
   
   res.sendStatus(200)
 })

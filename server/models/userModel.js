@@ -27,8 +27,7 @@ const userSchema = new mongoose.Schema({
   },
   emailResetToken : {
     type: String,
-    required: false,
-    unique: true  
+    required: false,  
   },
   password: {
     type: String,
@@ -37,7 +36,6 @@ const userSchema = new mongoose.Schema({
   PasswordResetToken : {
     type: String,
     required: false,
-    unique: true  
   },
   profilePicture: {
     type: String,
