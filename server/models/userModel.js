@@ -18,7 +18,8 @@ const coinSchema = new mongoose.Schema({
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   email: {
     type: String,
@@ -28,6 +29,7 @@ const userSchema = new mongoose.Schema({
   emailResetToken : {
     type: String,
     required: false,  
+    default: 'null' 
   },
   password: {
     type: String,
@@ -36,6 +38,7 @@ const userSchema = new mongoose.Schema({
   PasswordResetToken : {
     type: String,
     required: false,
+    default: 'null' 
   },
   profilePicture: {
     type: String,
@@ -43,7 +46,8 @@ const userSchema = new mongoose.Schema({
   },
   active : {
     type : Boolean,
-    required : true
+    required : true,
+    default : false
   },
   watchList : {
     type : [coinSchema],
