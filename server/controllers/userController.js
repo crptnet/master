@@ -155,7 +155,16 @@ const loginUser = asyncHandler(async (req, res) => {
 ///Route GET /api/current
 ///access private
 const getUser = asyncHandler(async (req, res) => {
-    res.json(req.user);
+    const User = user.findById(req.user.id)
+    if(!User){
+      res.sendStatus(404)
+    }
+    res.status(200).json({
+      username : User.username,
+      email : User.email,
+      active : User.active,
+      watchList : User.watchList
+    });
   });
 
 ///desc Delete User
@@ -334,19 +343,19 @@ const changePasswordRequest = asyncHandler(async (req, res) =>{
       from: process.env.EMAIL,
       to: email,
       subject: 'Reset password',
-      html: `<p>Please click <a href="http://localhost:3000/password-reset?token=${token}">here</a> to reset your password.</p>`
+      html: `<p>Please click <a href="http:///${process.env.DOMEN}/password-reset?token=${token}">here</a> to reset your password.</p>`
     };
 
-    // // Send the password reset email
-    // await transporter.sendMail(emailMessage, (error, info) => {
-    //   if (error) {
-    //     console.error(error);
-    //     res.sendStatus(500);
-    //   } else {
-    //     console.log('Password reset email sent: ' + info.response);
-    //     res.sendStatus(200);
-    //   }
-    // });
+    // Send the password reset email
+    await transporter.sendMail(emailMessage, (error, info) => {
+      if (error) {
+        console.error(error);
+        res.sendStatus(500);
+      } else {
+        console.log('Password reset email sent: ' + info.response);
+        res.sendStatus(200);
+      }
+    });
     res.status(500).json(token)
 })
 
