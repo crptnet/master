@@ -353,6 +353,10 @@ const getProfilePictureByUserName = asyncHandler(async (req, res) =>{
   res.status(200).sendFile(imagePath)
 });
 
+///
+/// CHANGE PASSWORD SECTION  
+///
+
 // Send request to change password
 // Route POST /api/change-password
 // access public
@@ -425,6 +429,11 @@ const changePassword = asyncHandler(async (req, res) =>{
   await User.save()
   res.sendStatus(200)
 })
+
+///
+/// CHANGE EMAIL
+///
+
 
 // Send request to change email
 // Route POST /api/change-email

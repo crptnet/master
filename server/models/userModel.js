@@ -29,16 +29,19 @@ const userSchema = new mongoose.Schema({
   emailResetToken : {
     type: String,
     required: false,  
-    default: 'null' 
   },
   password: {
     type: String,
-    required: true
+    required: false,
+  },
+  googleId: {
+    type: String,
+    required: false,  // add new field for Google ID
+    unique: true
   },
   PasswordResetToken : {
     type: String,
     required: false,
-    default: 'null' 
   },
   profilePicture: {
     type: String,
