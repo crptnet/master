@@ -483,17 +483,17 @@ const changeEmailRequest = asyncHandler(async (req, res) =>{
     html: `<p>Please click <a href="http:///${process.env.DOMAIN}/password-reset?token=${token}">here</a> to reset your password.</p>`
   };
 
-  // // Send the password reset email
-  // await transporter.sendMail(emailMessage, (error, info) => {
-  //   if (error) {
-  //     console.error(error);
-  //     res.sendStatus(500);
-  //   } else {
-  //     console.log('Password reset email sent: ' + info.response);
-  //     res.sendStatus(200);
-  //   }
-  // });
-  res.status(500).json(token)
+  // Send the password reset email
+  await transporter.sendMail(emailMessage, (error, info) => {
+    if (error) {
+      console.error(error);
+      res.sendStatus(500);
+    } else {
+      console.log('Password reset email sent: ' + info.response);
+      res.sendStatus(200);
+    }
+  });
+  res.status(200).json(token)
 })
 
 // Desc verifying the email reset token and redirect to UI
