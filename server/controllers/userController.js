@@ -112,7 +112,7 @@ const registerUser = asyncHandler(async (req, res) => {
 ///Route POST /api/login
 ///access public
 const loginUser = asyncHandler(async (req, res) => {
-    console.log(req)
+    
     const { email, password } = req.body;
 
     if (!email || !password) {
