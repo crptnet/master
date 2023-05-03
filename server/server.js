@@ -8,10 +8,14 @@ const errorHandler = require('./middleware/errorHandler')
 const path = require('path');
 const { ConnectionPoolClosedEvent } = require('mongodb')
 const bodyParser = require('body-parser');
-
+const corsOptions ={
+    origin:'*', 
+    credentials:true,            //access-control-allow-credentials:true
+    optionSuccessStatus:200,
+ }
 
 app.use(errorHandler)
-//app.use(cors)
+app.use(cors(corsOptions))
 
 connectToDb()
 

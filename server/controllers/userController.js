@@ -112,6 +112,7 @@ const registerUser = asyncHandler(async (req, res) => {
 ///Route POST /api/login
 ///access public
 const loginUser = asyncHandler(async (req, res) => {
+    console.log(req)
     const { email, password } = req.body;
 
     if (!email || !password) {
@@ -119,8 +120,9 @@ const loginUser = asyncHandler(async (req, res) => {
       throw new Error("All fields are mandatory!")
     }
 
-    const searchUser = await user.findOne({ email });
+    const searchUser = await user.findOne({ email : email });
     
+
     //compare password with hashedpassword
     
 
@@ -229,7 +231,7 @@ const updateUserInfo = asyncHandler(async (req, res) =>{
 
 
 ///desc Set profile Picture to the user
-///Route POST /api/profilePicture
+///Route POST /api/profile-picture
 ///access private
 const setProfilePicture = asyncHandler(async (req, res) => {
   console.log(req.file)
@@ -253,7 +255,7 @@ const setProfilePicture = asyncHandler(async (req, res) => {
 });
 
 ///desc DELETE profile Picture to the user
-///Route DELETE /api/profilePicture
+///Route DELETE /api/profile-picture
 ///access private
 const deleteProfilePicture = asyncHandler(async (req, res) =>{
   const User = await user.findById(req.user.id)
@@ -281,7 +283,7 @@ const deleteProfilePicture = asyncHandler(async (req, res) =>{
 });
 
 ///desc GET profile Picture to the user
-///Route GET /api/profilePicture
+///Route GET /api/profile-picture
 ///access private
 const getProfilePicture = asyncHandler(async (req, res) =>{
   const User = await user.findById(req.user.id)
@@ -289,8 +291,10 @@ const getProfilePicture = asyncHandler(async (req, res) =>{
     res.status(400).json({message: ('User is not authorized')})
     throw new Error('User is not authorized')
   }
-  const imagePath = path.join(__dirname, '../', User.profilePicture);
-  console.log(imagePath)
+  var imagePath = path.join(__dirname, '../', User.profilePicture);
+  if(!fs.existsSync(imagePath)){
+    imagePath = path.join(__dirname, '../', '\\uploads\\def.jpg')
+  }
   res.status(200).sendFile(imagePath)
 });
 
