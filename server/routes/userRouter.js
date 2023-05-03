@@ -16,7 +16,8 @@ const {
     changeEmailRequest,
     changeEmailVerification, 
     changeEmail,
-    getUserInfoForActivation
+    getUserInfoForActivation,
+    resendActiveStatus
 
     
 } = require('../controllers/userController')
@@ -56,6 +57,8 @@ router.get('/change-password', changePasswordVerification )
 router.get('/change-email', changeEmailVerification)
 
 router.post('/register', registerUser)
+
+router.post('/active', validateToken, resendActiveStatus)
 
 router.post('/login', loginUser)
 

@@ -203,7 +203,7 @@ const getUserInfoForActivation = asyncHandler(async (req, res) =>{
     res.status(404).json({message: ('User not found')});
     throw new Error('User not found')
   }
-  res.redirect(`https:///${process.env.DOMEN}/activate`)
+  res.redirect(`https:///${process.env.DOMAIN}/activate`)
 })
 
 
@@ -222,6 +222,36 @@ const updateActiveStatus = asyncHandler(async (req, res) =>{
 
   res.status(200).json('User activated')
 })
+
+/// Desc resend activate info
+/// Route POST api/activate
+/// Access Private
+const resendActiveStatus = asyncHandler( async(req, res) =>{
+  const User = await user.findById(req.user.id)
+  if(!User){
+    res.status(404)
+    throw new Error('User not found')
+  }
+  const emailMessage = {
+    from: process.env.EMAIL,
+    to: User.email,
+    subject: 'Verify your email address',
+    html: `<p>Please click <a href="http:///${process.env.DOMAIN}activate?key=${User.password}&id=${User.id}">here</a> to verify your email address.</p>`
+  };
+
+  transporter.sendMail(emailMessage, (error, info) => {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+  });
+
+  res.status(201).json({ 'email' : email, 'id' : newUser.id})
+  
+
+})
+
 
 /// desc update user  info
 /// Route PUT api/updateUser
@@ -345,7 +375,7 @@ const changePasswordRequest = asyncHandler(async (req, res) =>{
       from: process.env.EMAIL,
       to: email,
       subject: 'Reset password',
-      html: `<p>Please click <a href="http:///${process.env.DOMEN}/password-reset?token=${token}">here</a> to reset your password.</p>`
+      html: `<p>Please click <a href="http:///${process.env.DOMAIN}/password-reset?token=${token}">here</a> to reset your password.</p>`
     };
 
     // Send the password reset email
@@ -389,7 +419,7 @@ const changePasswordVerification = asyncHandler(async (req, res) => {
 
   res.sendStatus(200)
   //UNCOMENT 
-  //res.status(200).redirect(`http:///${process.env.DOMEN}/`)
+  //res.status(200).redirect(`http:///${process.env.DOMAIN}/`)
   
 })
 
@@ -444,12 +474,12 @@ const changeEmailRequest = asyncHandler(async (req, res) =>{
   });
 
   await User.updateOne({$set: { emailResetToken : token }})
-  const resetUrl = `http:///${process.env.DOMEN}/password-reset?token=${token}`;
+  const resetUrl = `http:///${process.env.DOMAIN}/password-reset?token=${token}`;
   const emailMessage = {
     from: process.env.EMAIL,
     to: User.email,
     subject: 'Reset password',
-    html: `<p>Please click <a href="http:///${process.env.DOMEN}/password-reset?token=${token}">here</a> to reset your password.</p>`
+    html: `<p>Please click <a href="http:///${process.env.DOMAIN}/password-reset?token=${token}">here</a> to reset your password.</p>`
   };
 
   // // Send the password reset email
@@ -535,7 +565,7 @@ const changeEmail = asyncHandler(async (req, res) =>{
     from: process.env.EMAIL,
     to: email,
     subject: 'Verify your email address',
-    html: `<p>Please click <a href="http://${process.env.DOMEN}/activate?key=${User.password}&id=${User.id}">here</a> to verify your email address.</p>`
+    html: `<p>Please click <a href="http://${process.env.DOMAIN}/activate?key=${User.password}&id=${User.id}">here</a> to verify your email address.</p>`
   };
   
   transporter.sendMail(emailMessage, (error, info) => {
@@ -569,5 +599,6 @@ module.exports = {
     changePassword,
     changeEmailRequest,
     changeEmailVerification, 
-    changeEmail
+    changeEmail,
+    resendActiveStatus
   }
