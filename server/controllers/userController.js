@@ -156,7 +156,6 @@ const loginUser = asyncHandler(async (req, res) => {
 ///access private
 const getUser = asyncHandler(async (req, res) => {
     const User = await user.findById(req.user.id)
-    console.log(User)
     if(!User){
       res.sendStatus(404)
     }
