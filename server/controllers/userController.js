@@ -237,7 +237,7 @@ const resendActiveStatus = asyncHandler( async(req, res) =>{
     from: process.env.EMAIL,
     to: User.email,
     subject: 'Verify your email address',
-    html: `<p>Please click <a href="http:///${process.env.DOMAIN}activate?key=${User.password}&id=${User.id}">here</a> to verify your email address.</p>`
+    html: `<p>Please click <a href="http:///localhost:3000/activate?key=${User.password}&id=${User.id}">here</a> to verify your email address.</p>`
   };
 
   transporter.sendMail(emailMessage, (error, info) => {
@@ -376,7 +376,7 @@ const changePasswordRequest = asyncHandler(async (req, res) =>{
       from: process.env.EMAIL,
       to: email,
       subject: 'Reset password',
-      html: `<p>Please click <a href="http:///${process.env.DOMAIN}/password-reset?token=${token}">here</a> to reset your password.</p>`
+      html: `<p>Please click <a href="http://localhost:3000/password-reset?token=${token}">here</a> to reset your password.</p>`
     };
 
     // Send the password reset email
@@ -418,9 +418,7 @@ const changePasswordVerification = asyncHandler(async (req, res) => {
     throw new Error('User not found')
   }
 
-  res.sendStatus(200)
-  //UNCOMENT 
-  //res.status(200).redirect(`http:///${process.env.DOMAIN}/`)
+  res.status(200).redirect(`http://localhost:3000/password-reset?token=${token}`)
   
 })
 
@@ -479,8 +477,8 @@ const changeEmailRequest = asyncHandler(async (req, res) =>{
   const emailMessage = {
     from: process.env.EMAIL,
     to: User.email,
-    subject: 'Reset password',
-    html: `<p>Please click <a href="http:///${process.env.DOMAIN}/password-reset?token=${token}">here</a> to reset your password.</p>`
+    subject: 'Reset email',
+    html: `<p>Please click <a href="http:///localhost:5000/change-email?token=${token}">here</a> to reset your password.</p>`
   };
 
   // Send the password reset email
@@ -523,9 +521,7 @@ const changeEmailVerification = asyncHandler(async (req, res) => {
     throw new Error('User not found')
   }
 
-  res.status(200).redirect('http://google.com')
-
-
+  res.status(200).redirect(`http://localhost:3000/api/email-reset?token=${token}`)
 
 })
 
