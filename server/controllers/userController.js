@@ -228,6 +228,7 @@ const updateActiveStatus = asyncHandler(async (req, res) =>{
 /// Access Private
 const resendActiveStatus = asyncHandler( async(req, res) =>{
   const User = await user.findById(req.user.id)
+  console.log(User.email)
   if(!User){
     res.status(404)
     throw new Error('User not found')
@@ -247,7 +248,7 @@ const resendActiveStatus = asyncHandler( async(req, res) =>{
     }
   });
 
-  res.status(201).json({ 'email' : email, 'id' : newUser.id})
+  res.status(201).json({ 'email' : User.email, 'id' : User.id})
   
 
 })
