@@ -11,10 +11,8 @@ const {
     deleteProfilePicture,
     updateActiveStatus,
     changePasswordRequest,
-    changePasswordVerification,
     changePassword,
     changeEmailRequest,
-    changeEmailVerification, 
     changeEmail,
     getUserInfoForActivation,
     resendActiveStatus
@@ -52,10 +50,6 @@ router.get('/user-profile-picture/:username', getProfilePictureByUserName)
 
 router.get('/active', getUserInfoForActivation)
 
-router.get('/change-password', changePasswordVerification )
-
-router.get('/change-email', changeEmailVerification)
-
 router.post('/register', registerUser)
 
 router.post('/active', validateToken, resendActiveStatus)
@@ -68,9 +62,9 @@ router.post('/profile-picture', validateToken, upload.single('profilePicture'), 
 
 router.post('/change-password', changePasswordRequest)
 
-router.put('/change-password', changePassword)
+router.put('/change-password', validateToken, changePassword)
 
-router.put('/change-email', changeEmail)
+router.put('/change-email', validateToken, changeEmail)
 
 router.put('/activate', updateActiveStatus)
 

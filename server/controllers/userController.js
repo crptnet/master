@@ -392,36 +392,6 @@ const changePasswordRequest = asyncHandler(async (req, res) =>{
     res.status(500).json(token)
 })
 
-// Desc verifying the password reset token, redirect to UI
-// Router GET api/change-password
-// access private
-const changePasswordVerification = asyncHandler(async (req, res) => {
-  const { token } = req.query 
-  
-  //console.log(token)  
-  
-  if(!token){
-    res.status(404)
-    throw new Error('Not found')
-  }
-  var decoded
-  try{
-    decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECERT) 
-  }
-  catch(err){
-    throw new Error(err.message)
-  }
-  const User = await user.findById(decoded.userId) 
-  if (!User || User.PasswordResetToken !== token || User.PasswordResetToken === 'null') 
-  {
-    res.status(404);
-    throw new Error('User not found')
-  }
-
-  res.status(200).redirect(`http://localhost:3000/password-reset?token=${token}`)
-  
-})
-
 // Desc change user password
 // Router PUT /api/change-password
 // access private
@@ -460,25 +430,38 @@ const changePassword = asyncHandler(async (req, res) =>{
 // Route POST /api/change-email
 // access private
 const changeEmailRequest = asyncHandler(async (req, res) =>{
-
+  const { email } = req.body
   const User = await user.findById(req.user.id)
 
   if(!User){
     res.status(404)
     throw new Error('User not found')
   }
+  
+  if(email === User.email){
+    res.status(404)
+    throw new Error('Provided email is the same')
+  }
 
-  const token = jwt.sign({ userId: User.id }, process.env.RESET_TOKEN, {
-    expiresIn: '1h'
+  if(await user.findOne( { email : email })){
+    res.status(400)
+    throw new Error('Email is taken')
+  }
+
+  const code = Math.floor(Math.random() * 900000) + 100000;
+  const token = jwt.sign({ 
+    userId: User.id,
+    code : code 
+  }, process.env.RESET_TOKEN, {
+    expiresIn: '10m'
   });
 
   await User.updateOne({$set: { emailResetToken : token }})
-  const resetUrl = `http:///${process.env.DOMAIN}/password-reset?token=${token}`;
   const emailMessage = {
     from: process.env.EMAIL,
-    to: User.email,
+    to: email,
     subject: 'Reset email',
-    html: `<p>Please click <a href="http:///localhost:5000/api/change-email?token=${token}">here</a> to reset your password.</p>`
+    html: `<p>Please enter this code <b>${code}</b> to reset your password.</p>`
   };
 
   // Send the password reset email
@@ -494,71 +477,43 @@ const changeEmailRequest = asyncHandler(async (req, res) =>{
   res.status(200).json(token)
 })
 
-// Desc verifying the email reset token and redirect to UI
-// Router GET api/change-password
-// access private
-const changeEmailVerification = asyncHandler(async (req, res) => {
-
-  const { token } = req.query 
-
-  if(!token){
-    res.status(404)
-    throw new Error('Not found')
-  }
-  var decoded
-  try 
-  {
-    decoded = jwt.verify(token, process.env.RESET_TOKEN)
-  } 
-  catch (err) {
-    res.status(403)
-    throw new Error(err.message)
-  }
-  const User = await user.findById(decoded.userId) 
-  if (!User || User.emailResetToken !== token || User.emailResetToken === 'null') 
-  {
-    res.status(404);
-    throw new Error('User not found')
-  }
-
-  res.status(200).redirect(`http://localhost:3000/email-reset?token=${token}`)
-
-})
-
 // Desc change user email
-// Router PUT /api/change-password
+// Router PUT /api/change-email
 // access private
 const changeEmail = asyncHandler(async (req, res) =>{
-  const { token, email } = req.query
-
-  //console.log(token, password)
+  const { code, email } = req.body
 
   if(!isEmail(email)){
     res.status(400)
     throw new Error('Invalid email')
   }
-  var decoded = {}
+  const User = await user.findById(req.user.id)
+  if (!User || User.emailResetToken === 'null') {
+    res.status(404)
+    throw new Error('User not found')
+  }
+  var decoded
   try{
-    decoded = jwt.verify(token, process.env.RESET_TOKEN)
+    decoded = jwt.verify(User.emailResetToken, process.env.RESET_TOKEN)
   }
   catch(err){
     res.status(403)
     throw new Error(err.message)
   }
-  const User = await user.findById(decoded.userId)
-  if (!User || User.emailResetToken !== token || User.emailResetToken === 'null') {
-    res.status(404)
-    throw new Error('User not found')
-  }
+  
+  console.log(decoded.code, code)
 
+  if(code !== decoded.code){
+    res.status(400)
+    throw new Error('Code is wrong')
+  }
   if(User.email === email){
     res.status(405);
-    throw new Error('Provided email the same')
-    
+    throw new Error('Provided email the same')    
   }
 
   await User.updateOne({emailResetToken : 'null', email : email, active : false})
-  
+
   res.sendStatus(200)
 })
 
@@ -577,10 +532,8 @@ module.exports = {
     deleteProfilePicture,
     updateActiveStatus,
     changePasswordRequest,
-    changePasswordVerification,
     changePassword,
     changeEmailRequest,
-    changeEmailVerification, 
     changeEmail,
     resendActiveStatus
   }
