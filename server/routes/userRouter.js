@@ -15,9 +15,8 @@ const {
     changeEmailRequest,
     changeEmail,
     getUserInfoForActivation,
-    resendActiveStatus
-
-    
+    resendActiveStatus,
+    changePasswordByToken
 } = require('../controllers/userController')
 const validateToken = require('../middleware/validateToken')
 const fileFilterMiddleware = require('../middleware/multerHandler')
@@ -62,11 +61,13 @@ router.post('/profile-picture', validateToken, upload.single('profilePicture'), 
 
 router.post('/change-password', changePasswordRequest)
 
-router.put('/change-password', validateToken, changePassword)
+router.put('/change-password', changePassword)
 
 router.put('/change-email', validateToken, changeEmail)
 
 router.put('/activate', updateActiveStatus)
+
+router.put('/change-password-authed', validateToken, changePasswordByToken)
 
 router.delete('/profile-picture', validateToken, deleteProfilePicture)
 

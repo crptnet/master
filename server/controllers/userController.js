@@ -512,11 +512,36 @@ const changeEmail = asyncHandler(async (req, res) =>{
     throw new Error('Provided email the same')    
   }
 
-  await User.updateOne({emailResetToken : 'null', email : email, active : false})
+  await User.updateOne({emailResetToken : 'null', email : email, active : true})
 
   res.sendStatus(200)
 })
 
+/// Desc Change password
+/// Route PUT /api/change-password-authed
+/// Access private
+const changePasswordByToken = asyncHandler( async(req, res) => {
+  const { currecntPassword, password } = req.body
+
+  if(!isValidPassword(password)){
+    return res.status(400).json({ message: 'Invalid password'})
+  }
+
+  const hashPassword = await bcrypt.hash(password, 8)
+
+  const User = await user.findById(req.user.id)
+
+  if(!User){
+    return res.status(404).json({ message: 'User not found'})  
+  }
+
+  if(!(bcrypt.compareSync(currecntPassword, User.password))){
+    return res.status(400).json({ message: 'Wrong current password'})
+  }
+
+  await User.updateOne({ password : hashPassword})
+  res.sendStatus(200)
+})
 
 
 
@@ -535,5 +560,6 @@ module.exports = {
     changePassword,
     changeEmailRequest,
     changeEmail,
-    resendActiveStatus
+    resendActiveStatus,
+    changePasswordByToken
   }
