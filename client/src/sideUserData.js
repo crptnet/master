@@ -37,7 +37,7 @@ const requestChangeEmail = async () => {
     console.log(JSON.stringify({email:newEmail}));
     const headersList = {
       "Authorization": `Bearer ${localStorage.getItem('token')}`,
-      "Content-Type": 'application/json',
+      "Content-Type": 'application/json'
     };
     if(localStorage.getItem('token')) {
       const response = await fetch(`http://localhost:5000/api/change-email  `, {
