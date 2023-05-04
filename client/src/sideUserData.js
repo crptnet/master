@@ -15,7 +15,6 @@ const getData = async () => {
   try {
     const headersList = {
       "Accept": "*/*",
-      "User-Agent": "Thunder Client (https://www.thunderclient.com)",
       "Authorization": `Bearer ${localStorage.getItem('token')}`,
     };
     if(localStorage.getItem('token')) {
@@ -38,12 +37,12 @@ const requestChangeEmail = async () => {
     console.log(JSON.stringify({email:newEmail}));
     const headersList = {
       "Authorization": `Bearer ${localStorage.getItem('token')}`,
-      "Content-Type": 'application/json'
+      "Content-Type": 'application/json',
     };
     if(localStorage.getItem('token')) {
-      const response = await fetch("http://localhost:5000/api/change-email", {
+      const response = await fetch(`http://localhost:5000/api/change-email  `, {
         method: 'POST',
-        body: JSON.stringify({email:newEmail}),
+        body: JSON.stringify({ email : newEmail }),
         headers: headersList
       });
       const userData = response;

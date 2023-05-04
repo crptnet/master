@@ -9,7 +9,7 @@ const getData = async () => {
   try {
     const headersList = {
       "Accept": "*/*",
-      "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+      'Content-Type': 'application/json',
       "Authorization": `Bearer ${localStorage.getItem('token')}`,
     };
     if(localStorage.getItem('token')) {

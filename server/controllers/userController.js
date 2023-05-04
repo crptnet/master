@@ -439,25 +439,30 @@ const changePassword = asyncHandler(async (req, res) =>{
 // Route POST /api/change-email
 // access private
 const changeEmailRequest = asyncHandler(async (req, res) =>{
+  
   const { email } = req.body
+
   const User = await user.findById(req.user.id)
+  
 
   if(!User){
-    res.status(404)
-    throw new Error('User not found')
+    return res.sendStatus(404)
   }
   
   if(email === User.email){
-    res.status(404)
-    throw new Error('Provided email is the same')
+    return res.status(404).json({
+      message : 'Email is the same'
+    })
   }
 
   if(!isEmail(email)){
-    res.status(400).json({ message : 'Invalid email'})
+    return res.status(400).json({ 
+      message : 'Invalid email'
+    })
   }
 
   if(await user.findOne( { email : email })){
-    res.status(400).json({ message : 'Email is taken'})
+    return res.status(400).json({ message : 'Email is taken'})
   }
 
   const code = Math.floor(Math.random() * 900000) + 100000;
@@ -481,10 +486,9 @@ const changeEmailRequest = asyncHandler(async (req, res) =>{
   await transporter.sendMail(emailMessage, (error, info) => {
     if (error) {
       console.error(error);
-      res.sendStatus(500);
+      return res.sendStatus(500);
     } else {
       console.log('Email reset email sent: ' + info.response);
-      res.sendStatus(200);
     }
   });
   res.sendStatus(200)
