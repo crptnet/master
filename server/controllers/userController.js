@@ -405,8 +405,7 @@ const changePassword = asyncHandler(async (req, res) =>{
   //console.log(token, password)
 
   if(!isValidPassword(password)){
-    res.status(400).json({ message: 'Invalid password'})
-    throw new Error('Invalid password')
+    return res.status(400).json({ message: 'Invalid password'})
   }
 
   var decoded
@@ -414,8 +413,7 @@ const changePassword = asyncHandler(async (req, res) =>{
     decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECERT) 
   }
   catch(err){
-    res.status(403)
-    throw new Error(err.message)
+    res.sendStatus(403)
   }
   
   const User = await user.findById(decoded.userId)
@@ -500,29 +498,30 @@ const changeEmailRequest = asyncHandler(async (req, res) =>{
 const changeEmail = asyncHandler(async (req, res) =>{
   const { code } = req.body
 
+  console.log(req.body)
+
+
   const User = await user.findById(req.user.id)
+
+  console.log(User)
+  
   if (!User || User.emailResetToken === 'null') {
-    res.status(404)
-    throw new Error('User not found')
+    return res.status(404).json({ message : 'User not found' })
   }
   var decoded
   try{
     decoded = jwt.verify(User.emailResetToken, process.env.RESET_TOKEN)
   }
   catch(err){
-    res.status(403)
-    throw new Error(err.message)
+    return res.status(403).json({ message : err.message})
   }
-  
   console.log(decoded.code, code, decoded.email)
 
   if(code !== decoded.code){
-    res.status(400)
-    throw new Error('Code is wrong')
+    return res.status(400).json({ message : 'Code is wrong' })
   }
   if(User.email === decoded.email){
-    res.status(405);
-    throw new Error('Provided email the same')    
+    return res.status(405).json({ message : 'Provided email the same' })    
   }
 
   await User.updateOne({emailResetToken : 'null', email : decoded.email, active : true})
