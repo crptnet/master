@@ -366,8 +366,7 @@ const changePasswordRequest = asyncHandler(async (req, res) =>{
     const User = await user.findOne({ email : email })
 
     if(!User){
-      res.status(404)
-      throw new Error('User not found')
+      return res.status(404).json({ message : 'User not found'})
     }
 
     const token = jwt.sign({ userId: User.id }, process.env.ACCESS_TOKEN_SECERT, {
@@ -413,12 +412,12 @@ const changePassword = asyncHandler(async (req, res) =>{
     decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECERT) 
   }
   catch(err){
-    res.sendStatus(403)
+    return res.sendStatus(403)
   }
   
   const User = await user.findById(decoded.userId)
   if (!User || User.PasswordResetToken !== token || User.PasswordResetToken === 'null') {
-    res.status(404).json('User not found');
+    return res.status(404).json('User not found');
     throw new Error('User not found')
   }
   await User.updateOne({PasswordResetToken : 'null'})
