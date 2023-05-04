@@ -440,9 +440,7 @@ const changePassword = asyncHandler(async (req, res) =>{
 // access private
 const changeEmailRequest = asyncHandler(async (req, res) =>{
   
-  const email = req.query.newEmail
-
-  console.log(email)
+  const { email } = req.body
 
   const User = await user.findById(req.user.id)
   
@@ -458,7 +456,9 @@ const changeEmailRequest = asyncHandler(async (req, res) =>{
   }
 
   if(!isEmail(email)){
-    return res.status(400).json({ message : 'Invalid email'})
+    return res.status(400).json({ 
+      message : 'Invalid email'
+    })
   }
 
   if(await user.findOne( { email : email })){
