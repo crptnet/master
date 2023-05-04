@@ -453,13 +453,11 @@ const changeEmailRequest = asyncHandler(async (req, res) =>{
   }
 
   if(!isEmail(email)){
-    res.status(400)
-    throw new Error('Invalid email')
+    res.status(400).json({ message : 'Invalid email})
   }
 
   if(await user.findOne( { email : email })){
-    res.status(400)
-    throw new Error('Email is taken')
+    res.status(400).json({ message : 'Email is taken'})
   }
 
   const code = Math.floor(Math.random() * 900000) + 100000;
