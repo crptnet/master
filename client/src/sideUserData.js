@@ -35,6 +35,7 @@ const getData = async () => {
 
 const requestChangeEmail = async () => {
   try {
+    console.log(JSON.stringify({email:newEmail}));
     const headersList = {
       "Accept": "*/*",
       "User-Agent": "Thunder Client (https://www.thunderclient.com)",
@@ -43,7 +44,7 @@ const requestChangeEmail = async () => {
     if(localStorage.getItem('token')) {
       const response = await fetch("http://localhost:5000/api/change-email", {
         method: 'POST',
-        body: JSON.stringify({email:emailToSend}),
+        body: JSON.stringify({email:newEmail}),
         headers: headersList
       });
       const userData = await response.json();
