@@ -64,9 +64,9 @@ function MainUserData () {
     circlePosY.current = `${centerY}px`;;
 
   }
-  useEffect(() => {
-    console.log("#^@!*&$^#&!$^#!@&*",circlePosX.current,circlePosY.current);
-  }, [circlePosX.current,circlePosY.current]);
+  // useEffect(() => {
+  //   console.log("#^@!*&$^#&!$^#!@&*",circlePosX.current,circlePosY.current);
+  // }, [circlePosX.current,circlePosY.current]);
   async function confirmDeletion() {
     try {
         const headersList = {
@@ -154,6 +154,5 @@ function MainUserData () {
     </>
   );
 }
-
 
 export default MainUserData;

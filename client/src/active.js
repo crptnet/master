@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
+import './active.css';
 const mainRoot = document.getElementById('main');
 
 
@@ -12,7 +13,7 @@ const ActiveAccountPage = (props) => {
         const key = queryParams.get("key");
         const id = queryParams.get("id");
         try {
-            const response = await fetch(`http://localhost:5000/api/activate/:${key}/:${id}:`, {
+            const response = await fetch(`http://localhost:5000/api/activate?key=${key}&id=${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -33,10 +34,11 @@ const ActiveAccountPage = (props) => {
   }, []);
 
   return (
-    <div className="container">
-      <h1>{message}</h1>
+    <div className="activate-container">
+      <a href="../"><img src='./icons/logo.png' className='activate-logo'/></a>
+      <p className='activate-title'>{message}</p>
     </div>
   );
 };
 
-ReactDOM.createRoot(mainRoot).render(<ActiveAccountPage />);
+export default ActiveAccountPage;

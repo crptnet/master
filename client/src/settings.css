@@ -15,6 +15,14 @@ body {
     font-family: roboto, poppins, sans-serif;
 }
 
+::placeholder {
+    color: #333333;
+}
+
+.blue {
+    color: #4682B4;
+}
+
 main {
     width: calc(100vw - 60px);
     min-height: 100vh;
@@ -332,6 +340,10 @@ main {
 .delete-content img {
     width: 50px;
     margin: 10px;
+}
+
+.delete-title {
+    margin: 5px;
 }
 
 .delete-content button {

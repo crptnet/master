@@ -2,25 +2,25 @@ const SideUserBtns = [
     {
         id: 1,
         img: './icons/terminal_dark.png',
-        title: 'Password', 
-        status: 'Encrypted',
+        title: 'Reset Email', 
+        status: '',
         btn: 'Reset'
     }
     ,
     {
         id: 2,
         img: './icons/terminal_dark.png',
-        title: 'Google', 
-        status: 'Not set',
-        btn: 'Set'
+        title: 'Reset Password', 
+        status: 'Encrypted',
+        btn: 'Reset'
     }
     ,
     {
         id: 3,
         img: './icons/terminal_dark.png',
-        title: 'SMS Authentication', 
-        status: 'Not bound',
-        btn: 'Bind'
+        title: 'Google', 
+        status: 'Not set',
+        btn: 'Set'
     }
     ,
     {
