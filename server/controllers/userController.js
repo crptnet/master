@@ -453,7 +453,7 @@ const changeEmailRequest = asyncHandler(async (req, res) =>{
   }
 
   if(!isEmail(email)){
-    res.status(400).json({ message : 'Invalid email})
+    res.status(400).json({ message : 'Invalid email'})
   }
 
   if(await user.findOne( { email : email })){
