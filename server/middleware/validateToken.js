@@ -13,7 +13,7 @@ const validateToken = asyncHandler(async (req, res, next) => {
         res.status(401);
         throw new Error(err);
       }
-      //console.log(decoded)
+      
       req.user = decoded.user;
       next();
     });

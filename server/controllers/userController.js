@@ -439,17 +439,22 @@ const changePassword = asyncHandler(async (req, res) =>{
 // Route POST /api/change-email
 // access private
 const changeEmailRequest = asyncHandler(async (req, res) =>{
-  const { email } = req.body
-  const User = await user.findById(req.user.id)
+  
+  const email = req.query.newEmail
 
-  console.log('Email', email)
+  console.log(email)
+
+  const User = await user.findById(req.user.id)
+  
 
   if(!User){
     return res.sendStatus(404)
   }
   
   if(email === User.email){
-    return res.sendStatus(404)
+    return res.status(404).json({
+      message : 'Email is the same'
+    })
   }
 
   if(!isEmail(email)){
