@@ -452,6 +452,11 @@ const changeEmailRequest = asyncHandler(async (req, res) =>{
     throw new Error('Provided email is the same')
   }
 
+  if(!isEmail(email)){
+    res.status(400)
+    throw new Error('Invalid email')
+  }
+
   if(await user.findOne( { email : email })){
     res.status(400)
     throw new Error('Email is taken')
@@ -460,7 +465,8 @@ const changeEmailRequest = asyncHandler(async (req, res) =>{
   const code = Math.floor(Math.random() * 900000) + 100000;
   const token = jwt.sign({ 
     userId: User.id,
-    code : code 
+    code : code,
+    email : email
   }, process.env.RESET_TOKEN, {
     expiresIn: '10m'
   });
@@ -483,19 +489,15 @@ const changeEmailRequest = asyncHandler(async (req, res) =>{
       res.sendStatus(200);
     }
   });
-  res.status(200).json(token)
+  res.sendStatus(200)
 })
 
 // Desc change user email
 // Router PUT /api/change-email
 // access private
 const changeEmail = asyncHandler(async (req, res) =>{
-  const { code, email } = req.body
+  const { code } = req.body
 
-  if(!isEmail(email)){
-    res.status(400)
-    throw new Error('Invalid email')
-  }
   const User = await user.findById(req.user.id)
   if (!User || User.emailResetToken === 'null') {
     res.status(404)
@@ -510,18 +512,18 @@ const changeEmail = asyncHandler(async (req, res) =>{
     throw new Error(err.message)
   }
   
-  console.log(decoded.code, code)
+  console.log(decoded.code, code, decoded.email)
 
   if(code !== decoded.code){
     res.status(400)
     throw new Error('Code is wrong')
   }
-  if(User.email === email){
+  if(User.email === decoded.email){
     res.status(405);
     throw new Error('Provided email the same')    
   }
 
-  await User.updateOne({emailResetToken : 'null', email : email, active : true})
+  await User.updateOne({emailResetToken : 'null', email : decoded.email, active : true})
 
   res.sendStatus(200)
 })

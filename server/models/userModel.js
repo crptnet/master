@@ -37,7 +37,6 @@ const userSchema = new mongoose.Schema({
   googleId: {
     type: String,
     required: false,  // add new field for Google ID
-    unique: true
   },
   PasswordResetToken : {
     type: String,

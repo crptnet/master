@@ -17,13 +17,12 @@ const {
     getUserInfoForActivation,
     resendActiveStatus,
     changePasswordByToken,
-    googleSignIn
 } = require('../controllers/userController')
-const {
-  googleSignIn
-} = require('../controllers/GoogleAuthController')
+// const {
+//   googleSignIn
+// } = require('../controllers/GoogleAuthController')
 
-const validateGoogleToken = require('../middleware/googleAuthHandler')
+//const validateGoogleToken = require('../middleware/googleAuthHandler')
 const validateToken = require('../middleware/validateToken')
 const fileFilterMiddleware = require('../middleware/multerHandler')
 const multer = require('multer')
@@ -47,7 +46,7 @@ const upload = multer({
 
 
 
-router.get('/email-active', validateGoogleToken, )
+//router.get('/email-active', validateGoogleToken, )
 
 router.get('/current', validateToken,getUser)
 
@@ -59,7 +58,7 @@ router.get('/active', getUserInfoForActivation)
 
 router.post('/register', registerUser)
 
-router.post('/googleSingIn', )
+//router.post('/googleSingIn', googleSignIn)
 
 router.post('/active', validateToken, resendActiveStatus)
 
