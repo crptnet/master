@@ -37,9 +37,8 @@ const requestChangeEmail = async () => {
   try {
     console.log(JSON.stringify({email:newEmail}));
     const headersList = {
-      "Accept": "*/*",
-      "User-Agent": "Thunder Client (https://www.thunderclient.com)",
       "Authorization": `Bearer ${localStorage.getItem('token')}`,
+      "Content-Type": 'application/json'
     };
     if(localStorage.getItem('token')) {
       const response = await fetch("http://localhost:5000/api/change-email", {
@@ -47,7 +46,31 @@ const requestChangeEmail = async () => {
         body: JSON.stringify({email:newEmail}),
         headers: headersList
       });
-      const userData = await response.json();
+      const userData = response;
+      console.log("update request:", userData);
+      return userData;
+    } else {
+      return {email:'Unauthorized', password: 'Unauthorized'};
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+const requestChangeCode = async () => {
+  try {
+    console.log(JSON.stringify({code:newCode}));
+    const headersList = {
+      "Authorization": `Bearer ${localStorage.getItem('token')}`,
+      "Content-Type": 'application/json'
+    };
+    if(localStorage.getItem('token')) {
+      const response = await fetch("http://localhost:5000/api/change-email", {
+        method: 'PUT',
+        body: JSON.stringify({code:newCode}),
+        headers: headersList
+      });
+      const userData = response;
       console.log("update request:", userData);
       return userData;
     } else {
@@ -72,7 +95,7 @@ const submitNewEmail = () => {
 
 const submitNewCode = () => {
   setCodeToSend(newCode);
-  
+  requestChangeCode();
 }
 
 const handleInputChange1 = (event) => {
