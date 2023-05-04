@@ -43,6 +43,7 @@ const requestChangeEmail = async () => {
     if(localStorage.getItem('token')) {
       const response = await fetch("http://localhost:5000/api/change-email", {
         method: 'POST',
+        body: JSON.stringify({email:emailToSend}),
         headers: headersList
       });
       const userData = await response.json();
