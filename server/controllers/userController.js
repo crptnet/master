@@ -155,7 +155,18 @@ const loginUser = asyncHandler(async (req, res) => {
 ///Route GET /api/current
 ///access private
 const getUser = asyncHandler(async (req, res) => {
-    res.json(req.user);
+    const User = await user.findById(req.user.id)
+    if(!User){
+      res.sendStatus(404)
+    }
+    res.status(200).json(
+    {
+      username : User.username,
+      email : User.email,
+      active : User.active,
+      watchList : User.watchList
+    }
+    );
   });
 
 ///desc Delete User
@@ -192,7 +203,7 @@ const getUserInfoForActivation = asyncHandler(async (req, res) =>{
     res.status(404).json({message: ('User not found')});
     throw new Error('User not found')
   }
-  res.redirect(`https:///${process.env.DOMEN}/activate`)
+  res.redirect(`https:///${process.env.DOMAIN}/activate`)
 })
 
 
@@ -211,6 +222,37 @@ const updateActiveStatus = asyncHandler(async (req, res) =>{
 
   res.status(200).json('User activated')
 })
+
+/// Desc resend activate info
+/// Route POST api/activate
+/// Access Private
+const resendActiveStatus = asyncHandler( async(req, res) =>{
+  const User = await user.findById(req.user.id)
+  console.log(User.email)
+  if(!User){
+    res.status(404)
+    throw new Error('User not found')
+  }
+  const emailMessage = {
+    from: process.env.EMAIL,
+    to: User.email,
+    subject: 'Verify your email address',
+    html: `<p>Please click <a href="http:///localhost:3000/activate?key=${User.password}&id=${User.id}">here</a> to verify your email address.</p>`
+  };
+
+  transporter.sendMail(emailMessage, (error, info) => {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+  });
+
+  res.status(201).json({ 'email' : User.email, 'id' : User.id})
+  
+
+})
+
 
 /// desc update user  info
 /// Route PUT api/updateUser
@@ -311,6 +353,10 @@ const getProfilePictureByUserName = asyncHandler(async (req, res) =>{
   res.status(200).sendFile(imagePath)
 });
 
+///
+/// CHANGE PASSWORD SECTION  
+///
+
 // Send request to change password
 // Route POST /api/change-password
 // access public
@@ -337,49 +383,17 @@ const changePasswordRequest = asyncHandler(async (req, res) =>{
       html: `<p>Please click <a href="http://localhost:3000/password-reset?token=${token}">here</a> to reset your password.</p>`
     };
 
-    // // Send the password reset email
-    // await transporter.sendMail(emailMessage, (error, info) => {
-    //   if (error) {
-    //     console.error(error);
-    //     res.sendStatus(500);
-    //   } else {
-    //     console.log('Password reset email sent: ' + info.response);
-    //     res.sendStatus(200);
-    //   }
-    // });
+    // Send the password reset email
+    await transporter.sendMail(emailMessage, (error, info) => {
+      if (error) {
+        console.error(error);
+        res.sendStatus(500);
+      } else {
+        console.log('Password reset email sent: ' + info.response);
+        res.sendStatus(200);
+      }
+    });
     res.status(500).json(token)
-})
-
-// Desc verifying the password reset token, redirect to UI
-// Router GET api/change-password
-// access private
-const changePasswordVerification = asyncHandler(async (req, res) => {
-  const { token } = req.query 
-  
-  //console.log(token)  
-  
-  if(!token){
-    res.status(404)
-    throw new Error('Not found')
-  }
-  var decoded
-  try{
-    decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECERT) 
-  }
-  catch(err){
-    throw new Error(err.message)
-  }
-  const User = await user.findById(decoded.userId) 
-  if (!User || User.PasswordResetToken !== token || User.PasswordResetToken === 'null') 
-  {
-    res.status(404);
-    throw new Error('User not found')
-  }
-
-  res.sendStatus(200)
-  //UNCOMENT 
-  //res.status(200).redirect(`http:///${process.env.DOMEN}/`)
-  
 })
 
 // Desc change user password
@@ -416,129 +430,129 @@ const changePassword = asyncHandler(async (req, res) =>{
   res.sendStatus(200)
 })
 
+///
+/// CHANGE EMAIL
+///
+
+
 // Send request to change email
 // Route POST /api/change-email
 // access private
 const changeEmailRequest = asyncHandler(async (req, res) =>{
-
+  const { email } = req.body
   const User = await user.findById(req.user.id)
 
   if(!User){
     res.status(404)
     throw new Error('User not found')
   }
-
-  const token = jwt.sign({ userId: User.id }, process.env.RESET_TOKEN, {
-    expiresIn: '1h'
-  });
-
-  await User.updateOne({$set: { emailResetToken : token }})
-  const resetUrl = `http:///${process.env.DOMEN}/password-reset?token=${token}`;
-  const emailMessage = {
-    from: process.env.EMAIL,
-    to: User.email,
-    subject: 'Reset password',
-    html: `<p>Please click <a href="http:///${process.env.DOMEN}/password-reset?token=${token}">here</a> to reset your password.</p>`
-  };
-
-  // // Send the password reset email
-  // await transporter.sendMail(emailMessage, (error, info) => {
-  //   if (error) {
-  //     console.error(error);
-  //     res.sendStatus(500);
-  //   } else {
-  //     console.log('Password reset email sent: ' + info.response);
-  //     res.sendStatus(200);
-  //   }
-  // });
-  res.status(500).json(token)
-})
-
-// Desc verifying the email reset token and redirect to UI
-// Router GET api/change-password
-// access private
-const changeEmailVerification = asyncHandler(async (req, res) => {
-
-  const { token } = req.query 
-
-  if(!token){
+  
+  if(email === User.email){
     res.status(404)
-    throw new Error('Not found')
+    throw new Error('Provided email is the same')
   }
-  var decoded
-  try 
-  {
-    decoded = jwt.verify(token, process.env.RESET_TOKEN)
-  } 
-  catch (err) {
-    res.status(403)
-    throw new Error(err.message)
-  }
-  const User = await user.findById(decoded.userId) 
-  if (!User || User.emailResetToken !== token || User.emailResetToken === 'null') 
-  {
-    res.status(404);
-    throw new Error('User not found')
-  }
-
-  res.status(200).redirect('http://google.com')
-
-
-
-})
-
-// Desc change user email
-// Router PUT /api/change-password
-// access private
-const changeEmail = asyncHandler(async (req, res) =>{
-  const { token, email } = req.query
-
-  //console.log(token, password)
 
   if(!isEmail(email)){
     res.status(400)
     throw new Error('Invalid email')
   }
-  var decoded = {}
+
+  if(await user.findOne( { email : email })){
+    res.status(400)
+    throw new Error('Email is taken')
+  }
+
+  const code = Math.floor(Math.random() * 900000) + 100000;
+  const token = jwt.sign({ 
+    userId: User.id,
+    code : code,
+    email : email
+  }, process.env.RESET_TOKEN, {
+    expiresIn: '10m'
+  });
+
+  await User.updateOne({$set: { emailResetToken : token }})
+  const emailMessage = {
+    from: process.env.EMAIL,
+    to: email,
+    subject: 'Reset email',
+    html: `<p>Please enter this code <b>${code}</b> to reset your password.</p>`
+  };
+
+  // Send the password reset email
+  await transporter.sendMail(emailMessage, (error, info) => {
+    if (error) {
+      console.error(error);
+      res.sendStatus(500);
+    } else {
+      console.log('Email reset email sent: ' + info.response);
+      res.sendStatus(200);
+    }
+  });
+  res.sendStatus(200)
+})
+
+// Desc change user email
+// Router PUT /api/change-email
+// access private
+const changeEmail = asyncHandler(async (req, res) =>{
+  const { code } = req.body
+
+  const User = await user.findById(req.user.id)
+  if (!User || User.emailResetToken === 'null') {
+    res.status(404)
+    throw new Error('User not found')
+  }
+  var decoded
   try{
-    decoded = jwt.verify(token, process.env.RESET_TOKEN)
+    decoded = jwt.verify(User.emailResetToken, process.env.RESET_TOKEN)
   }
   catch(err){
     res.status(403)
     throw new Error(err.message)
   }
-  const User = await user.findById(decoded.userId)
-  if (!User || User.emailResetToken !== token || User.emailResetToken === 'null') {
-    res.status(404)
-    throw new Error('User not found')
-  }
+  
+  console.log(decoded.code, code, decoded.email)
 
-  if(User.email === email){
+  if(code !== decoded.code){
+    res.status(400)
+    throw new Error('Code is wrong')
+  }
+  if(User.email === decoded.email){
     res.status(405);
-    throw new Error('Provided email the same')
-    
+    throw new Error('Provided email the same')    
   }
 
-  await User.updateOne({emailResetToken : 'null', email : email, active : false})
-  const emailMessage = {
-    from: process.env.EMAIL,
-    to: email,
-    subject: 'Verify your email address',
-    html: `<p>Please click <a href="http://${process.env.DOMEN}/activate?key=${User.password}&id=${User.id}">here</a> to verify your email address.</p>`
-  };
-  
-  transporter.sendMail(emailMessage, (error, info) => {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log('Email sent: ' + info.response);
-    }
-  })
-    
-  
+  await User.updateOne({emailResetToken : 'null', email : decoded.email, active : true})
+
   res.sendStatus(200)
 })
 
+/// Desc Change password
+/// Route PUT /api/change-password-authed
+/// Access private
+const changePasswordByToken = asyncHandler( async(req, res) => {
+  const { currecntPassword, password } = req.body
+
+  if(!isValidPassword(password)){
+    return res.status(400).json({ message: 'Invalid password'})
+  }
+
+  const hashPassword = await bcrypt.hash(password, 8)
+
+  const User = await user.findById(req.user.id)
+
+  if(!User){
+    return res.status(404).json({ message: 'User not found'})  
+  }
+
+  if(!(bcrypt.compareSync(currecntPassword, User.password))){
+    return res.status(400).json({ message: 'Wrong current password'})
+  }
+
+  await User.updateOne({ password : hashPassword})
+  res.sendStatus(200)
+})
 
 
 
@@ -554,9 +568,9 @@ module.exports = {
     deleteProfilePicture,
     updateActiveStatus,
     changePasswordRequest,
-    changePasswordVerification,
     changePassword,
     changeEmailRequest,
-    changeEmailVerification, 
-    changeEmail
+    changeEmail,
+    resendActiveStatus,
+    changePasswordByToken
   }

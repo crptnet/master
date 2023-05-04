@@ -11,15 +11,18 @@ const {
     deleteProfilePicture,
     updateActiveStatus,
     changePasswordRequest,
-    changePasswordVerification,
     changePassword,
     changeEmailRequest,
-    changeEmailVerification, 
     changeEmail,
-    getUserInfoForActivation
-
-    
+    getUserInfoForActivation,
+    resendActiveStatus,
+    changePasswordByToken,
 } = require('../controllers/userController')
+// const {
+//   googleSignIn
+// } = require('../controllers/GoogleAuthController')
+
+//const validateGoogleToken = require('../middleware/googleAuthHandler')
 const validateToken = require('../middleware/validateToken')
 const fileFilterMiddleware = require('../middleware/multerHandler')
 const multer = require('multer')
@@ -41,7 +44,9 @@ const upload = multer({
     
 })
 
-router.get('/email-active', )
+
+
+//router.get('/email-active', validateGoogleToken, )
 
 router.get('/current', validateToken,getUser)
 
@@ -51,11 +56,11 @@ router.get('/user-profile-picture/:username', getProfilePictureByUserName)
 
 router.get('/active', getUserInfoForActivation)
 
-router.get('/change-password', changePasswordVerification )
-
-router.get('/change-email', changeEmailVerification)
-
 router.post('/register', registerUser)
+
+//router.post('/googleSingIn', googleSignIn)
+
+router.post('/active', validateToken, resendActiveStatus)
 
 router.post('/login', loginUser)
 
@@ -67,9 +72,11 @@ router.post('/change-password', changePasswordRequest)
 
 router.put('/change-password', changePassword)
 
-router.put('/change-email', changeEmail)
+router.put('/change-email', validateToken, changeEmail)
 
 router.put('/activate', updateActiveStatus)
+
+router.put('/change-password-authed', validateToken, changePasswordByToken)
 
 router.delete('/profile-picture', validateToken, deleteProfilePicture)
 

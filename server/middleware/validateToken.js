@@ -1,5 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
+const user = require('../models/userModel')
 
 const validateToken = asyncHandler(async (req, res, next) => {
   let token;
@@ -16,7 +17,10 @@ const validateToken = asyncHandler(async (req, res, next) => {
       req.user = decoded.user;
       next();
     });
-
+    if(!user.findById(req.user.id)){
+      res.status(404)
+      throw new Error("User not found");  
+    }
     if (!token) {
       res.status(401);
       throw new Error("User is not authorized or token is missing");
