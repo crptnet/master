@@ -187,7 +187,7 @@ const deleteUser = asyncHandler(async (req, res) => {
       console.log('Picture not found')
     }
   }
-  
+
   await User.deleteOne()
   res.status(200).json(req.user)
 
@@ -363,6 +363,8 @@ const getProfilePictureByUserName = asyncHandler(async (req, res) =>{
 const changePasswordRequest = asyncHandler(async (req, res) =>{
     const { email } = req.body
 
+    console.log(email)
+
     const User = await user.findOne({ email : email })
 
     if(!User){
@@ -418,7 +420,6 @@ const changePassword = asyncHandler(async (req, res) =>{
   const User = await user.findById(decoded.userId)
   if (!User || User.PasswordResetToken !== token || User.PasswordResetToken === 'null') {
     return res.status(404).json('User not found');
-    throw new Error('User not found')
   }
   await User.updateOne({PasswordResetToken : 'null'})
   const hashPassword = await bcrypt.hash(password, 8)
