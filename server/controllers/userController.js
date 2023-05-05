@@ -187,7 +187,7 @@ const deleteUser = asyncHandler(async (req, res) => {
       console.log('Picture not found')
     }
   }
-  
+
   await User.deleteOne()
   res.status(200).json(req.user)
 
@@ -418,7 +418,6 @@ const changePassword = asyncHandler(async (req, res) =>{
   const User = await user.findById(decoded.userId)
   if (!User || User.PasswordResetToken !== token || User.PasswordResetToken === 'null') {
     return res.status(404).json('User not found');
-    throw new Error('User not found')
   }
   await User.updateOne({PasswordResetToken : 'null'})
   const hashPassword = await bcrypt.hash(password, 8)
@@ -516,7 +515,7 @@ const changeEmail = asyncHandler(async (req, res) =>{
   }
   console.log(decoded.code, code, decoded.email)
 
-  if(code !== decoded.code){
+  if(code != decoded.code){
     res.status(400)
     throw new Error('Code is wrong')
   }
