@@ -366,8 +366,7 @@ const changePasswordRequest = asyncHandler(async (req, res) =>{
     const User = await user.findOne({ email : email })
 
     if(!User){
-      res.status(404)
-      throw new Error('User not found')
+      return res.status(404).json({ message : 'User not found'})
     }
 
     const token = jwt.sign({ userId: User.id }, process.env.ACCESS_TOKEN_SECERT, {
@@ -405,8 +404,7 @@ const changePassword = asyncHandler(async (req, res) =>{
   //console.log(token, password)
 
   if(!isValidPassword(password)){
-    res.status(400).json({ message: 'Invalid password'})
-    throw new Error('Invalid password')
+    return res.status(400).json({ message: 'Invalid password'})
   }
 
   var decoded
@@ -414,13 +412,12 @@ const changePassword = asyncHandler(async (req, res) =>{
     decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECERT) 
   }
   catch(err){
-    res.status(403)
-    throw new Error(err.message)
+    return res.sendStatus(403)
   }
   
   const User = await user.findById(decoded.userId)
   if (!User || User.PasswordResetToken !== token || User.PasswordResetToken === 'null') {
-    res.status(404).json('User not found');
+    return res.status(404).json('User not found');
     throw new Error('User not found')
   }
   await User.updateOne({PasswordResetToken : 'null'})
@@ -500,29 +497,31 @@ const changeEmailRequest = asyncHandler(async (req, res) =>{
 const changeEmail = asyncHandler(async (req, res) =>{
   const { code } = req.body
 
+  console.log(req.body)
+
+
   const User = await user.findById(req.user.id)
+
+  console.log(User)
+  
   if (!User || User.emailResetToken === 'null') {
-    res.status(404)
-    throw new Error('User not found')
+    return res.status(404).json({ message : 'User not found' })
   }
   var decoded
   try{
     decoded = jwt.verify(User.emailResetToken, process.env.RESET_TOKEN)
   }
   catch(err){
-    res.status(403)
-    throw new Error(err.message)
+    return res.status(403).json({ message : err.message})
   }
-  
   console.log(decoded.code, code, decoded.email)
 
-  if(code != decoded.code){
+  if(code !== decoded.code){
     res.status(400)
     throw new Error('Code is wrong')
   }
   if(User.email === decoded.email){
-    res.status(405);
-    throw new Error('Provided email the same')    
+    return res.status(405).json({ message : 'Provided email the same' })    
   }
 
   await User.updateOne({emailResetToken : 'null', email : decoded.email, active : true})
