@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom/client';
 import './settings.css';
 import SideBar from './sideBar';
 import ActiveAccountPage from './active';
-import ResetEmailPage from './resetPassword';
+import ResetEmailPage from './resetEmail';
+import ResetPasswordPage from './resetPassword';
 import NotRegistered from './notRegistered';
 import MainUserData from './mainUserData';
 import SideUserData from './sideUserData';
@@ -20,6 +21,8 @@ console.log(pathName);
     mainRoot.render(<ActiveAccountPage location={window.location} />);
   } else if(pathName.includes('/reset-email')) {
     mainRoot.render(<ResetEmailPage location={window.location} />);
+  } else if(pathName.includes('/password-reset')) {
+    mainRoot.render(<ResetPasswordPage location={window.location} />);
   }
   else {
     sidebarRoot.render(<SideBar active={11} />);

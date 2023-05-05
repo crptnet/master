@@ -516,7 +516,7 @@ const changeEmail = asyncHandler(async (req, res) =>{
   }
   console.log(decoded.code, code, decoded.email)
 
-  if(code !== decoded.code){
+  if(code != decoded.code){
     res.status(400)
     throw new Error('Code is wrong')
   }
