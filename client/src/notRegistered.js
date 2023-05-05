@@ -192,13 +192,15 @@ import SideUserData from './sideUserData';
 import './settings.css';
 
 const NotRegistered = () => {
-  const error = useRef('');
-  //const [errorPos, setErrorPos] = useState('success');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showUsernameInput, setShowUsernameInput] = useState(false);
   const containerClass = showUsernameInput ? "register" : "login";
+
+  const [emailToRecover, setEmailToRecover] = useState('');
+  const [emailToSend, setEmailToSend] = useState('');
+
   const errorPos = useRef('');
   const [errorContent,setErrorContent] = useState('');
 
@@ -371,6 +373,90 @@ const NotRegistered = () => {
     }
     console.log('error:',errorPos.current);
   }
+  const handlePasswordInputRecover1 = (event) => {
+    setEmailToRecover(event.target.value);
+  };  
+
+
+  useEffect(() => {
+    console.log("EMAIL:", emailToRecover);
+  }, [emailToRecover]);
+
+  useEffect(() => {
+    console.log("FUCK ROMA!", emailToSend);
+  }, [emailToSend]);
+  // const handleNewEmail = async () => {
+  //   console.log("emailToRecover!",emailToRecover);
+  //   if(emailToRecover!='')
+  //   {
+  //     console.log("HELP!");
+  //     try {
+  //       console.log("EMAIL!:", emailToSend);
+  //       const headersList = {
+  //         "Content-Type": 'application/json'
+  //       };
+  //       if(localStorage.getItem('token')) {
+  //         const response = await fetch(`http://localhost:5000/api/change-password  `, {
+  //           method: 'POST',
+  //           body: JSON.stringify({email:emailToRecover}),
+  //           headers: headersList
+  //         });
+  //         const userData = response;
+  //         let errorStatus = response.status;
+  //         if(errorStatus != 200)
+  //         {
+  //           if(errorStatus==400)
+  //           {
+  //             errorPos.current = "Invalid password"; 
+  //           } 
+  //           else if(errorStatus==404)
+  //           {
+  //             errorPos.current = 'User not found';
+  //           }
+  //         }
+  //         else
+  //         {
+  //           errorPos.current = "";
+  //           closePopUp();
+  //         }
+  //         setErrorContent(errorPos.current);
+  //       }
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   }
+  // }
+
+  useEffect(() => {
+    
+  }, [emailToSend]);
+
+
+  function closePopUp() {
+    modelRoot.render(<></>);
+    // setOpenEmailChange(false);
+    // setOpenPasswordChange(false);
+    // setEnterNum(false);
+  }
+  const moveToRecover = () => {
+    modelRoot.render(
+      <>
+        <div className="delete-container" style={{ display: open ? 'block' : 'none' }}>
+          <div className="delete-content">
+            <img src="./icons/logo.png" alt="crpt.net" />
+            <div className="error">{errorContent}</div>
+            <p className='delete-title'>Enter the <span className='blue'>email</span> to recover</p>
+            <input type='email' onChange={handlePasswordInputRecover1} placeholder='Examp1e'  style={{color:'#252525', fontSize:'1rem', border: 'none', borderRadius:'5px', padding:'5px'}}/>
+            <button style={{backgroundColor:'#5CC082', fontSize:'1rem', border: 'none', marginTop: '20px', flexDirection:'column'}} onClick={()=>{setEmailToSend(emailToRecover)}}>Submit</button>
+            {/* <p className='delete-title'>Enter the <span className='blue'>new</span> password</p>
+            <input type='password' onChange={handlePasswordInputRecover2} placeholder='Examp1e'  style={{color:'#252525', fontSize:'1rem', border: 'none', borderRadius:'5px', padding:'5px'}}/>
+            <button style={{backgroundColor:'#5CC082', fontSize:'1rem', border: 'none', marginTop: '20px', flexDirection:'column'}} onClick={requestChangePassword}>Submit</button> */}
+            <button onClick={closePopUp} style={{backgroundColor:'transparent', fontSize:'2.5rem', border: 'none', cursor: 'pointer', position: 'absolute', top: '-10px', right:'0'}}>&#215;</button>
+          </div>
+        </div> 
+      </>
+    )
+  }
   const moveToLogin = () => {
     setShowUsernameInput(false);
   }
@@ -395,6 +481,10 @@ const NotRegistered = () => {
           <p className='passwordLoginTitle'>Password</p>
           <input type='password' name='password' value={password} onChange={handleChange} placeholder='Examp1e' className='passwordLoginInput'/>
         </div>
+        <div className="haveAcc">
+          <p className='haveAccTitle'>Forgot your password?</p>
+          <button className='haveAccBtn' onClick={moveToRecover}>Recover</button>
+        </div> 
         {showUsernameInput ? ( 
             <>
               <div className="haveAcc">

@@ -216,7 +216,6 @@ main {
 
 .haveAcc {
     min-width: 200px;
-    margin: 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -322,6 +321,10 @@ main {
 }
 
 .delete-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     left: calc(50% - 200px);
     top: 10%;
     width: 400px;
@@ -343,7 +346,7 @@ main {
 }
 
 .delete-title {
-    margin: 5px;
+    margin: 20px 10px 10px 10px;
 }
 
 .delete-content button {

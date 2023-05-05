@@ -123,8 +123,10 @@ function MainUserData () {
           <div className="delete-content">
             <img src="./icons/logo.png" alt="crpt.net" />
             <p className='delete-title'>Confirm deletion. This process is permanent.</p>
-            <button onClick={confirmDeletion} onMouseMove={handleMouseMove} className='deleteConfirmBtn'>Delete</button>
+            <div style={{display:'flex',alignItems:'center',justifyContent:'center'}}>
+              <button onClick={confirmDeletion} onMouseMove={handleMouseMove} className='deleteConfirmBtn'>Delete</button>
             <button onClick={cancelDeletion} className='deleteCancelBtn'>Cancel</button>
+            </div>
           </div>
         </div> 
       </>

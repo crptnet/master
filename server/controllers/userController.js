@@ -479,7 +479,7 @@ const changeEmailRequest = asyncHandler(async (req, res) =>{
     from: process.env.EMAIL,
     to: email,
     subject: 'Reset email',
-    html: `<p>Please enter this code <b>${code}</b> to reset your password.</p>`
+    html: `<p>Please enter this code <b>${code}</b> to reset your email.</p>`
   };
 
   // Send the password reset email
@@ -516,7 +516,7 @@ const changeEmail = asyncHandler(async (req, res) =>{
   
   console.log(decoded.code, code, decoded.email)
 
-  if(code !== decoded.code){
+  if(code != decoded.code){
     res.status(400)
     throw new Error('Code is wrong')
   }
