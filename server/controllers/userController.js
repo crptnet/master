@@ -363,6 +363,8 @@ const getProfilePictureByUserName = asyncHandler(async (req, res) =>{
 const changePasswordRequest = asyncHandler(async (req, res) =>{
     const { email } = req.body
 
+    console.log(email)
+
     const User = await user.findOne({ email : email })
 
     if(!User){

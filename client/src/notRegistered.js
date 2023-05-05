@@ -198,7 +198,7 @@ const NotRegistered = () => {
   const [showUsernameInput, setShowUsernameInput] = useState(false);
   const containerClass = showUsernameInput ? "register" : "login";
 
-  const [emailToRecover, setEmailToRecover] = useState('');
+  const [emailToRecover, setEmailToRecover] = useState('default value');
   const [emailToSend, setEmailToSend] = useState('');
 
   const errorPos = useRef('');
@@ -374,17 +374,11 @@ const NotRegistered = () => {
     console.log('error:',errorPos.current);
   }
   const handlePasswordInputRecover1 = (event) => {
+    console.log({ emailToRecoverParam : emailToRecover, event_value : event.target.value})
     setEmailToRecover(event.target.value);
   };  
 
 
-  useEffect(() => {
-    console.log("EMAIL:", emailToRecover);
-  }, [emailToRecover]);
-
-  useEffect(() => {
-    console.log("FUCK ROMA!", emailToSend);
-  }, [emailToSend]);
   // const handleNewEmail = async () => {
   //   console.log("emailToRecover!",emailToRecover);
   //   if(emailToRecover!='')
@@ -427,10 +421,55 @@ const NotRegistered = () => {
   //   }
   // }
 
-  useEffect(() => {
+  // useEffect(() => {
     
+  // }, [emailToSend]);
+
+  useEffect(() => {
+    const sendRequest = async () =>{
+      try {
+        console.log("EMAIL!:", emailToRecover);
+        const headersList = {
+          "Content-Type": 'application/json'
+        };
+        if(localStorage.getItem('token')) {
+          const response = await fetch('http://localhost:5000/api/change-password', {
+            method: 'POST',
+            body: JSON.stringify({ email : emailToRecover }),
+            headers: headersList
+          });
+          console.log(response)
+          const userData = response;
+          let errorStatus = response.status;
+          if(errorStatus != 200)
+          {
+            if(errorStatus==400)
+            {
+              errorPos.current = "Invalid password"; 
+            } 
+            else if(errorStatus==404)
+            {
+              errorPos.current = 'User not found';
+            }
+          }
+          else
+          {
+            errorPos.current = "";
+            closePopUp();
+          }
+          setErrorContent(errorPos.current);
+        }
+      } 
+      catch (error) {
+        console.error(error);
+      }
+    }
+    sendRequest()
   }, [emailToSend]);
 
+  // useEffect(() => {
+  //   console.log(`Email to send ${emailToRecover}`);
+  // }, [emailToSend]);
 
   function closePopUp() {
     modelRoot.render(<></>);
@@ -446,8 +485,13 @@ const NotRegistered = () => {
             <img src="./icons/logo.png" alt="crpt.net" />
             <div className="error">{errorContent}</div>
             <p className='delete-title'>Enter the <span className='blue'>email</span> to recover</p>
-            <input type='email' onChange={handlePasswordInputRecover1} placeholder='Examp1e'  style={{color:'#252525', fontSize:'1rem', border: 'none', borderRadius:'5px', padding:'5px'}}/>
-            <button style={{backgroundColor:'#5CC082', fontSize:'1rem', border: 'none', marginTop: '20px', flexDirection:'column'}} onClick={()=>{setEmailToSend(emailToRecover)}}>Submit</button>
+            <input type='email' onChange={(event) => setEmailToRecover(event.target.value) } placeholder='Examp1e'  style={{color:'#252525', fontSize:'1rem', border: 'none', borderRadius:'5px', padding:'5px'}}/>
+            <button style={{backgroundColor:'#5CC082', fontSize:'1rem', border: 'none', marginTop: '20px', flexDirection:'column'}} onClick={()=>{
+              
+              setEmailToSend(emailToRecover)
+              console.log(`emailToRecover`, emailToRecover)  
+            }
+              }>Submit</button>
             {/* <p className='delete-title'>Enter the <span className='blue'>new</span> password</p>
             <input type='password' onChange={handlePasswordInputRecover2} placeholder='Examp1e'  style={{color:'#252525', fontSize:'1rem', border: 'none', borderRadius:'5px', padding:'5px'}}/>
             <button style={{backgroundColor:'#5CC082', fontSize:'1rem', border: 'none', marginTop: '20px', flexDirection:'column'}} onClick={requestChangePassword}>Submit</button> */}
