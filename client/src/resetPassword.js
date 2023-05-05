@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { sidebarRoot, mainRoot, usermainRoot, usersideRoot, modelRoot } from './index';
-import './settings.css';
+import './active.css';
 
 const ResetPasswordPage = (props) => {
     
@@ -30,7 +30,7 @@ const ResetPasswordPage = (props) => {
                     setMessage("Password reset failed");
                 }
             } catch (error) {
-                setMessage("An error occurred while resetting your password");
+                setMessage("An error occurred while resetting your password. Try sending request one more time");
             }
         };
         if(sendNewPassword==true)
@@ -45,11 +45,16 @@ const ResetPasswordPage = (props) => {
     modelRoot.render (
         <>
             <div className="activate-container">
-            <a href="../"><img src='./icons/logo.png' className='activate-logo'/></a>
-            <p className='activate-title'>{message}</p>
-            <h1>Enter the new password</h1>
-            <input type='password' placeholder='Examp1e' onChange={(event) => setPasswordToRecover(event.target.value)}/>
-            <button onClick={()=>setSendNewPassword(true)}>Submit</button>
+                <a href="../"><img src='./icons/logo.png' className='activate-logo'/></a>
+                {message!='Password reset successful' &&
+                    <div style={{display:'flex',flexDirection:'column',justifyContent:'center', alignItems:'center'}}>
+                        <p className='activate-error'>{message}</p>
+                        <p className='activate-title'>Enter the new password</p>
+                        <input type='password' placeholder='Examp1e' onChange={(event) => setPasswordToRecover(event.target.value)} className='activate-input'/>
+                        <button onClick={()=>setSendNewPassword(true)} className='activate-submit'>Submit</button>
+                    </div>
+                }
+                {message=='Password reset successful' &&<p className='activate-error'>{message}</p>}
             </div>
         </>
     )

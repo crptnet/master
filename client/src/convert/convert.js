@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import './convert.css';
-import SideBar from '../sideBar';
 import Overlay from './convertOverlay';
 
 function Convert() {
@@ -81,40 +80,42 @@ function Convert() {
 
   return (
     <>
-      <div className="convertFrom">
-        <div id="coinFrom">
-          <p className="innerText">From</p>
-          <div className="right">
-            <div id="coinInput">
-              <p className='coinName'>{inputCoin}</p>
-            </div>
-            <div id="highBtn">
-              <Overlay onCoinChange={setInputCoin}/>
+      <div className='convertContainer'>
+        <button className="swapBtn" onClick={handleSwap}><img src='./icons/convert_dark.png' className="swapImg" /></button>
+        <div className="convertFrom">
+          <div id="coinFrom">
+            <p className="innerText">From</p>
+            <div className="right">
+              <div id="coinInput">
+                <p className='coinName'>{inputCoin}</p>
+              </div>
+              <div id="highBtn">
+                <Overlay onCoinChange={setInputCoin}/>
+              </div>
             </div>
           </div>
+          <input className="inputAmount" type="number" inputMode="numeric" id="input" placeholder="0.00" onInput={handleInput}/>
         </div>
-        <input className="inputAmount" type="number" inputMode="numeric" id="input" placeholder="0.00" onInput={handleInput}/>
+        <div className="convertTo">
+          <div id="coinTo">
+            <p className="innerText">To</p>
+            <div className="right">
+              <div id="coinOutput">
+                <p className='coinName'>{outputCoin}</p>
+              </div>
+              <div id="lowBtn">
+                <Overlay onCoinChange={setOutputCoin}/>
+              </div>
+            </div>
+          </div>
+          <input className="inputAmount" type="number" inputMode="numeric" id="output" placeholder="0.00" onInput={handleOutput}/>
+        </div>        
+        <div className="rate">
+          Exchange rate 1 {inputCoin} ~ {exchangeRate} {outputCoin}
+        </div>   
       </div>
-      <div className="convertTo">
-        <div id="coinTo">
-          <p className="innerText">To</p>
-          <div className="right">
-            <div id="coinOutput">
-              <p className='coinName'>{outputCoin}</p>
-            </div>
-            <div id="lowBtn">
-              <Overlay onCoinChange={setOutputCoin}/>
-            </div>
-          </div>
-        </div>
-        <input className="inputAmount" type="number" inputMode="numeric" id="output" placeholder="0.00" onInput={handleOutput}/>
-      </div>        
-      <div className="rate">
-        Exchange rate 1 {inputCoin} ~ {exchangeRate} {outputCoin}
-      </div>   
-      <button className="swapBtn" onClick={handleSwap}><img src='./icons/convert_dark.png' className="swapImg" /></button>
     </>
   );
 }
-ReactDOM.createRoot(document.getElementById('convert')).render(<Convert />);
-ReactDOM.createRoot(document.getElementById('sidebar')).render(<SideBar active={8} />);
+
+export default Convert;

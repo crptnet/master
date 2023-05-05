@@ -38,6 +38,7 @@ body {
   border: none;
   border-radius: 5px;
   font-size: 0.33rem;
+  text-decoration: none;
   cursor: pointer;
 }
 .sideBtn:hover {
@@ -53,7 +54,6 @@ body {
 /*<--MAIN-->*/
 
 #main {
-  margin-left: 60px;
   display: flex;
   justify-content: center;
 }

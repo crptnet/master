@@ -49,24 +49,21 @@ function MainUserData () {
 
 
   function handleMouseMove(event) {
-    const { clientX, clientY } = event;
-    const screenWidth = 0.5 * window.innerWidth;
-    console.log('screenWidth',screenWidth);
-    const screenHeight = 0.5 * window.innerHeight;
-    console.log('screenHeight',screenHeight);
-    const pxToSubtractX = clientX;
-    const pxToSubtractY = clientY;
+    // const { clientX, clientY } = event;
+    // const screenWidth = 0.5 * window.innerWidth;
+    // console.log('screenWidth',screenWidth);
+    // const screenHeight = 0.5 * window.innerHeight;
+    // console.log('screenHeight',screenHeight);
+    // const pxToSubtractX = clientX;
+    // const pxToSubtractY = clientY;
 
-    const centerX = parseInt(`${-1*(screenWidth + screenHeight - pxToSubtractX)}`);
-    const centerY = parseInt(`${-2*(screenHeight + screenHeight - pxToSubtractY)}`);
-    console.log('CenterX',centerX,'CenterY',centerY);
-    circlePosX.current = `${centerX}px`;
-    circlePosY.current = `${centerY}px`;;
-
+    // const centerX = parseInt(`${-1*(screenWidth + screenHeight - pxToSubtractX)}`);
+    // const centerY = parseInt(`${-2*(screenHeight + screenHeight - pxToSubtractY)}`);
+    // console.log('CenterX',centerX,'CenterY',centerY);
+    // circlePosX.current = `${centerX}px`;
+    // circlePosY.current = `${centerY}px`;
   }
-  // useEffect(() => {
-  //   console.log("#^@!*&$^#&!$^#!@&*",circlePosX.current,circlePosY.current);
-  // }, [circlePosX.current,circlePosY.current]);
+
   async function confirmDeletion() {
     try {
         const headersList = {
@@ -82,14 +79,13 @@ function MainUserData () {
           const userData = await response.json();
           localStorage.removeItem('token');
         } 
-      } catch (error) {
-        console.error(error);
-      }
-      console.log("!!!!!!!!!",circlePosX.current,circlePosY.current);
+    } catch (error) {
+      console.error(error);
+    }
     modelRoot.render(
       <>
         <div className="circcontainer">
-          <div className="circle" style={{ marginLeft: circlePosX.current,  marginTop: circlePosY.current }}></div>
+          <div className="circle" ></div>
         </div>
       </>
     );
@@ -102,7 +98,7 @@ function MainUserData () {
       modelRoot.render(
         <>
           <div className="circcontainer">
-            <div className='circle shrink hidden' style={{ marginLeft: circlePosX.current,  marginTop: circlePosY.current }}></div>
+            <div className='circle shrink hidden'></div>
           </div>
         </>
       )
@@ -114,6 +110,34 @@ function MainUserData () {
 
   const cancelDeletion = () => {
     modelRoot.render(<></>);
+  }
+
+  function logOut () {
+    localStorage.removeItem('token');
+    modelRoot.render(
+      <>
+        <div className="circcontainer">
+          <div className="circle"></div>
+        </div>
+      </>
+    );
+    setTimeout(() => {
+      usermainRoot.render(<></>);
+      usersideRoot.render(<></>);
+      mainRoot.render(<NotRegistered/>);
+    }, 800);
+    setTimeout(() => {
+      modelRoot.render(
+        <>
+          <div className="circcontainer">
+            <div className='circle shrink hidden'></div>
+          </div>
+        </>
+      )
+      setTimeout(() => {
+        modelRoot.render(<></>)
+      }, 800);
+    }, 800);
   }
 
   function renderDeleteConfirmation () {
@@ -137,7 +161,7 @@ function MainUserData () {
     <>
       <div className='mainDataContainer'>
         <div className='avatar'>
-            <img src='./icons/avatar.png' />
+          <img src='./icons/avatar.png' className='avatarImage'/>
         </div>
         <div className='userName'>
             <p className='userNameOuter'>Username</p>
@@ -151,7 +175,10 @@ function MainUserData () {
             <p className='accLevelOuter'>Account level</p>
             <p className='accLevelInner'>Basic</p>
         </div>
-        <button className='deleteUserBtn' onClick={renderDeleteConfirmation}>Delete user</button>
+        <div className='mainBtns'>
+          <button className='logOutBtn' onClick={logOut}>Log out</button>
+          <button className='deleteUserBtn' onClick={renderDeleteConfirmation}>Delete user</button>
+        </div>
       </div>
     </>
   );

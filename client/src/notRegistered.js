@@ -198,6 +198,7 @@ const NotRegistered = () => {
   const [showUsernameInput, setShowUsernameInput] = useState(false);
   const containerClass = showUsernameInput ? "register" : "login";
 
+  const [moveToRecover, setMoveToRecover] = useState('');
   const [emailToRecover, setEmailToRecover] = useState('');
   const [emailToSend, setEmailToSend] = useState(false);
 
@@ -441,7 +442,7 @@ const NotRegistered = () => {
         const userData = response;
         let errorStatus = response.status;
         console.log(errorStatus);
-        if(errorStatus != 200)
+        if(errorStatus != 200 && errorStatus != 500)
         {
           if(errorStatus==400)
           {
@@ -454,8 +455,7 @@ const NotRegistered = () => {
         }
         else
         {
-          errorPos.current = "";
-          closePopUp();
+          errorPos.current = "Email was sent";
         }
         setErrorContent(errorPos.current);
       } 
@@ -475,30 +475,33 @@ const NotRegistered = () => {
   // }, [emailToSend]);
 
   function closePopUp() {
+    setErrorContent('');
+    setMoveToRecover(false);
     modelRoot.render(<></>);
     // setOpenEmailChange(false);
     // setOpenPasswordChange(false);
     // setEnterNum(false);
   }
-  const moveToRecover = () => {
-    modelRoot.render(
-      <>
-        <div className="delete-container" style={{ display: open ? 'block' : 'none' }}>
-          <div className="delete-content">
-            <img src="./icons/logo.png" alt="crpt.net" />
-            <div className="error">{errorContent}</div>
-            <p className='delete-title'>Enter the <span className='blue'>email</span> to recover</p>
-            <input type='email' onChange={(event) => setEmailToRecover(event.target.value) } placeholder='Examp1e'  style={{color:'#252525', fontSize:'1rem', border: 'none', borderRadius:'5px', padding:'5px'}}/>
-            <button style={{backgroundColor:'#5CC082', fontSize:'1rem', border: 'none', marginTop: '20px', flexDirection:'column'}} onClick={()=>{setEmailToSend(true)}}>Submit</button>
-            {/* <p className='delete-title'>Enter the <span className='blue'>new</span> password</p>
-            <input type='password' onChange={handlePasswordInputRecover2} placeholder='Examp1e'  style={{color:'#252525', fontSize:'1rem', border: 'none', borderRadius:'5px', padding:'5px'}}/>
-            <button style={{backgroundColor:'#5CC082', fontSize:'1rem', border: 'none', marginTop: '20px', flexDirection:'column'}} onClick={requestChangePassword}>Submit</button> */}
-            <button onClick={closePopUp} style={{backgroundColor:'transparent', fontSize:'2.5rem', border: 'none', cursor: 'pointer', position: 'absolute', top: '-10px', right:'0'}}>&#215;</button>
-          </div>
-        </div> 
-      </>
-    )
-  }
+  useEffect(() => {
+    if(moveToRecover)
+    {
+      modelRoot.render(
+        <>
+          <div className="delete-container" style={{ display: open ? 'block' : 'none' }}>
+            <div className="delete-content">
+              <img src="./icons/logo.png" alt="crpt.net" />
+              <div className="error">{errorContent}</div>
+              <p className='delete-title'>Enter the <span className='blue'>email</span> to recover</p>
+              <input type='email' onChange={(event) => setEmailToRecover(event.target.value) } placeholder='Examp1e'  style={{color:'#252525', fontSize:'1rem', border: 'none', borderRadius:'5px', padding:'5px'}}/>
+              <button style={{backgroundColor:'#5CC082', fontSize:'1rem', border: 'none', marginTop: '20px', flexDirection:'column'}} onClick={()=>{setEmailToSend(true)}}>Submit</button>
+              <button onClick={closePopUp} style={{backgroundColor:'transparent', fontSize:'2.5rem', border: 'none', cursor: 'pointer', position: 'absolute', top: '-10px', right:'0'}}>&#215;</button>
+            </div>
+          </div> 
+        </>
+      );
+    }
+  },[moveToRecover,errorContent])
+
   const moveToLogin = () => {
     setShowUsernameInput(false);
   }
@@ -525,7 +528,7 @@ const NotRegistered = () => {
         </div>
         <div className="haveAcc">
           <p className='haveAccTitle'>Forgot your password?</p>
-          <button className='haveAccBtn' onClick={moveToRecover}>Recover</button>
+          <button className='haveAccBtn' onClick={()=>setMoveToRecover(true)}>Recover</button>
         </div> 
         {showUsernameInput ? ( 
             <>

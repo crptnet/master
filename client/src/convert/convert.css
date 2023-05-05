@@ -87,19 +87,18 @@ input[type=number] {
 
 /*<--MAIN-->*/
 
-#main {
+:local(#main) {
     width: calc(100vw - 60px);
     height: 100vh;
     margin-left: 60px;
     display: flex;
     justify-content: center;
     align-items: center;
-
 }
 
 /*CONVERT*/
 
-#convert {
+.convertContainer {
     width: 700px;
     height: 420px;
     display: flex;

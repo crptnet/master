@@ -242,7 +242,7 @@ const BinanceBTC = () => {
     setSortOrder("none");
   };
   let filteredData = Object.values(sortedData).filter(item =>
-    item.smb.toLowerCase().includes(searchTerm.toLowerCase())
+    item.smb.toLowerCase().slice(0,-4).includes(searchTerm.toLowerCase())
   );
   if (sortOrder === "price-asc") {
     filteredData = filteredData.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
@@ -305,7 +305,7 @@ const BinanceBTC = () => {
   const NoData = () => {
     if (Object.keys(filteredData).length === 0) {
       return (
-        <p className="NoData"><b>No data available</b></p>
+        <div><p style={{width:'calc(100vw-90px)',fontWeight:'bold'}}>No data available</p></div>
       );
     }
     return;
@@ -314,36 +314,277 @@ const BinanceBTC = () => {
   const renderCoins = () => {
   if (loadingPercent < 100) {
     return (
-      <tr>
-        <td colSpan={7}>
-          <div className="loading">
-            <img
-              src="./icons/logo.png"
-              alt="Loading..."
-              style={{ opacity: loadingPercent / 100 }}
-              className={'loading-image'}
-            />
-            <LoadingBar />
-          </div>
-        </td>
-      </tr>
-      
+      <table>
+        <tr>
+          <td colSpan={7}>
+            <div className="loading">
+              <img
+                src="./icons/logo.png"
+                alt="Loading..."
+                style={{ opacity: loadingPercent / 100 }}
+                className={'loading-image'}
+              />
+              <LoadingBar />
+            </div>
+          </td>
+        </tr>
+      </table>
     );
   } else { 
       return (
-        <tbody>
-          {currentCoins.map((coin) => (
-            <tr key={coin.smb} className="coin">
-              <td>{coin.id}</td>
-              <td>{coin.smb.slice(0,-4)}</td>
-              <td style={{color: coin.flash}}>{coin.price > 999 ? new Intl.NumberFormat('en-US').format(coin.price) : coin.price}</td>
-              <td style={{ color: coin.percentChange1d >= 0 ? '#5CC082' : '#DC4C41' }}>{coin.percentChange1d}</td>
-              <td>{coin.lowprice > 999 ? new Intl.NumberFormat('en-US').format(coin.lowprice) : coin.lowprice}</td>
-              <td>{coin.highprice > 999 ? new Intl.NumberFormat('en-US').format(coin.highprice) : coin.highprice}</td>
-              <td>{isNaN(coin.volume) ? "Loading..." : new Intl.NumberFormat('en-US').format(coin.volume)}</td>
+        <>
+        <input className="input-search" placeholder="Search coins" type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+        <table>
+          <thead>
+            <tr className="blueHigh">
+              <th>
+                <p>
+                  Id
+                </p>
+                <div>
+                  <button
+                    onClick={() => {
+                      if (sortOrder === "id-asc") {
+                        handleResetSort();
+                      } else {
+                        handleSort("id-asc");
+                      }
+                      setActiveButton(activeButton === "id-asc" ? null : "id-asc");
+                    }}
+                    className={`sort-button ${activeButton === "id-asc" ? "active" : ""}`}
+                  >
+                    &#9650;
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (sortOrder === "id-desc") {
+                        handleResetSort();
+                      } else {
+                        handleSort("id-desc");
+                      }
+                      setActiveButton(activeButton === "id-desc" ? null : "id-desc");
+                    }}
+                    className={`sort-button ${activeButton === "id-desc" ? "active" : ""}`}
+                  >
+                    &#9660;
+                  </button>
+                </div>
+              </th>
+              <th>
+                <p>
+                  Coin
+                </p>
+                <div>
+                  <button
+                    onClick={() => {
+                      if (sortOrder === "name-asc") {
+                        handleResetSort();
+                      } else {
+                        handleSort("name-asc");
+                      }
+                      setActiveButton(activeButton === "name-asc" ? null : "name-asc");
+                    }}
+                    className={`sort-button ${activeButton === "name-asc" ? "active" : ""}`}
+                  >
+                    &#9650;
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (sortOrder === "name-desc") {
+                        handleResetSort();
+                      } else {
+                        handleSort("name-desc");
+                      }
+                      setActiveButton(activeButton === "name-desc" ? null : "name-desc");
+                    }}
+                    className={`sort-button ${activeButton === "name-desc" ? "active" : ""}`}
+                  >
+                    &#9660;
+                  </button>
+                </div>
+              </th>
+              <th>
+                <p>
+                  Price
+                </p>
+                <div>
+                  <button
+                    onClick={() => {
+                      if (sortOrder === "price-asc") {
+                        handleResetSort();
+                      } else {
+                        handleSort("price-asc");
+                      }
+                      setActiveButton(activeButton === "price-asc" ? null : "price-asc");
+                    }}
+                    className={`sort-button ${activeButton === "price-asc" ? "active" : ""}`}
+                  >
+                    &#9650;
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (sortOrder === "price-desc") {
+                        handleResetSort();
+                      } else {
+                        handleSort("price-desc");
+                      }
+                      setActiveButton(activeButton === "price-desc" ? null : "price-desc");
+                    }}
+                    className={`sort-button ${activeButton === "price-desc" ? "active" : ""}`}
+                  >
+                    &#9660;
+                  </button>
+                </div>
+              </th>
+              <th>
+                <p>
+                  1D
+                </p>
+                <div>
+                  <button
+                    onClick={() => {
+                      if (sortOrder === "change-asc") {
+                        handleResetSort();
+                      } else {
+                        handleSort("change-asc");
+                      }
+                      setActiveButton(activeButton === "change-asc" ? null : "change-asc");
+                    }}
+                    className={`sort-button ${activeButton === "change-asc" ? "active" : ""}`}
+                  >
+                    &#9650;
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (sortOrder === "change-desc") {
+                        handleResetSort();
+                      } else {
+                        handleSort("change-desc");
+                      }
+                      setActiveButton(activeButton === "change-desc" ? null : "change-desc");
+                    }}
+                    className={`sort-button ${activeButton === "change-desc" ? "active" : ""}`}
+                  >
+                    &#9660;
+                  </button>
+                </div>
+              </th>
+              <th>
+                <p>
+                  Low Price
+                </p>
+                <div>
+                  <button
+                    onClick={() => {
+                      if (sortOrder === "lowprice-asc") {
+                        handleResetSort();
+                      } else {
+                        handleSort("lowprice-asc");
+                      }
+                      setActiveButton(activeButton === "lowprice-asc" ? null : "lowprice-asc");
+                    }}
+                    className={`sort-button ${activeButton === "lowprice-asc" ? "active" : ""}`}
+                  >
+                    &#9650;
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (sortOrder === "lowprice-desc") {
+                        handleResetSort();
+                      } else {
+                        handleSort("lowprice-desc");
+                      }
+                      setActiveButton(activeButton === "lowprice-desc" ? null : "lowprice-desc");
+                    }}
+                    className={`sort-button ${activeButton === "lowprice-desc" ? "active" : ""}`}
+                  >
+                    &#9660;
+                  </button>
+                </div>
+              </th>
+              <th>
+                <p>
+                  High Price
+                </p>
+                <div>
+                  <button
+                    onClick={() => {
+                      if (sortOrder === "highprice-asc") {
+                        handleResetSort();
+                      } else {
+                        handleSort("highprice-asc");
+                      }
+                      setActiveButton(activeButton === "highprice-asc" ? null : "highprice-asc");
+                    }}
+                    className={`sort-button ${activeButton === "highprice-asc" ? "active" : ""}`}
+                  >
+                    &#9650;
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (sortOrder === "highprice-desc") {
+                        handleResetSort();
+                      } else {
+                        handleSort("highprice-desc");
+                      }
+                      setActiveButton(activeButton === "highprice-desc" ? null : "highprice-desc");
+                    }}
+                    className={`sort-button ${activeButton === "highprice-desc" ? "active" : ""}`}
+                  >
+                    &#9660;
+                  </button>
+                </div>
+              </th>
+              <th>
+                <p>
+                  Volume
+                </p>
+                <div>
+                  <button
+                    onClick={() => {
+                      if (sortOrder === "volume-asc") {
+                        handleResetSort();
+                      } else {
+                        handleSort("volume-asc");
+                      }
+                      setActiveButton(activeButton === "volume-asc" ? null : "volume-asc");
+                    }}
+                    className={`sort-button ${activeButton === "volume-asc" ? "active" : ""}`}
+                  >
+                    &#9650;
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (sortOrder === "volume-desc") {
+                        handleResetSort();
+                      } else {
+                        handleSort("volume-desc");
+                      }
+                      setActiveButton(activeButton === "volume-desc" ? null : "volume-desc");
+                    }}
+                    className={`sort-button ${activeButton === "volume-desc" ? "active" : ""}`}
+                  >
+                    &#9660;
+                  </button>
+                </div>
+              </th>
             </tr>
-          ))}
-        </tbody>
+          </thead>
+          <tbody>
+            {currentCoins.map((coin) => (
+              <tr key={coin.smb} className="coin">
+                <td>{coin.id}</td>
+                <td>{coin.smb.slice(0,-4)}</td>
+                <td style={{color: coin.flash}}>{coin.price > 999 ? new Intl.NumberFormat('en-US').format(coin.price) : coin.price}</td>
+                <td style={{ color: coin.percentChange1d >= 0 ? '#5CC082' : '#DC4C41' }}>{coin.percentChange1d}</td>
+                <td>{coin.lowprice > 999 ? new Intl.NumberFormat('en-US').format(coin.lowprice) : coin.lowprice}</td>
+                <td>{coin.highprice > 999 ? new Intl.NumberFormat('en-US').format(coin.highprice) : coin.highprice}</td>
+                <td>{isNaN(coin.volume) ? "Loading..." : new Intl.NumberFormat('en-US').format(coin.volume)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        </>
       );
     };
   };
@@ -378,246 +619,7 @@ const BinanceBTC = () => {
 
   return (
     <div className="positionsList">
-      <input className="input-search" placeholder="Search coins" type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
-      <table>
-        <thead>
-          <tr className="blueHigh">
-            <th>
-              <p>
-                Id
-              </p>
-              <div>
-                <button
-                  onClick={() => {
-                    if (sortOrder === "id-asc") {
-                      handleResetSort();
-                    } else {
-                      handleSort("id-asc");
-                    }
-                    setActiveButton(activeButton === "id-asc" ? null : "id-asc");
-                  }}
-                  className={`sort-button ${activeButton === "id-asc" ? "active" : ""}`}
-                >
-                  &#9650;
-                </button>
-                <button
-                  onClick={() => {
-                    if (sortOrder === "id-desc") {
-                      handleResetSort();
-                    } else {
-                      handleSort("id-desc");
-                    }
-                    setActiveButton(activeButton === "id-desc" ? null : "id-desc");
-                  }}
-                  className={`sort-button ${activeButton === "id-desc" ? "active" : ""}`}
-                >
-                  &#9660;
-                </button>
-              </div>
-            </th>
-            <th>
-              <p>
-                Coin
-              </p>
-              <div>
-                <button
-                  onClick={() => {
-                    if (sortOrder === "name-asc") {
-                      handleResetSort();
-                    } else {
-                      handleSort("name-asc");
-                    }
-                    setActiveButton(activeButton === "name-asc" ? null : "name-asc");
-                  }}
-                  className={`sort-button ${activeButton === "name-asc" ? "active" : ""}`}
-                >
-                  &#9650;
-                </button>
-                <button
-                  onClick={() => {
-                    if (sortOrder === "name-desc") {
-                      handleResetSort();
-                    } else {
-                      handleSort("name-desc");
-                    }
-                    setActiveButton(activeButton === "name-desc" ? null : "name-desc");
-                  }}
-                  className={`sort-button ${activeButton === "name-desc" ? "active" : ""}`}
-                >
-                  &#9660;
-                </button>
-              </div>
-            </th>
-            <th>
-              <p>
-                Price
-              </p>
-              <div>
-                <button
-                  onClick={() => {
-                    if (sortOrder === "price-asc") {
-                      handleResetSort();
-                    } else {
-                      handleSort("price-asc");
-                    }
-                    setActiveButton(activeButton === "price-asc" ? null : "price-asc");
-                  }}
-                  className={`sort-button ${activeButton === "price-asc" ? "active" : ""}`}
-                >
-                  &#9650;
-                </button>
-                <button
-                  onClick={() => {
-                    if (sortOrder === "price-desc") {
-                      handleResetSort();
-                    } else {
-                      handleSort("price-desc");
-                    }
-                    setActiveButton(activeButton === "price-desc" ? null : "price-desc");
-                  }}
-                  className={`sort-button ${activeButton === "price-desc" ? "active" : ""}`}
-                >
-                  &#9660;
-                </button>
-              </div>
-            </th>
-            <th>
-              <p>
-                1D
-              </p>
-              <div>
-                <button
-                  onClick={() => {
-                    if (sortOrder === "change-asc") {
-                      handleResetSort();
-                    } else {
-                      handleSort("change-asc");
-                    }
-                    setActiveButton(activeButton === "change-asc" ? null : "change-asc");
-                  }}
-                  className={`sort-button ${activeButton === "change-asc" ? "active" : ""}`}
-                >
-                  &#9650;
-                </button>
-                <button
-                  onClick={() => {
-                    if (sortOrder === "change-desc") {
-                      handleResetSort();
-                    } else {
-                      handleSort("change-desc");
-                    }
-                    setActiveButton(activeButton === "change-desc" ? null : "change-desc");
-                  }}
-                  className={`sort-button ${activeButton === "change-desc" ? "active" : ""}`}
-                >
-                  &#9660;
-                </button>
-              </div>
-            </th>
-            <th>
-              <p>
-                Low Price
-              </p>
-              <div>
-                <button
-                  onClick={() => {
-                    if (sortOrder === "lowprice-asc") {
-                      handleResetSort();
-                    } else {
-                      handleSort("lowprice-asc");
-                    }
-                    setActiveButton(activeButton === "lowprice-asc" ? null : "lowprice-asc");
-                  }}
-                  className={`sort-button ${activeButton === "lowprice-asc" ? "active" : ""}`}
-                >
-                  &#9650;
-                </button>
-                <button
-                  onClick={() => {
-                    if (sortOrder === "lowprice-desc") {
-                      handleResetSort();
-                    } else {
-                      handleSort("lowprice-desc");
-                    }
-                    setActiveButton(activeButton === "lowprice-desc" ? null : "lowprice-desc");
-                  }}
-                  className={`sort-button ${activeButton === "lowprice-desc" ? "active" : ""}`}
-                >
-                  &#9660;
-                </button>
-              </div>
-            </th>
-            <th>
-              <p>
-                High Price
-              </p>
-              <div>
-                <button
-                  onClick={() => {
-                    if (sortOrder === "highprice-asc") {
-                      handleResetSort();
-                    } else {
-                      handleSort("highprice-asc");
-                    }
-                    setActiveButton(activeButton === "highprice-asc" ? null : "highprice-asc");
-                  }}
-                  className={`sort-button ${activeButton === "highprice-asc" ? "active" : ""}`}
-                >
-                  &#9650;
-                </button>
-                <button
-                  onClick={() => {
-                    if (sortOrder === "highprice-desc") {
-                      handleResetSort();
-                    } else {
-                      handleSort("highprice-desc");
-                    }
-                    setActiveButton(activeButton === "highprice-desc" ? null : "highprice-desc");
-                  }}
-                  className={`sort-button ${activeButton === "highprice-desc" ? "active" : ""}`}
-                >
-                  &#9660;
-                </button>
-              </div>
-            </th>
-            <th>
-              <p>
-                Volume
-              </p>
-              <div>
-                <button
-                  onClick={() => {
-                    if (sortOrder === "volume-asc") {
-                      handleResetSort();
-                    } else {
-                      handleSort("volume-asc");
-                    }
-                    setActiveButton(activeButton === "volume-asc" ? null : "volume-asc");
-                  }}
-                  className={`sort-button ${activeButton === "volume-asc" ? "active" : ""}`}
-                >
-                  &#9650;
-                </button>
-                <button
-                  onClick={() => {
-                    if (sortOrder === "volume-desc") {
-                      handleResetSort();
-                    } else {
-                      handleSort("volume-desc");
-                    }
-                    setActiveButton(activeButton === "volume-desc" ? null : "volume-desc");
-                  }}
-                  className={`sort-button ${activeButton === "volume-desc" ? "active" : ""}`}
-                >
-                  &#9660;
-                </button>
-              </div>
-            </th>
-          </tr>
-        </thead>
-        {renderCoins()}
-      </table>
-      {}
+      {renderCoins()}
       {renderFooter()}    
       {NoData()}        
     </div>

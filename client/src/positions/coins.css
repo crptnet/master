@@ -1,9 +1,80 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+}
+
+body {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    width: 100vw;
+    height: 100vh;
+    background-color: #252525;
+    color: white;
+    font-family: roboto, poppins, sans-serif;
+}
+
+/*<--SIDEBAR-->*/
+
+.fullSideBar {
+    width: 60px;
+    height: 100vh;
+    position: fixed;
+    background-color: #333333;
+    text-align: center;
+}
+
+.logo img {
+    width: 50px;
+    margin: 5px;
+}
+
+.sideBarWithoutLogo {
+    width: 60px;
+    height: calc(100vh - 70px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.sideBtn {
+    width: 50px;
+    padding: 5px;
+    color: white;
+    background-color: transparent;
+    border: none;
+    border-radius: 5px;
+    font-size: 0.33rem;
+    cursor: pointer;
+}
+
+.sideBtn:hover {
+    background-color: #4682B4;
+}
+
+.activeSideBtn {
+    background-color: #4682B4;
+}
+
+.sideBtn img {
+    width: 30px;
+}
+
+/*<--MAIN-->*/
+
+#main {
+    display: block;
+    margin: 0;
+}
+
 /*LIST-OF-COINS*/
 
 table {
+    margin-left: 10px;
     border-collapse: separate;
     border-spacing: 0px 10px;
-    width: 100%;
+    width: calc(100vw - 90px);
     font-size: 1.25rem;
     font-weight: bold;
 }
@@ -130,7 +201,9 @@ tr.blueHigh {
 /*SEARCH*/
 
 .input-search {
-    width: 100%;
+    width: calc(100vw - 90px);
+    min-width: 860px;
+    margin-left: 10px;
     margin-top: 10px;
     padding: 10px 0px 10px 0px;
     text-align: center;
@@ -141,9 +214,10 @@ tr.blueHigh {
     border: none;
     border-radius: 10px;
  }
- ::placeholder {
+ ::local(placeholder) {
     color: white;
     font-weight: bold;
+    font-size: 3rem;
  }
 
 /*DOWNLOAD*/
@@ -175,6 +249,7 @@ tr.blueHigh {
 }
 
 .NoData {
-    width: 100vw;
+    width: calc(100vw - 90px);
+    margin-left: 10px;
     text-align: center;
 }

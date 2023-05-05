@@ -36,7 +36,7 @@ main {
 
 .mainDataContainer {
     min-width: 500px;
-    min-height: 300px;
+    min-height: 320px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -48,7 +48,7 @@ main {
 
 .sideDataContainer {
     min-width: 500px;
-    min-height: 300px;
+    min-height: 320px;
     margin: 20px;
     display: flex;
     flex-direction: column;
@@ -58,6 +58,34 @@ main {
 }
 
 /*MAIN-DATA*/
+
+.avatar {
+    margin-top: 20px;
+}
+
+.avatarImage {
+    animation: float 6s ease-in-out infinite;
+     /*   background-color: transparent; */
+    border: 1px black;
+    border-radius: 50%;
+}
+
+@keyframes float {
+    0% {
+        box-shadow: 0 5px 15px 0px rgba(0, 0, 0, 0.6);
+        transform: translatey(0px);
+    }
+
+    50% {
+        box-shadow: 0 25px 15px 0px rgba(0, 0, 0, 0.2);
+        transform: translatey(-20px);
+    }
+
+    100% {
+        box-shadow: 0 5px 15px 0px rgba(0, 0, 0, 0.6);
+        transform: translatey(0px);
+    }
+}
 
 .userName, .email, .accLevel {
     min-width: 100px;
@@ -78,7 +106,32 @@ main {
     font-weight:bold;
 }
 
+.mainBtns {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logOutBtn {
+    width: 100px;
+    margin: 5px;
+    padding: 5px;
+    color: white;
+    background-color: #4682B4;
+    border: 2px #4682B4 solid;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+.logOutBtn:hover {
+    color: #4682B4;
+    background-color: white;
+}
+
 .deleteUserBtn {
+    width: 100px;
     margin: 5px;
     padding: 5px;
     color: white;
@@ -391,6 +444,8 @@ main {
     align-items: center; */
     width: 100vw;
     height: 100vh;
+    top: 0;
+    left: 0;
     overflow: hidden;
     z-index: 999;
 }
@@ -403,11 +458,8 @@ main {
     animation-name: shrink-fade;
     animation-duration: 0.8s;
     animation-fill-mode: forwards;
-}
-
-.shrink {
-    width: 150vw;
-    height: 150vw;
+    margin-left: calc(-25vw); 
+    margin-top: calc(-50vh - 50vw);
 }
 
 .hidden {
@@ -417,6 +469,7 @@ main {
     animation-name: anti-shrink-fade;
     animation-duration: 0.8s;
     animation-fill-mode: forwards;
+    margin-top: calc(-50vh - 50vw);
 }
 
 
