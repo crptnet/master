@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import axios from 'axios';
 import ReactDOM from 'react-dom/client';
 import { sidebarRoot, mainRoot, usermainRoot, usersideRoot, modelRoot } from './index';
 import SideUserData from './sideUserData';
@@ -30,8 +31,6 @@ const getData = async () => {
 function MainUserData () {
   const [email, setEmail] = useState('Not Registered');
   const [username, setUsername] = useState('Not Registered');
-  const circlePosX = useRef();
-  const circlePosY = useRef();
   useEffect(() => {
     const fetchData = async () => {
       const data = await getData();
@@ -45,24 +44,6 @@ function MainUserData () {
     };
     fetchData();
   }, [username, email]);
-  
-
-
-  function handleMouseMove(event) {
-    // const { clientX, clientY } = event;
-    // const screenWidth = 0.5 * window.innerWidth;
-    // console.log('screenWidth',screenWidth);
-    // const screenHeight = 0.5 * window.innerHeight;
-    // console.log('screenHeight',screenHeight);
-    // const pxToSubtractX = clientX;
-    // const pxToSubtractY = clientY;
-
-    // const centerX = parseInt(`${-1*(screenWidth + screenHeight - pxToSubtractX)}`);
-    // const centerY = parseInt(`${-2*(screenHeight + screenHeight - pxToSubtractY)}`);
-    // console.log('CenterX',centerX,'CenterY',centerY);
-    // circlePosX.current = `${centerX}px`;
-    // circlePosY.current = `${centerY}px`;
-  }
 
   async function confirmDeletion() {
     try {
@@ -148,7 +129,7 @@ function MainUserData () {
             <img src="./icons/logo.png" alt="crpt.net" />
             <p className='delete-title'>Confirm deletion. This process is permanent.</p>
             <div style={{display:'flex',alignItems:'center',justifyContent:'center'}}>
-              <button onClick={confirmDeletion} onMouseMove={handleMouseMove} className='deleteConfirmBtn'>Delete</button>
+              <button onClick={confirmDeletion} className='deleteConfirmBtn'>Delete</button>
             <button onClick={cancelDeletion} className='deleteCancelBtn'>Cancel</button>
             </div>
           </div>
@@ -156,12 +137,83 @@ function MainUserData () {
       </>
     );
   }
+  const [imageFile, setImageFile] = useState(null);
+
+
+  const uploadPicture = async (e) => {
+    setImageFile({
+      /* contains the preview, if you want to show the picture to the user
+           you can access it with this.state.currentPicture
+       */
+      picturePreview: URL.createObjectURL(e.target.files[0]),
+      /* this contains the file we want to send */
+      pictureAsFile: e.target.files[0],
+    });
+    e.preventDefault();
+  }
+  useEffect(()=>{
+    async function pageSendToServer() {
+    const formData = new FormData();
+    formData.append("profilePicture", imageFile.pictureAsFile);
+    console.log(formData,"<--formDATA");
+
+    const headersList = {
+      "Authorization": `Bearer ${localStorage.getItem('token')}`,
+      "Content-Type": 'application/json'
+    };
+
+    try {
+      const response = await axios.post("http://localhost:5000/api/upload-picture", formData, {
+        headers: headersList
+      });
+      console.log(response.data, "<-- response data");
+      console.log("Successfully uploaded image");
+    } catch (error) {
+      console.log("Error Found", error);
+    }
+  }
+
+  if (imageFile !== null) {
+    pageSendToServer();
+  }
+  },[imageFile]);
+
+  const handleImageChange = async (e) => {
+    const file = document.getElementById('file-input').files[0];
+    setImageFile(file);
+
+    const headersList = {
+      "Authorization": `Bearer ${localStorage.getItem('token')}`,
+      "Content-Type": 'application/json'
+    };
+    const formData = new FormData();
+    formData.append('image', file);
+    console.log('!!!!!!!file',file)
+    if(localStorage.getItem('token'))
+    {
+      const response = await fetch('http://localhost:5000/api/upload-picture', {
+        method: 'POST',
+        body: JSON.stringify({profilePicture:formData}),
+        headers: headersList
+      });
+    }
+    console.log(response.status,"<--responseStatus");
+    
+    // handle the server response here
+  };
+
+  const handleImageClick = () => {
+    document.getElementById('file-input').click();
+  };
 
   return (
     <>
       <div className='mainDataContainer'>
         <div className='avatar'>
-          <img src='./icons/avatar.png' className='avatarImage'/>
+          <label htmlFor="file-input">
+            <img src='./icons/avatar.png' className='avatarImage' key="profilePicture" onClick={handleImageClick}/>
+          </label>
+          <input type="file" id="file-input" style={{ display: 'none' }} onChange={uploadPicture} />
         </div>
         <div className='userName'>
             <p className='userNameOuter'>Username</p>
