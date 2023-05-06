@@ -156,15 +156,18 @@ function MainUserData () {
     async function pageSendToServer() {
     const formData = new FormData();
     formData.append("profilePicture", imageFile.pictureAsFile);
+
+    console.log(imageFile)
+
     console.log(formData,"<--formDATA");
 
     const headersList = {
       "Authorization": `Bearer ${localStorage.getItem('token')}`,
-      "Content-Type": 'application/json'
+      "Content-Type": 'multipart/form-data; boundary=<calculated when request is sent>'
     };
 
     try {
-      const response = await axios.post("http://localhost:5000/api/upload-picture", formData, {
+      const response = await axios.post("http://localhost:5000/api/profile-picture", formData, {
         headers: headersList
       });
       console.log(response.data, "<-- response data");
@@ -177,55 +180,30 @@ function MainUserData () {
   if (imageFile !== null) {
     pageSendToServer();
   }
-  },[imageFile]);
 
-  const handleImageChange = async (e) => {
-    const file = document.getElementById('file-input').files[0];
-    setImageFile(file);
 
+  async function pageGetFromServer() {
     const headersList = {
       "Authorization": `Bearer ${localStorage.getItem('token')}`,
-      "Content-Type": 'application/json'
+      "Content-Type": 'multipart/form-data; boundary=<calculated when request is sent>'
     };
-    const formData = new FormData();
-    formData.append('image', file);
-    console.log('!!!!!!!file',file)
-    if(localStorage.getItem('token'))
-    {
-      pictureGetFromServer();
+    try {
+      const response = await axios.get("http://localhost:5000/api/profile-picture", {
+        headers: headersList
+      });
+      console.log(response.data, "<-- response data");
+      console.log("Successfully displayed image");
+      setAvatar(response.data);
+    } catch (error) {
+      console.log("Error Found", error);
     }
+  }
+  if(localStorage.getItem('token'))
+  {
+    pageGetFromServer();
+  }
   },[imageFile]);
 
-  // useEffect(()=>{
-  //   usermainRoot.render(
-  //     <>
-  //     <div className='mainDataContainer'>
-  //       <div className='avatar'>
-  //         <label htmlFor="file-input">
-  //           <img src={avatar} className='avatarImage' key="profilePicture" onClick={handleImageClick}/>
-  //         </label>
-  //         <input type="file" id="file-input" style={{ display: 'none' }} onChange={uploadPicture} />
-  //       </div>
-  //       <div className='userName'>
-  //           <p className='userNameOuter'>Username</p>
-  //           <p className='userNameInner'>{username}</p>
-  //       </div>
-  //       <div className='email'>
-  //           <p className='emailOuter'>Email</p>
-  //           <p className='emailInner'>{email}</p>
-  //       </div>
-  //       <div className='accLevel'>
-  //           <p className='accLevelOuter'>Account level</p>
-  //           <p className='accLevelInner'>Basic</p>
-  //       </div>
-  //       <div className='mainBtns'>
-  //         <button className='logOutBtn' onClick={logOut}>Log out</button>
-  //         <button className='deleteUserBtn' onClick={renderDeleteConfirmation}>Delete user</button>
-  //       </div>
-  //     </div>
-  //   </>
-  //   );
-  // },[avatar])
 
   const handleImageClick = () => {
     document.getElementById('file-input').click();
