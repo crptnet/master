@@ -31,6 +31,7 @@ const getData = async () => {
 function MainUserData () {
   const [email, setEmail] = useState('Not Registered');
   const [username, setUsername] = useState('Not Registered');
+  const [avatar, setAvatar] = useState('./icons/avatar.png');
   useEffect(() => {
     const fetchData = async () => {
       const data = await getData();
@@ -179,31 +180,30 @@ function MainUserData () {
   if (imageFile !== null) {
     pageSendToServer();
   }
-  },[imageFile]);
 
-  const handleImageChange = async (e) => {
-    const file = document.getElementById('file-input').files[0];
-    setImageFile(file);
 
+  async function pageGetFromServer() {
     const headersList = {
       "Authorization": `Bearer ${localStorage.getItem('token')}`,
-      "Content-Type": 'application/json'
+      "Content-Type": 'multipart/form-data; boundary=<calculated when request is sent>'
     };
-    const formData = new FormData();
-    formData.append('image', file);
-    console.log('!!!!!!!file',file)
-    if(localStorage.getItem('token'))
-    {
-      const response = await fetch('http://localhost:5000/api/upload-picture', {
-        method: 'POST',
-        body: JSON.stringify({profilePicture:formData}),
+    try {
+      const response = await axios.get("http://localhost:5000/api/profile-picture", {
         headers: headersList
       });
+      console.log(response.data, "<-- response data");
+      console.log("Successfully displayed image");
+      setAvatar(response.data);
+    } catch (error) {
+      console.log("Error Found", error);
     }
-    console.log(response.status,"<--responseStatus");
-    
-    // handle the server response here
-  };
+  }
+  if(localStorage.getItem('token'))
+  {
+    pageGetFromServer();
+  }
+  },[imageFile]);
+
 
   const handleImageClick = () => {
     document.getElementById('file-input').click();
@@ -214,7 +214,7 @@ function MainUserData () {
       <div className='mainDataContainer'>
         <div className='avatar'>
           <label htmlFor="file-input">
-            <img src='./icons/avatar.png' className='avatarImage' key="profilePicture" onClick={handleImageClick}/>
+            <img src={avatar} className='avatarImage' key="profilePicture" onClick={handleImageClick}/>
           </label>
           <input type="file" id="file-input" style={{ display: 'none' }} onChange={uploadPicture} />
         </div>
