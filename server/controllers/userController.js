@@ -165,7 +165,7 @@ const getUser = asyncHandler(async (req, res) => {
       email : User.email,
       active : User.active,
       watchList : User.watchList,
-      profilePicture : `http://${process.env.SERVER_DOMAIN}/upload/${(User.profilePicture).substring((User.profilePicture).lastIndexOf('\\') + 1)}`
+      profilePicture : `http://${process.env.SERVER_DOMAIN}/upload/${(User.profilePicture !== 'null') ? (User.profilePicture).substring((User.profilePicture).lastIndexOf('\\') + 1) : 'def.jpg'}`
     }
     );
   });
