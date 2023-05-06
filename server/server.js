@@ -27,6 +27,8 @@ app.use(bodyParser.json());
 app.use(express.json());
 app.use('/api', require('./routes/userRouter'))
 app.use('/api', require('./routes/watchListRouter'))
+app.use('/upload', express.static(path.join(__dirname, 'uploads')))
+
 
 
 app.listen(PORT, () =>{console.log('server started')})
