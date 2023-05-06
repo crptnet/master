@@ -164,7 +164,8 @@ const getUser = asyncHandler(async (req, res) => {
       username : User.username,
       email : User.email,
       active : User.active,
-      watchList : User.watchList
+      watchList : User.watchList,
+      profilePicture : `http://${process.env.SERVER_DOMAIN}/upload/${(User.profilePicture !== 'null') ? (User.profilePicture).substring((User.profilePicture).lastIndexOf('\\') + 1) : 'def.jpg'}`
     }
     );
   });
@@ -276,7 +277,7 @@ const updateUserInfo = asyncHandler(async (req, res) =>{
 ///Route POST /api/profile-picture
 ///access private
 const setProfilePicture = asyncHandler(async (req, res) => {
-  console.log(req.file)
+  
   const User = await user.findById(req.user.id)
   if(User.profilePicture === 'null'){
     await User.updateOne({ profilePicture : req.file.path})
@@ -288,10 +289,14 @@ const setProfilePicture = asyncHandler(async (req, res) => {
         console.log('File deleted successfully');
       });  
     }
-    catch{
-      console.log('File has not been found')
+    catch(err){
+      throw new Error(err.message)
     }
-    await User.updateOne({ profilePicture : req.file.path})  
+
+    console.log(path.join(req.file.path))
+
+
+    await User.updateOne({ profilePicture : req.file.path })  
   }
   res.status(200).json('success')
 });
@@ -324,34 +329,6 @@ const deleteProfilePicture = asyncHandler(async (req, res) =>{
 
 });
 
-///desc GET profile Picture to the user
-///Route GET /api/profile-picture
-///access private
-const getProfilePicture = asyncHandler(async (req, res) =>{
-  const User = await user.findById(req.user.id)
-  if(!User){
-    res.status(400).json({message: ('User is not authorized')})
-    throw new Error('User is not authorized')
-  }
-  var imagePath = path.join(__dirname, '../', User.profilePicture);
-  if(!fs.existsSync(imagePath)){
-    imagePath = path.join(__dirname, '../', '\\uploads\\def.jpg')
-  }
-  res.status(200).sendFile(imagePath)
-});
-
-///desc GET profile Picture to the user
-///Route GET /api/profilePicture/:username
-///access public
-const getProfilePictureByUserName = asyncHandler(async (req, res) =>{
-  const User = await user.findOne({ username : req.params.username} )
-  if(!User){
-    res.status(404).json({message: ('Not found')})
-    throw new Error('Not found')
-  }
-  const imagePath = path.join(__dirname, '../', User.profilePicture);
-  res.status(200).sendFile(imagePath)
-});
 
 ///
 /// CHANGE PASSWORD SECTION  
@@ -563,10 +540,8 @@ module.exports = {
     getUserInfoForActivation,
     loginUser,
     getUser,
-    getProfilePicture,
     deleteUser,
     setProfilePicture,
-    getProfilePictureByUserName,
     deleteProfilePicture,
     updateActiveStatus,
     changePasswordRequest,

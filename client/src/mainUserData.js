@@ -153,46 +153,43 @@ function MainUserData () {
     e.preventDefault();
   }
   useEffect(()=>{
-    async function pictureSendToServer() {
-      const formData = new FormData();
-      formData.append("profilePicture", imageFile.pictureAsFile);
-      console.log(formData,"<--formDATA");
+    async function pageSendToServer() {
+    const formData = new FormData();
+    formData.append("profilePicture", imageFile.pictureAsFile);
+    console.log(formData,"<--formDATA");
 
-      const headersList = {
-        "Authorization": `Bearer ${localStorage.getItem('token')}`,
-        "Content-Type": 'multipart/form-data'
-      };
+    const headersList = {
+      "Authorization": `Bearer ${localStorage.getItem('token')}`,
+      "Content-Type": 'application/json'
+    };
 
-      try {
-        const response = await axios.post("http://localhost:5000/api/profile-picture", formData, {
-          headers: headersList
-        });
-        console.log(response.data, "<-- response data");
-        console.log("Successfully uploaded image");
-      } catch (error) {
-        console.log("Error Found", error);
-      }
+    try {
+      const response = await axios.post("http://localhost:5000/api/upload-picture", formData, {
+        headers: headersList
+      });
+      console.log(response.data, "<-- response data");
+      console.log("Successfully uploaded image");
+    } catch (error) {
+      console.log("Error Found", error);
     }
-    async function pictureGetFromServer() {
-      console.log("Successfully displayed image");
-      const headersList = {
-        "Authorization": `Bearer ${localStorage.getItem('token')}`,
-        "Content-Type": 'multipart/form-data'
-      };
-      try {
-        const response = await axios.get("http://localhost:5000/api/profile-picture", {
-          headers: headersList
-        });
-        console.log(response, "<-- response");
-        setAvatar(response.data);
-      } catch (error) {
-        console.log("Error Found", error);
-      }
-    }
+  }
 
-    if (imageFile !== null) {
-      pictureSendToServer();
-    }
+  if (imageFile !== null) {
+    pageSendToServer();
+  }
+  },[imageFile]);
+
+  const handleImageChange = async (e) => {
+    const file = document.getElementById('file-input').files[0];
+    setImageFile(file);
+
+    const headersList = {
+      "Authorization": `Bearer ${localStorage.getItem('token')}`,
+      "Content-Type": 'application/json'
+    };
+    const formData = new FormData();
+    formData.append('image', file);
+    console.log('!!!!!!!file',file)
     if(localStorage.getItem('token'))
     {
       pictureGetFromServer();

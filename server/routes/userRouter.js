@@ -6,8 +6,6 @@ const {
     getUser,
     deleteUser,
     setProfilePicture,
-    getProfilePicture,
-    getProfilePictureByUserName,
     deleteProfilePicture,
     updateActiveStatus,
     changePasswordRequest,
@@ -49,10 +47,6 @@ const upload = multer({
 router.get('/email-active', validateGoogleToken, )
 
 router.get('/current', validateToken,getUser)
-
-router.get('/profile-picture', validateToken, getProfilePicture)
-
-router.get('/user-profile-picture/:username', getProfilePictureByUserName)
 
 router.get('/active', getUserInfoForActivation)
 
