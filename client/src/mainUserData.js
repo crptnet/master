@@ -155,15 +155,18 @@ function MainUserData () {
     async function pageSendToServer() {
     const formData = new FormData();
     formData.append("profilePicture", imageFile.pictureAsFile);
+
+    console.log(imageFile)
+
     console.log(formData,"<--formDATA");
 
     const headersList = {
       "Authorization": `Bearer ${localStorage.getItem('token')}`,
-      "Content-Type": 'application/json'
+      "Content-Type": 'multipart/form-data; boundary=<calculated when request is sent>'
     };
 
     try {
-      const response = await axios.post("http://localhost:5000/api/upload-picture", formData, {
+      const response = await axios.post("http://localhost:5000/api/profile-picture", formData, {
         headers: headersList
       });
       console.log(response.data, "<-- response data");

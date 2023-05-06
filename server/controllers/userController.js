@@ -276,7 +276,9 @@ const updateUserInfo = asyncHandler(async (req, res) =>{
 ///Route POST /api/profile-picture
 ///access private
 const setProfilePicture = asyncHandler(async (req, res) => {
+  
   console.log(req.file)
+  
   const User = await user.findById(req.user.id)
   if(User.profilePicture === 'null'){
     await User.updateOne({ profilePicture : req.file.path})
