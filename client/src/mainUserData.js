@@ -183,39 +183,28 @@ function MainUserData () {
 
 
   async function pageGetFromServer() {
-    const headersList = {
-      "Authorization": `Bearer ${localStorage.getItem('token')}`,
-      "Content-Type": 'multipart/form-data; boundary=<calculated when request is sent>'
-    };
-    try {
-      const response = await axios.get("http://localhost:5000/api/profile-picture", {
-        headers: headersList
-      });
-      console.log(response.data, "<-- response data");
-      console.log("Successfully displayed image");
-      setAvatar(response.data);
-    } catch (error) {
-      console.log("Error Found", error);
-    }
+    const userData = await getData();
+    setAvatar(userData.profilePicture);
   }
   if(localStorage.getItem('token'))
   {
     pageGetFromServer();
+    console.log('!');
+    if(avatar!='./icons/avatar.png')
+    {
+      window.location.reload(true);
+    }
   }
   },[imageFile]);
-
-
-  const handleImageClick = () => {
-    document.getElementById('file-input').click();
-  };
 
   return (
     <>
       <div className='mainDataContainer'>
         <div className='avatar'>
           <label htmlFor="file-input">
-            <img src={avatar} className='avatarImage' key="profilePicture" onClick={handleImageClick}/>
+            <img src='./icons/addAvatar.png' className='addAvatarImage' />
           </label>
+          <img src={avatar} className='avatarImage' key="profilePicture" />
           <input type="file" id="file-input" style={{ display: 'none' }} onChange={uploadPicture} />
         </div>
         <div className='userName'>

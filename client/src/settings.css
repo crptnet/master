@@ -64,10 +64,31 @@ main {
 }
 
 .avatarImage {
+    width: 100px;
+    height: 100px;
+    margin-left: -100px;
     animation: float 6s ease-in-out infinite;
      /*   background-color: transparent; */
     border: 1px black;
     border-radius: 50%;
+    position: absolute;
+    z-index: 2;
+    transition: opacity 0.5s ease;
+}
+.addAvatarImage {
+    position: relative;
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    z-index: 1;
+    animation: float 6s ease-in-out infinite;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.avatar:hover .addAvatarImage {
+    z-index: 3;
+    opacity: 0.9;
 }
 
 @keyframes float {
