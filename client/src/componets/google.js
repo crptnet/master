@@ -8,14 +8,16 @@ const Google = () => {
         <GoogleLogin 
             onSuccess={async (res) => {
               console.log(res);
-              const token = await fetch('http://localhost:5000/api/googleSingIn', {
+              var token = await fetch('http://localhost:5000/api/googleSingIn', {
                 method : 'POST',
                 headers : {
                   'Authorization' : `Bearer ${res.credential}`
                 }
               })
+
+              token = await token.json()
               console.log(token)
-              localStorage.setItem('token', token)
+              localStorage.setItem('token', token.accessToken)
             }}
             onError={() => {
               console.log('fuck google');

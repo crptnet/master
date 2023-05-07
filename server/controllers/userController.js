@@ -159,13 +159,16 @@ const getUser = asyncHandler(async (req, res) => {
     if(!User){
       res.sendStatus(404)
     }
+    const profilePicture = !User.googleActive ? (`http://${process.env.SERVER_DOMAIN}/upload/${(User.profilePicture !== 'null') ? (User.profilePicture).substring((User.profilePicture).lastIndexOf('\\') + 1) : 'def.jpg'}`) : User.profilePicture
     res.status(200).json(
     {
       username : User.username,
       email : User.email,
       active : User.active,
       watchList : User.watchList,
-      profilePicture : `http://${process.env.SERVER_DOMAIN}/upload/${(User.profilePicture !== 'null') ? (User.profilePicture).substring((User.profilePicture).lastIndexOf('\\') + 1) : 'def.jpg'}`
+      profilePicture : profilePicture,
+      googleActive : User.googleActive,
+      isPasswordChangeable : User.password ? true : false
     }
     );
   });
@@ -361,17 +364,17 @@ const changePasswordRequest = asyncHandler(async (req, res) =>{
       html: `<p>Please click <a href="http://localhost:3000/password-reset?token=${token}">here</a> to reset your password.</p>`
     };
 
+    var resStatus = 200
     // Send the password reset email
     await transporter.sendMail(emailMessage, (error, info) => {
       if (error) {
-        console.error(error);
-        res.sendStatus(500);
+        console.error(error)
+        resStatus = 500
       } else {
         console.log('Password reset email sent: ' + info.response);
-        res.sendStatus(200);
       }
     });
-    res.status(500).json(token)
+    res.status(resStatus).json(token)
 })
 
 // Desc change user password

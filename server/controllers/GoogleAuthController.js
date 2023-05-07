@@ -18,13 +18,15 @@ const googleSignIn = asyncHandler(async(req, res) =>{
     if(!User){
       var newUser
       if((await user.findOne({ username : req.user.name}))){       
-          newUser = new user({ username : hashUsername(req.user.name), email : req.user.email, active : true, profilePicture: 'null' });
+          newUser = new user({ username : hashUsername(req.user.name), email : req.user.email, active : true, profilePicture: req.user.picture, googleActive : true });
           await newUser.save();
       }
       else{
-        newUser = new user({ username : req.user.name, email : req.user.email, active : true, profilePicture: 'null' });
+        newUser = new user({ username : req.user.name, email : req.user.email, active : true, profilePicture: req.user.picture, googleActive : true });
         await newUser.save();
       }
+
+
       const accessToken = jwt.sign(
         {
           user: {
@@ -40,6 +42,13 @@ const googleSignIn = asyncHandler(async(req, res) =>{
       )
       return res.status(200).json({ accessToken }) 
     }
+
+    //console.log(User.googleActive)
+
+    if(!User.googleActive){
+      await User.updateOne({ googleActive : true})
+    }
+
     const accessToken = jwt.sign(
       {
         user: {
