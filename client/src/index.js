@@ -10,13 +10,23 @@ import MainUserData from './mainUserData';
 import SideUserData from './sideUserData';
 import Convert from './convert/convert';
 import BTCPrice from './positions/binanceCoins';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+
+
 
 const sidebarRoot = ReactDOM.createRoot(document.getElementById('sidebar'));
 const usermainRoot = ReactDOM.createRoot(document.getElementById('user-main'));
 const usersideRoot = ReactDOM.createRoot(document.getElementById('user-side'));
 const modelRoot = ReactDOM.createRoot(document.getElementById('model'));
 const mainRoot = ReactDOM.createRoot(document.getElementById('main'));
-
+// const googleRoot = ReactDOM.createRoot(document.getElementById('root'));
+// root.render(
+//   <React.StrictMode>
+//     <GoogleOAuthProvider clientId="PUT-YOUR-CLIENT-ID-HERE">
+//       <App />
+//     </GoogleOAuthProvider>
+//   </React.StrictMode>
+// );
 const pathName = window.location.pathname;
 console.log(pathName);
 

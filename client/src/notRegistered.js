@@ -190,6 +190,8 @@ import { sidebarRoot, mainRoot, usermainRoot, usersideRoot, modelRoot } from './
 import MainUserData from './mainUserData';
 import SideUserData from './sideUserData';
 import './settings.css';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import Google from './componets/google';
 
 const NotRegistered = () => {
   const [username, setUsername] = useState('');
@@ -548,6 +550,14 @@ const NotRegistered = () => {
             </>
           )
         }
+        {/* Google Auth buttom */}
+        <div>
+          <GoogleOAuthProvider clientId="22208776050-nv7hj7qppl8h39vpl9gkq31utgj43op8.apps.googleusercontent.com">
+            <Google/>
+          </GoogleOAuthProvider>
+        </div>
+
+
       </div>
     );
 }

@@ -3,7 +3,8 @@ const { OAuth2Client } = require('google-auth-library');
 
 function validateGoogleToken(req, res, next) {
   const token = req.headers.authorization.split(' ')[1]; // assuming token is passed in the Authorization header
-  const clientId = GoogleSecret.client_id; // replace with your Google OAuth client ID
+  //console.log(token)
+  const clientId = `22208776050-nv7hj7qppl8h39vpl9gkq31utgj43op8.apps.googleusercontent.com`; // replace with your Google OAuth client ID
   const client = new OAuth2Client(clientId);
 
   async function verify() {
@@ -11,7 +12,9 @@ function validateGoogleToken(req, res, next) {
         idToken: token,
         audience: clientId,  
     });
+    
     const payload = ticket.getPayload();
+
     // validate that the token is for the correct Google client ID, and that it has not expired
     if (payload.aud !== clientId || Date.now() > payload.exp * 1000) {
       return res.status(401).json({ error: 'Invalid token' });
