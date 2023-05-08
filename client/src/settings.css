@@ -48,7 +48,6 @@ main {
 
 .sideDataContainer {
     min-width: 500px;
-    min-height: 320px;
     margin: 20px;
     display: flex;
     flex-direction: column;
@@ -56,6 +55,8 @@ main {
     background-color: #333333;
     border-radius: 15px;
 }
+
+
 
 /*MAIN-DATA*/
 
@@ -214,6 +215,16 @@ main {
     font-size: 1rem;
 }
  
+.google-btn {
+    width: 500px;
+    background-color: #4285f4;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
 /*LOGIN*/
 
 .login {

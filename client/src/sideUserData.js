@@ -3,6 +3,9 @@ import './settings.css';
 import { sidebarRoot, mainRoot, usermainRoot, usersideRoot, modelRoot } from './index';
 import SideUserBtns from './sideUserBtns';
 import MainUserData from './mainUserData';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import Google from './componets/google';
+
 function SideUserData () {
 const [openEmailChange, setOpenEmailChange] = useState(false);
 const [newEmail, setNewEmail] = useState('');
@@ -17,6 +20,8 @@ const [oldPassword, setOldPassword] = useState('');
 
 const errorPosSide = useRef('');
 const [errorContentSide,setErrorContentSide] = useState('');
+
+const [googleActive, setGoogleActive] = useState('Not Registered');
 
 useEffect(()=>{console.log("NewEmail:",newEmail,"EnterNum:",enterNum);},[newEmail,enterNum]);
 const getData = async () => {
@@ -292,16 +297,21 @@ const SideDiv = (props) => {
         </div>
         <div className="sideRight">
             <p className='sideStatus'>{status}</p>
-            {title == 'Reset Email' && (
-              <button className='sideBtnData' onClick={() => setOpenEmailChange(true)}>{btn}</button>
-            )}
-            {title == 'Reset Password' && (
-              <button className='sideBtnData' onClick={() => setOpenPasswordChange(true)}>{btn}</button>
-            )}
-            {title == 'Email Authentication' && (
-              <button className='sideBtnData' onClick={() => PopUpCheckEmail(email)}>{btn}</button>
-            )}
-            {title != 'Email Authentication' && title != 'Reset Email' && title != 'Reset Password' && (<button className='sideBtnData'>{btn}</button>)}
+              {title == 'Reset Email' && (
+                <button className='sideBtnData' onClick={() => setOpenEmailChange(true)}>{btn}</button>
+              )}
+              {title == 'Reset Password' && (
+                <button className='sideBtnData' onClick={() => setOpenPasswordChange(true)}>{btn}</button>
+              )}
+              {title == 'Google' && (
+                <GoogleOAuthProvider clientId="22208776050-nv7hj7qppl8h39vpl9gkq31utgj43op8.apps.googleusercontent.com">
+                  <Google/>
+                </GoogleOAuthProvider>
+              )}
+              {title == 'Email Authentication' && (
+                <button className='sideBtnData' onClick={() => PopUpCheckEmail(email)}>{btn}</button>
+              )}
+              {title != 'Email Authentication' && title != 'Reset Email' && title != 'Reset Password' && title != 'Google' && (<button className='sideBtnData'>{btn}</button>)}
         </div>
     </div>
   );
@@ -318,6 +328,7 @@ const SideButtons = () => {
         setEmail(data.email);
         setUsername(data.username);
         setActive(data.active);
+        setGoogleActive(data.googleActive);
         console.log('My data!!!');
         console.log(email);
         console.log(username);
@@ -328,15 +339,20 @@ const SideButtons = () => {
   }, [username, email, active]);
 
   return SideUserBtns.map((element) => {
-    return <SideDiv key={element.id} img={element.img} title={element.title} status={element.title=='Email Authentication'?(active?'Bound':'Un Bound'):element.status} btn={element.title=='Email Authentication'?(active?'Un Bind':'Bind'):element.btn} email={email}></SideDiv>;
+    if(googleActive==false||(element.title != 'Reset Email'&&element.title!='Reset Password'&&element.title!='Google'&&element.title!='Email Authentication'))
+    {
+      return <SideDiv key={element.id} img={element.img} title={element.title} status={element.title=='Email Authentication'?(active?'Bound':'Un Bound'):element.status} btn={element.title=='Email Authentication'?(active?'Un Bind':'Bind'):element.btn} email={email}></SideDiv>;
+    }
+    return;
   });
 };
 
-
+  const classNameContainer = googleActive ? 'sideDataContainer short' : 'sideDataContainer long';
   return (
     <>
-      <div className='sideDataContainer'>
-          <SideButtons />
+      <div className={classNameContainer}>
+        <SideButtons />
+        {googleActive && <p style={{textAlign:'center', margin:'20px'}}>Email and password are verified by binding GoogleAcc</p>}
       </div>
     </>
   );

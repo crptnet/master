@@ -1,190 +1,3 @@
-// import React, { useState, useEffect } from 'react';
-// import { sidebarRoot, mainRoot, usermainRoot, usersideRoot, modelRoot } from './index';
-// import './settings.css';
-
-// const [error, setError] = useState('');
-
-// const getData = async () => {
-//   try {
-//     const headersList = {
-//       "Accept": "*/*",
-//       "User-Agent": "Thunder Client (https://www.thunderclient.com)",
-//       "Authorization": `Bearer ${localStorage.getItem('token')}`,
-//     };
-//     if(localStorage.getItem('token')) {
-//       const response = await fetch("http://localhost:5000/api/current", {
-//         method: 'GET',
-//         headers: headersList
-//       });
-//       if (!response.ok) {
-//         throw new Error(await response.text());
-//       }
-//       return await response.json();
-//     } else {
-//       return {email:'Unauthorized', password: 'Unauthorized'};
-//     }
-//   } catch (error) {
-//     setError(error.message);
-//   }
-// }
-
-// const sendJSONToServer = async (userData) => {
-//   try {
-//     const response = await fetch('http://localhost:5000/api/register', {
-//       method: 'POST',
-//       body: userData,
-//       headers: {
-//         'Content-Type': 'application/json'
-//       }
-//     });
-//     if (!response.ok) {
-//       throw new Error(await response.text());
-//     }
-//     return await response.json();
-//   } catch (error) {
-//     setError(error.message);
-//   }
-// }
-// const getToken = async (userData) => {
-//   try {
-//     const response = await fetch('http://localhost:5000/api/login', {
-//       method: 'POST',
-//       body: userData,
-//       headers: {
-//         'Content-Type': 'application/json'
-//       }
-//     });
-//     if (!response.ok) {
-//       throw new Error(await response.text());
-//     }
-//     const data = await response.json();
-//     console.log('My token:');
-//     console.log(data);
-//     localStorage.setItem('token', data.accessToken);
-//   } catch (error) {
-//     setError(error.message);
-//   }
-// }
-
-
-// class NotRegistered extends React.Component {
-//   constructor(props) {
-//     super(props);
-
-//     this.state = {
-//       username: '',
-//       email: '',
-//       password: '',
-//       showUsernameInput: false
-//     };
-
-//     this.handleChange = this.handleChange.bind(this);
-//     this.handleRegisterSubmit = this.handleRegisterSubmit.bind(this);
-//     this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
-//     this.moveToLogin = this.moveToLogin.bind(this);
-//     this.moveToRegister = this.moveToRegister.bind(this);
-//     this.render = this.render.bind(this);
-//   }
-
-//   handleChange(event) {
-//     this.setState({ [event.target.name]: event.target.value });
-//   }
-
-//   async handleRegisterSubmit(event) {
-//     event.preventDefault();
-//     const userData = JSON.stringify(this.state);
-//     console.log(userData);
-//     await sendJSONToServer(userData);
-//     const {username, email, password } = this.state;
-//     const dataToLogin = JSON.stringify({email, password});
-//     console.log('Data To login:');
-//     console.log(dataToLogin);
-//     if(email==undefined || password==undefined) {
-//       console.log('Cant get token!');
-//     } else {
-//       await getToken(dataToLogin);
-//     }
-//     const data = await getData();
-//     this.props.submitUser();
-//     return data;
-//   }
-//   async handleLoginSubmit(event) {
-//     const {username, email, password } = this.state;
-//     const dataToLogin = JSON.stringify({email, password});
-//     console.log('Data To login:');
-//     console.log(dataToLogin);
-//     if(email==undefined || password==undefined) {
-//       console.log('Cant get token!');
-//     } else {
-//       await getToken(dataToLogin);
-//     }
-//     const data = await getData();
-//     this.props.submitUser();
-//     return data;
-//   }
-//   moveToLogin() {
-//     this.setState({ showUsernameInput: false });
-//   }
-//   moveToRegister() {
-//     this.setState({ showUsernameInput: true });
-//   }
-//   render() {
-//     const containerClass = this.state.showUsernameInput ? "register" : "login";
-//     return (
-//       <div className={containerClass}>
-//         {error && <div className="error">{error}</div>}
-//         <img src='./icons/logo.png'/>
-//         {this.state.showUsernameInput && ( 
-//           <div className="usernameLogin appear-from-bottom">
-//             <p className='usernameLoginTitle'>Username</p>
-//             <input type='text' name='username' value={this.state.username} onChange={this.handleChange} placeholder='Examplify' className='usernameLoginInput' />
-//           </div>
-//         )}
-//         <div className="emailLogin">
-//           <p className='emailLoginTitle'>Email</p>
-//           <input type='email' name='email' value={this.state.email} onChange={this.handleChange} placeholder='example@gmail.com' className='emailLoginInput'/>
-//         </div>    
-//         <div className="passwordLogin">
-//           <p className='passwordLoginTitle'>Password</p>
-//           <input type='password' name='password' value={this.state.password} onChange={this.handleChange} placeholder='Examp1e' className='passwordLoginInput'/>
-//         </div>
-//         {this.state.showUsernameInput ? ( 
-//             <>
-//               <div className="haveAcc">
-//                 <p className='haveAccTitle'>Already have an account?</p>
-//                 <button className='haveAccBtn' onClick={this.moveToLogin}>Login</button>
-//               </div> 
-//               <button className='submitLogin' onClick={this.handleRegisterSubmit}>Submit</button>
-//             </>
-//           ) : (
-//             <>
-//               <div className="haveAcc">
-//               <p className='haveAccTitle'>Dont have an account? </p>
-//               <button className='haveAccBtn' onClick={this.moveToRegister}>Register</button>
-//             </div> 
-//             <button className='submitLogin' onClick={this.handleLoginSubmit}>Submit</button>
-//             </>
-//           )
-//         }
-        
-        
-//       </div>
-//     );
-//   }
-// }
-
-// export { getData };
-// export default NotRegistered;
-
-
-
-
-
-
-
-
-
-
 import React, { useState, useEffect, useRef } from 'react';
 import { sidebarRoot, mainRoot, usermainRoot, usersideRoot, modelRoot } from './index';
 import MainUserData from './mainUserData';
@@ -381,53 +194,6 @@ const NotRegistered = () => {
     setEmailToRecover(event.target.value);
   };  
 
-
-  // const handleNewEmail = async () => {
-  //   console.log("emailToRecover!",emailToRecover);
-  //   if(emailToRecover!='')
-  //   {
-  //     console.log("HELP!");
-  //     try {
-  //       console.log("EMAIL!:", emailToSend);
-  //       const headersList = {
-  //         "Content-Type": 'application/json'
-  //       };
-  //       if(localStorage.getItem('token')) {
-  //         const response = await fetch(`http://localhost:5000/api/change-password  `, {
-  //           method: 'POST',
-  //           body: JSON.stringify({email:emailToRecover}),
-  //           headers: headersList
-  //         });
-  //         const userData = response;
-  //         let errorStatus = response.status;
-  //         if(errorStatus != 200)
-  //         {
-  //           if(errorStatus==400)
-  //           {
-  //             errorPos.current = "Invalid password"; 
-  //           } 
-  //           else if(errorStatus==404)
-  //           {
-  //             errorPos.current = 'User not found';
-  //           }
-  //         }
-  //         else
-  //         {
-  //           errorPos.current = "";
-  //           closePopUp();
-  //         }
-  //         setErrorContent(errorPos.current);
-  //       }
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   }
-  // }
-
-  // useEffect(() => {
-    
-  // }, [emailToSend]);
-
   useEffect(() => {
     
     const sendRequest = async () =>{
@@ -472,18 +238,12 @@ const NotRegistered = () => {
     }
   }, [emailToSend]);
 
-  // useEffect(() => {
-  //   console.log(`Email to send ${emailToRecover}`);
-  // }, [emailToSend]);
-
   function closePopUp() {
     setErrorContent('');
     setMoveToRecover(false);
     modelRoot.render(<></>);
-    // setOpenEmailChange(false);
-    // setOpenPasswordChange(false);
-    // setEnterNum(false);
   }
+
   useEffect(() => {
     if(moveToRecover)
     {
@@ -507,9 +267,11 @@ const NotRegistered = () => {
   const moveToLogin = () => {
     setShowUsernameInput(false);
   }
+
   const moveToRegister = () => {
     setShowUsernameInput(true);
   }
+
     return (
       <div className={containerClass}>
         <img src='./icons/logo.png'/>
@@ -550,10 +312,9 @@ const NotRegistered = () => {
             </>
           )
         }
-        {/* Google Auth buttom */}
         <div>
           <GoogleOAuthProvider clientId="22208776050-nv7hj7qppl8h39vpl9gkq31utgj43op8.apps.googleusercontent.com">
-            <Google/>
+            <Google />
           </GoogleOAuthProvider>
         </div>
 
