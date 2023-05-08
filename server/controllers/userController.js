@@ -159,7 +159,12 @@ const getUser = asyncHandler(async (req, res) => {
     if(!User){
       res.sendStatus(404)
     }
-    const profilePicture = !User.googleActive ? (`http://${process.env.SERVER_DOMAIN}/upload/${(User.profilePicture !== 'null') ? (User.profilePicture).substring((User.profilePicture).lastIndexOf('\\') + 1) : 'def.jpg'}`) : User.profilePicture
+
+    const pattern = /googleusercontent\.com\//;
+
+    //console.log(User.profilePicture, pattern.test(User.profilePicture))
+
+    const profilePicture = !pattern.test(User.profilePicture)  ? (`http://${process.env.SERVER_DOMAIN}/upload/${(User.profilePicture !== 'null') ? (User.profilePicture).substring((User.profilePicture).lastIndexOf('\\') + 1) : 'def.jpg'}`) : User.profilePicture
     res.status(200).json(
     {
       username : User.username,
@@ -282,22 +287,23 @@ const updateUserInfo = asyncHandler(async (req, res) =>{
 const setProfilePicture = asyncHandler(async (req, res) => {
   
   const User = await user.findById(req.user.id)
-  if(User.profilePicture === 'null'){
+
+  console.log(User.profilePicture.includes("googleusercontent.com"))
+
+  if(User.profilePicture === 'null' || User.profilePicture.includes("googleusercontent.com")){
     await User.updateOne({ profilePicture : req.file.path})
   }
   else{
     try{
       fs.unlink(User.profilePicture, (err) => {
-        if (err) throw err;
-        console.log('File deleted successfully');
+        if (err) console.log(err.message);
+        //console.log('File deleted successfully');
       });  
     }
     catch(err){
-      throw new Error(err.message)
+      console.log(err.message)
     }
-
     console.log(path.join(req.file.path))
-
 
     await User.updateOne({ profilePicture : req.file.path })  
   }
