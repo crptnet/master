@@ -1,30 +1,20 @@
 const GoogleSecret = require('../client_secret_22208776050-nv7hj7qppl8h39vpl9gkq31utgj43op8.apps.googleusercontent.com.json')
 const { OAuth2Client } = require('google-auth-library');
+const axios = require('axios');
 
 function validateGoogleToken(req, res, next) {
   const token = req.headers.authorization.split(' ')[1]; // assuming token is passed in the Authorization header
-  //console.log(token)
-  const clientId = `22208776050-nv7hj7qppl8h39vpl9gkq31utgj43op8.apps.googleusercontent.com`; // replace with your Google OAuth client ID
-  const client = new OAuth2Client(clientId);
 
   async function verify() {
-    const ticket = await client.verifyIdToken({
-        idToken: token,
-        audience: clientId,  
-    });
-    
-    const payload = ticket.getPayload();
+    var payload
 
-    // validate that the token is for the correct Google client ID, and that it has not expired
-    if (payload.aud !== clientId || Date.now() > payload.exp * 1000) {
-      return res.status(401).json({ error: 'Invalid token' });
-    }
-    // add the user information to the request object for use in downstream middleware or handlers
+    payload = await axios.get(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${token}`)
+
+    
     req.user = {
-      email: payload.email,
-      name: payload.name,
-      picture: payload.picture,
-      email_verified : payload.email_verified
+      email: payload.data.email,
+      name: payload.data.name,
+      picture: payload.data.picture
     };
     next();
   }

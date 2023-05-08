@@ -7,7 +7,9 @@ const Google = () => {
     const myLogBtn = useGoogleLogin({
     clientId: "22208776050-nv7hj7qppl8h39vpl9gkq31utgj43op8.apps.googleusercontent.com",
     onSuccess: async (res) => {
+
               console.log(res);
+
               var token = await fetch('http://localhost:5000/api/googleSingIn', {
                 method : 'POST',
                 headers : {
