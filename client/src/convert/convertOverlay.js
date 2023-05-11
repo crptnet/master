@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './convert.css';
-import symbols from '../coinList';
+import symbols from '../positions/coinList';
 
 function Overlay(props) {
   const [showOverlay, setShowOverlay] = useState(false);
@@ -60,7 +60,7 @@ function Overlay(props) {
             </div>
             <div className='listOfCrypto'>
               <div className='searchSortOverlay'>
-                <input className="input-search" placeholder="Search coins" type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+                <input className="input-search-convert" placeholder="Search coins" type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
                 <div style={{display:'flex', flexDirection:'row', alignItems:'center'}}>
                   <div className='sortOverlay'>Sort by name</div>
                   <div className='sortBtns'>

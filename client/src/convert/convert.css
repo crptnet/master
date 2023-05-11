@@ -247,6 +247,7 @@ input[type=number] {
 .swapImg{
     width: 40px;
     margin: 10px;
+    
 }
 
 .swapBtn:hover {
@@ -354,8 +355,8 @@ input[type=number] {
     align-items: center;
 }
 
-.input-search {
-    width: 150px;
+.input-search-convert {
+    max-width: 150px;
     height: 30px;
     float: left;
     color: #4682B4;
@@ -365,7 +366,7 @@ input[type=number] {
     font-weight: bold;   
 }
 
-.input-search::placeholder {
+.input-search-convert::placeholder {
     color: #4682B4;
     font-size: 1.25rem;
     font-weight: bold;

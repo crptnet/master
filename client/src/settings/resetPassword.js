@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { sidebarRoot, mainRoot, usermainRoot, usersideRoot, modelRoot } from './index';
+import { sidebarRoot, mainRoot, usermainRoot, usersideRoot, modelRoot } from '../index';
 import './active.css';
 
 const ResetPasswordPage = (props) => {
