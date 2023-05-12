@@ -8,13 +8,43 @@
     min-height: 100vh;
 }
 
+/*BOOKMARKS*/
+
+.bookmarks {
+    width: calc(100vw - 60px);
+    height: 30px;
+    margin: 0px 2.5px 0px 2.5px;
+    display: flex;
+    font-size: 0.7rem;
+}
+
+.bookmarkDiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.addBookmarkBtn {
+    background-color: #252525;
+    border-color: transparent;
+    color: #d1d4dc;
+    cursor: pointer;
+}
+
+.deleteBookmarkBtn {
+    background-color: transparent;
+    border-color: transparent;
+    color: #d1d4dc;
+    cursor: pointer;
+}
+
 /*TITLE*/
 
 .terminal-title {
     max-width: calc(100vw - 60px);
     min-width: 600px;
     height: 50px;
-    margin: 2.5px;
+    margin: 0px 2.5px 2.5px 2.5px;
     display: flex;
     justify-content: left;
     align-items: center;
