@@ -5,7 +5,7 @@ const coinSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     required: true,
   },
-  coin: {
+  coin_id: {
     type: String,
     required: true,
   },
