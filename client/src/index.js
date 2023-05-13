@@ -13,6 +13,7 @@ import Convert from './convert/convert';
 import BTCPrice from './positions/binanceCoins';
 import StarredList from './watchlist/starredList';
 import Terminal from './terminal/terminal';
+import Charts from './charts/charts';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
 
@@ -41,6 +42,9 @@ if (pathName.includes('/activate')) {
   mainRoot.render(<ResetPasswordPage location={window.location} />);
 } else if(pathName.includes('/terminal')){
   mainRoot.render(<Terminal />);
+  sidebarRoot.render(<SideBar active={1} />);
+} else if(pathName.includes('/charts')){
+  mainRoot.render(<Charts />);
   sidebarRoot.render(<SideBar active={1} />);
 } else if(pathName.includes('/list')){
   mainRoot.render(<BTCPrice />);
