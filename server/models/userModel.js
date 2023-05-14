@@ -8,6 +8,7 @@ const coinSchema = new mongoose.Schema({
   coin_id: {
     type: String,
     required: true,
+    unique : true,
   },
 }, {
   timestamps:true, 

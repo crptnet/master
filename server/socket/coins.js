@@ -67,12 +67,21 @@ const io = new Server(server, {
 
 
 
-io.on('connection', (socket) => {
-  //console.log(socket.id)
-  socket.on('subscribe', (data) =>{
-    socket.join(data)
-  })
-})
+io.on('connection', function(socket){
+	console.log('Connected');
+
+	socket.on('msg_from_client', function(from,msg){
+		console.log('Message is '+from, msg);
+	})
+	socket.on('disconnect', function(msg){
+		console.log('Disconnected');
+	})
+});
+// setInterval(function() {
+
+// 	io.emit('msg_to_client','client','test msg'+count);
+// 	count++;
+// },1000)
 
 
 //Hard codded trading pairs on Binance
