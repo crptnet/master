@@ -7,19 +7,17 @@ const User = require('../models/userModel')
 ///access private
 const addCoin = asyncHandler(async (req, res) => {
     const userId = req.user.id;
-  
     const user = await User.findById(userId);
   
     if (!user) {
       res.status(400).send('Invalid user info');
       throw new Error('Invalid user info');
     }
-    const symbol = req.body.symbol
 
-    console.log(symbol)
+    const { symbol } = req.body
 
-    if(user.watchList.find(symbol => coin_id == symbol)){
-      res.status(400).json({ message : 'User alredy added this coin'})
+    if(user.watchList.find(coin => coin.coin_id == symbol)){
+      return res.status(403).json({ message : 'User alredy added this coin'})
     }
 
     const newCoin = {
@@ -29,8 +27,6 @@ const addCoin = asyncHandler(async (req, res) => {
   
     user.watchList.push(newCoin);
     const updatedUser = await user.save();
-  
-    //console.log(updatedUser);
   
     res.status(200).json(updatedUser.watchList);
   });
@@ -55,12 +51,12 @@ const removeCoin = asyncHandler(async (req, res) => {
         throw new Error('Invalid coin info');      
     }
 
-    user.watchList = user.watchList.filter(coin => coin.coin !== symbol);
-    const updatedUser = await user.save();
+    user.watchList = user.watchList.filter(coin => coin.coin_id !== symbol);
+    await user.save();
   
-    console.log(updatedUser);
-  
-    res.status(200).json(updatedUser.watchList);
+    console.log(user);
+    
+    res.status(200).json(user.watchList);
 })
 ///desc Remove coin to the user watch list 
 ///Route POST /api/watchList/
