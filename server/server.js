@@ -13,21 +13,14 @@ const onConnection = (socket) =>{
     socket.on('subscribe', (data) => {
           console.log((new Date).toLocaleTimeString(),': Received socket ID:', socket.id, 'data', data)
           data.forEach(key => {
-                console.log(key.symbol)
                 socket.join(key.symbol)
           });
           socket.emit( 'subscribed', { message : `subscribed on ${JSON.stringify(data)}` })
     });
-    socket.on("error", (err) => {
-        if (err && err.message === "unauthorized event") {
-          socket.disconnect();
-        }
-      });
-
     }
 
 
-io.on("connection", onConnection);
+io.on("connection", errorHandler, onConnection);
 
 
 const bodyParser = require('body-parser');
