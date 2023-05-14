@@ -11,8 +11,8 @@ router.use(validateToken)
 
 router.post('/watchList/add', addCoin)
 
-router.post('/watchList/remove', removeCoin)
+router.delete('/watchList/remove', removeCoin)
 
-router.post('/watchList/', getCoin)
+router.get('/watchList/', getCoin)
 
 module.exports = router

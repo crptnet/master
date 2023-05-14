@@ -72,9 +72,6 @@ io.on('connection', (socket) => {
   socket.on('subscribe', (data) =>{
     socket.join(data)
   })
-
-
-
 })
 
 
