@@ -63,15 +63,14 @@ body {
 
 /*<--MAIN-->*/
 
-#main {
+/* #main {
     display: block;
     margin: 0;
-}
+} */
 
 /*LIST-OF-COINS*/
 
 table {
-    margin-left: 10px;
     border-collapse: separate;
     border-spacing: 0px 10px;
     width: calc(100vw - 90px);
@@ -214,7 +213,6 @@ tr.blueHigh {
 .input-search {
     width: calc(100vw - 90px);
     min-width: 880px;
-    margin-left: 10px;
     margin-top: 10px;
     padding: 10px 0px 10px 0px;
     text-align: center;

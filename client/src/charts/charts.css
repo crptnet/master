@@ -1,0 +1,176 @@
+.main-char-container {
+    margin-top: 30px;
+    padding: 0;
+    width: calc(100vw - 65px);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    color: #d1d4dc;
+}
+
+.overChartConsole {
+    width: calc(50vw - 40px);
+    height: 30px;
+    display: flex;
+    margin-top: 1.5px;
+    font-size: 0.7rem;
+}
+
+.overChartConsole div {
+    margin-left: 5px;
+}
+
+.charts-title-coin-logo {
+    width: 30px;
+}
+
+.charts-title-coin-title-pair {
+    display: flex;
+}
+
+.deleteBookmarkBtn {
+    margin-left: 5px;
+    font-size: 1rem;
+}
+
+.tradingviewDiv {
+    width: calc(50vw - 40px);
+    height: calc(50vh - 55px);
+    min-width: 420px;
+    margin: 2.5px;
+}
+
+.addChartBtn {
+    padding: calc(15vh - 32.5px) calc(12vw - 20px) calc(15vh - 32.5px) calc(12vw - 20px);
+    margin: 5vh 10vw 5vh 10vw;
+    border-color: transparent;
+    border-radius: 10%;
+    background-color: #252525;
+    color: #d1d4dc;
+    font-size: 5rem;
+    cursor: pointer;
+}
+.addChartBtn:hover {
+    background-color: #d1d4dc;
+    color: #252525;
+}
+
+.addChartBtn:hover span {
+    transform: rotate(360deg);
+}
+
+.addChartBtn span {
+    display: inline-block;
+    transition: transform 0.5s ease-in-out;
+}
+
+.addChartBtn span:hover {
+    transform: rotate(360deg);
+}
+
+/*BOOKMARKS*/
+
+.bookmark-container {
+    width: calc(100vw - 70px);
+    position: fixed;
+    top: 0;
+    margin: 0px 5px 5px 5px;
+    background-color: #333333;
+}
+
+.bookmarksChart {
+    min-width: 60px;
+    max-width: calc(100vw - 70px);
+    height: 30px;
+    display: flex;
+    top: 0;
+    font-size: 0.7rem;
+    overflow-x: scroll;
+}
+
+.bookmarksChart::-webkit-scrollbar {
+    height: 2.5px;
+    margin: 0;
+    padding: 0;
+}
+
+.bookmarksChart::-webkit-scrollbar-thumb {
+    background-color: #333333;
+    height: 1px;
+    margin: 0;
+    padding: 0;
+}
+
+.bookmarksChart::-webkit-scrollbar-thumb:hover {
+    background-color: #555555;
+    margin: 0;
+    padding: 0;
+}
+
+.bookmarkDiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.addBookmarkBtnChart {
+    width: 20px;
+    height: 27.5px;
+    margin-left: 5px;
+    border-radius: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.addBookmarkBtnChart,
+.addBookmarkBtnChart-fixed {
+    border: 1px solid #131722;
+    background-color: #252525;
+    color: #d1d4dc;
+    cursor: pointer;
+}
+
+.addBookmarkBtnChart-fixed {
+    position: absolute;
+    right: 0;
+    top: 1px;
+    width: 20px;
+    height: 27.5px;
+    z-index: 1000;
+    border-radius: 5px 0 0 5px;
+    color: #d1d4dc;
+    cursor: pointer;
+    transition: all 0.5s ease-in-out;
+}
+
+.addBookmarkBtnChart:hover,
+.addBookmarkBtnChart-fixed:hover {
+    background-color: #d1d4dc;
+    color: #252525;
+}
+
+.addBookmarkBtnChart:hover span,
+.addBookmarkBtnChart-fixed:hover span {
+    transform: rotate(360deg);
+}
+
+.addBookmarkBtnChart span,
+.addBookmarkBtnChart-fixed span {
+    display: inline-block;
+    transition: transform 0.5s ease-in-out;
+}
+
+.addBookmarkBtnChart span:hover,
+.addBookmarkBtnChart-fixed span:hover {
+    transform: rotate(360deg);
+}
+
+.deleteBookmarkBtn {
+    background-color: transparent;
+    border-color: transparent;
+    color: #d1d4dc;
+    cursor: pointer;
+}
+

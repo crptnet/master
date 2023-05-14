@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
+import './index.css';
 import './settings/settings.css';
 import SideBar from './sidebar/sideBar';
 import Main from './main/main';
@@ -45,7 +46,7 @@ if (pathName.includes('/activate')) {
   sidebarRoot.render(<SideBar active={1} />);
 } else if(pathName.includes('/charts')){
   mainRoot.render(<Charts />);
-  sidebarRoot.render(<SideBar active={1} />);
+  sidebarRoot.render(<SideBar active={2} />);
 } else if(pathName.includes('/list')){
   mainRoot.render(<BTCPrice />);
   sidebarRoot.render(<SideBar active={3} />);

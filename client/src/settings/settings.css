@@ -23,17 +23,6 @@ body {
     color: #4682B4;
 }
 
-main {
-    width: calc(100vw - 70px);
-    min-height: 100vh;
-    margin-left: 60px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    font-weight: bold;
-}
-
 .mainDataContainer {
     min-width: 500px;
     min-height: 320px;

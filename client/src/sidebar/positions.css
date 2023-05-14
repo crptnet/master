@@ -52,11 +52,3 @@ body {
 .sideBtn img {
   width: 30px;
 }
-
-/*<--MAIN-->*/
-
-#main {
-  margin-left: 60px;
-  display: flex;
-  justify-content: center;
-}

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './terminal.css';
 import Bookmarks from './components/bookmarks';
 import Title from './components/title';
-import Chart from './components/chart';
+import Charts from './components/chart';
 import Markets from './components/markets';
 import Bots from './components/bots';
 import Orders from './components/orders';
@@ -19,7 +19,7 @@ const Terminal = () => {
             <Bookmarks />
             <Title />
             <div style={{display:'flex', width:'calc(100vw - 57.5px)'}}>
-                <Chart />
+                <Charts />
                 <Markets />
             </div>
             <div style={{display:'flex', width:'calc(100vw - 57.5px)'}}>

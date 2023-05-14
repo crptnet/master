@@ -54,6 +54,34 @@ body {
 /*<--MAIN-->*/
 
 #main {
+  min-width: calc(100vw - 60px);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+}
+
+main {
+  min-width: calc(100vw - 60px);
+  min-height: 100vh;
+  top: 0px;
+  margin-left: 60px;
   display: flex;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
+  font-weight: bold;
+}
+
+/*SCROLLBAR*/
+::-webkit-scrollbar {
+  margin: 0;
+  width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  margin: 0;
+  background-color: white;
 }
