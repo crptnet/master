@@ -24,7 +24,7 @@ body {
 }
 
 main {
-    width: calc(100vw - 60px);
+    width: calc(100vw - 70px);
     min-height: 100vh;
     margin-left: 60px;
     display: flex;

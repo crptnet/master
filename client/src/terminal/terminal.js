@@ -18,11 +18,11 @@ const Terminal = () => {
         <div className='terminal-main'>
             <Bookmarks />
             <Title />
-            <div style={{display:'flex', width:'100vw'}}>
+            <div style={{display:'flex', width:'calc(100vw - 57.5px)'}}>
                 <Chart />
                 <Markets />
             </div>
-            <div style={{display:'flex', width:'100vw'}}>
+            <div style={{display:'flex', width:'calc(100vw - 57.5px)'}}>
                 <Bots />
                 <Orders />
                 <Trades />
