@@ -10,11 +10,11 @@ const updateCoinInfo = (async(io) => {
     console.log((new Date).toLocaleTimeString(),': updating coin data from api.coinpaprika.com')
 
     data.forEach(async coin => {
-
+        
         io.to(coin.symbol).emit('data:update', coin)
         const symbolIndex = coin.id.indexOf('-');
         const id = coin.id.substring(symbolIndex + 1);
-
+        coin['icon'] = `http://${process.env.DOMAIN}/coin-icon/${coin.symbol}.png`
         try{
             await client.hSet('coins', id, JSON.stringify(coin))
         }
