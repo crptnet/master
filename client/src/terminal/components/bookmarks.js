@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom/client';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import '../terminal.css';
@@ -20,6 +20,21 @@ const Bookmarks = () => {
 
   useEffect(() => {
     localStorage.setItem("divList", JSON.stringify(divList));
+    const bookmarksEl = document.querySelector('.bookmarks');
+    const addBtnEl = document.querySelector('.addBookmarkBtn');
+    let totalWidth = 0;
+    if (bookmarksEl && addBtnEl) {
+      for (let i = 0; i < bookmarksEl.children.length; i++) {
+        let rect = bookmarksEl.children[i].getBoundingClientRect();
+        totalWidth += rect.width;
+      }
+      console.log(totalWidth,window.innerWidth)
+      if (totalWidth + 120 >= window.innerWidth) {
+        addBtnEl.classList.add('addBookmarkBtn-fixed');
+      } else {
+        addBtnEl.classList.remove('addBookmarkBtn-fixed');
+      }
+    }
   }, [divList]);
 
   function handleOnDragEnd(result) {
@@ -70,11 +85,12 @@ const Bookmarks = () => {
                       }
                       onMouseLeave={handleOnDragLeave}
                       style={{
+                        minWidth:'70px',
                         display:'flex', 
                         justifyContent:'center',
                         alignItems:'center',
                         color: '#d1d4dc',
-                        backgroundColor: '#252525',
+                        backgroundColor: highlightedDivId === item.id ? "#333333" : "#252525",
                         border: highlightedDivId === item.id ? "1px solid #d1d4dc" : "1px solid #131722",
                         padding: "8px",
                         ...provided.draggableProps.style
@@ -91,7 +107,7 @@ const Bookmarks = () => {
           )}
         </Droppable>
       </DragDropContext>
-      <button onClick={handleAddDiv} className='addBookmarkBtn'>+</button>
+      <button onClick={handleAddDiv} className='addBookmarkBtn'><span>+</span></button>
     </div>
   );
 }
