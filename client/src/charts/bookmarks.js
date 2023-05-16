@@ -18,7 +18,15 @@ const Bookmarks = () => {
   });
   const [BookListLayout, setBookListLayout] = useState(<></>);
   const [highlightedDivId, setHighlightedDivId] = useState(null);
-  
+  const [initialValue, setInitialValue] = useState(true);
+
+  useEffect(() => {
+      if (initialValue) {
+          setInitialValue(false);
+          return;
+      }
+      window.location.reload(true);
+  }, [bookmarkList]);
   useEffect(() => {
     localStorage.setItem("bookmarkList", JSON.stringify(bookmarkList));
     const bookmarksEl = document.querySelector('.bookmarksChart');

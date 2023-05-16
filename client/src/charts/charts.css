@@ -41,9 +41,11 @@
     margin: 2.5px;
 }
 
+/*ADD CHART*/
+
 .addChartBtn {
-    padding: calc(15vh - 32.5px) calc(12vw - 20px) calc(15vh - 32.5px) calc(12vw - 20px);
-    margin: 5vh 10vw 5vh 10vw;
+    padding: calc(15vh - 32.5px) calc(13vw - 55px) calc(15vh - 32.5px) calc(13vw - 55px);
+    margin: 5vh 13vw 5vh 13vw;
     border-color: transparent;
     border-radius: 10%;
     background-color: #252525;
@@ -51,6 +53,7 @@
     font-size: 5rem;
     cursor: pointer;
 }
+
 .addChartBtn:hover {
     background-color: #d1d4dc;
     color: #252525;
@@ -69,14 +72,60 @@
     transform: rotate(360deg);
 }
 
+/*LAYOUT*/
+
+.layout-container {
+        display: flex;
+            justify-content: center;
+            align-items: center;
+}
+
+.layout-btn {
+    margin-left: 10px;
+    margin-right: 10px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.layout-inner {
+    position: absolute;
+    top: 30px;
+    left: 0;
+    background-color: #333333;
+    border-radius: 0px 0px 10px 10px;
+    z-index: 100;
+}
+
+.layout-inner button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.charttype-container {
+    margin: 5px;
+}
+
+.charttype-title {
+    font-size: 0.7rem;
+}
+
+.layout-icon {
+    width: 20px;
+    margin: 2px;
+}
+
 /*BOOKMARKS*/
 
 .bookmark-container {
     width: calc(100vw - 70px);
+    display: flex;
     position: fixed;
     top: 0;
     margin: 0px 5px 5px 5px;
     background-color: #333333;
+    z-index: 1000;
 }
 
 .bookmarksChart {
@@ -173,4 +222,3 @@
     color: #d1d4dc;
     cursor: pointer;
 }
-

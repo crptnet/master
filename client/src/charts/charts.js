@@ -1,17 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom/client';
 import { v4 as uuidv4 } from 'uuid';
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import Bookmarks from './bookmarks';
-
 import symbols from '../positions/coinList';
 import './charts.css';
+
+//DRAG AND DROP TO THE MIDDLE OF THE ARRAY IN CHARTS
 
 const Charts = () => {
     
     let tvScriptLoadingPromise;
-
     let chartSymbArr = [];
-    //REWRITE USING REF TO MAKE UPDATE AUTOMATICALLY FROM LOCALSTORAGE, NOT ONLY AT THE BEGINNING
+
     const [chartSymbList, setChartSymbList] = useState(() => {
         const savedChartList = localStorage.getItem("bookmarkList");
         if (savedChartList) {
@@ -20,94 +21,181 @@ const Charts = () => {
         return chartSymbArr;
         }
     })
+    const [initialValue, setInitialValue] = useState(true);
+
+    useEffect(() => {
+        if (initialValue) {
+            setInitialValue(false);
+            return;
+        }
+        window.location.reload(true);
+    }, [chartSymbList]);
+
     const [ChartSymbListLayout, setchartSymbListLayout] = useState(<></>);
 
     useEffect(()=>{localStorage.setItem("bookmarkList",JSON.stringify(chartSymbList))},[chartSymbList])
     useEffect(()=>{console.log(chartSymbList)},[chartSymbList])
     useEffect(()=>{ 
-        const layout = chartSymbList.map((item) => (
-                <div key={item.key} className='chart-container'>
-                    <div className='overChartConsole'>
-                        <div className="charts-title-coin-logo"><img src='./icons/avatar.png' style={{width:'30px'}}/></div>
-                        <div className="charts-title-coin-title">
-                            <div className="charts-title-coin-title-market">Binance</div>
-                            <div className="charts-title-coin-title-pair">{item.symb}/USDT<Overlay props={{ chartSymbList: chartSymbList, itemKey: item.key }} /></div>
+        const handleDragEnd = (result) => {
+            if (!result.destination) return;
+
+            const items = Array.from(chartSymbList);
+            const [reorderedItem] = items.splice(result.source.index, 1);
+            items.splice(result.destination.index, 0, reorderedItem);
+
+            setChartSymbList(items);
+        };
+        const chartToDisplay = chartSymbList.slice(0,4);
+        const layout = (<DragDropContext onDragEnd={handleDragEnd}>
+            <Droppable droppableId="chart-symb-list">
+                {(provided) => (
+                <div ref={provided.innerRef} {...provided.droppableProps} style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    flexWrap: 'wrap',
+                    width: '100%'
+                    }}>
+                    {chartToDisplay.map((item, index) => (
+                    <Draggable key={item.key} draggableId={item.key} index={index}>
+                        {(provided) => (
+                        <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                        >
+                            <div className='overChartConsole'>
+                                <div className="charts-title-coin-logo"><img src='./icons/avatar.png' style={{width:'30px'}}/></div>
+                                <div className="charts-title-coin-title">
+                                    <div className="charts-title-coin-title-market">Binance</div>
+                                    <div className="charts-title-coin-title-pair">{item.symb}/USDT<Overlay props={{ chartSymbList: chartSymbList, itemKey: item.key }} /></div>
+                                </div>
+                                <div className="charts-title-coin-lastPrice">
+                                    <div className="charts-title-coin-lastPrice-head">Last Price</div>
+                                    <div className="charts-title-coin-lastPrice-body">27155.74 </div>
+                                </div>
+                                <div className="charts-title-coin-24C">
+                                    <div className="charts-title-coin-24C-head">
+                    24h Change</div>
+                                    <div className="charts-title-coin-24C-body">-3.68%</div>
+                                </div>
+                                
+                                <button className='deleteBookmarkBtn' onClick={() => { handleDeleteDiv(item) }}>&#215;</button>
+                            </div>
+                            <Chart props={item.symb} />
                         </div>
-                        <div className="charts-title-coin-lastPrice">
-                            <div className="charts-title-coin-lastPrice-head">Last Price</div>
-                            <div className="charts-title-coin-lastPrice-body">27155.74 </div>
-                        </div>
-                        <div className="charts-title-coin-24C">
-                            <div className="charts-title-coin-24C-head">
-            24h Change</div>
-                            <div className="charts-title-coin-24C-body">-3.68%</div>
-                        </div>
-                        
-                        <button className='deleteBookmarkBtn' onClick={() => { handleDeleteDiv(item) }}>&#215;</button>
-                    </div>
-                    <Chart props={item.symb} />
+                        )}
+                    </Draggable>
+                    ))}
+                    {provided.placeholder}
+                    {chartSymbList.length<4 ? <button onClick={handleAddDiv} className='addChartBtn'><span>+</span></button> : <></>}
                 </div>
-            ))
+                )}
+            </Droppable>
+        </DragDropContext>);
         setchartSymbListLayout(layout)
     },[chartSymbList])
 
 
 
     const Chart = (props) => {
-  const containerId = `tradingview_${uuidv4()}`;
-  const onLoadScriptRef = useRef();
+        const containerId = `tradingview_${uuidv4()}`;
+        const onLoadScriptRef = useRef();
 
-  useEffect(() => {
-    onLoadScriptRef.current = createWidget;
+        useEffect(() => {
+            onLoadScriptRef.current = createWidget;
 
-    if (!tvScriptLoadingPromise) {
-      tvScriptLoadingPromise = new Promise((resolve) => {
-        const script = document.createElement('script');
-        script.id = 'tradingview-widget-loading-script';
-        script.src = 'https://s3.tradingview.com/tv.js';
-        script.type = 'text/javascript';
-        script.onload = resolve;
+            if (!tvScriptLoadingPromise) {
+            tvScriptLoadingPromise = new Promise((resolve) => {
+                const script = document.createElement('script');
+                script.id = 'tradingview-widget-loading-script';
+                script.src = 'https://s3.tradingview.com/tv.js';
+                script.type = 'text/javascript';
+                script.onload = resolve;
 
-        document.head.appendChild(script);
-      });
-    }
+                document.head.appendChild(script);
+            });
+            }
 
-    tvScriptLoadingPromise.then(() => onLoadScriptRef.current && onLoadScriptRef.current());
+            tvScriptLoadingPromise.then(() => onLoadScriptRef.current && onLoadScriptRef.current());
 
-    return () => onLoadScriptRef.current = null;
+            return () => onLoadScriptRef.current = null;
 
-    function createWidget() {
-      if (!document.getElementById(containerId) || !('TradingView' in window)) {
-        return;
-      }
+            function createWidget() {
+            if (!document.getElementById(containerId) || !('TradingView' in window)) {
+                return;
+            }
 
-      new window.TradingView.widget({
-        autosize: true,
-        symbol: `${props.props}USDT`,
-        timezone: "Etc/UTC",
-        theme: "dark",
-        style: "1",
-        locale: "in",
-        toolbar_bg: "#f1f3f6",
-        enable_publishing: false,
-        withdateranges: true,
-        range: "1M",
-        hide_side_toolbar: false,
-        allow_symbol_change: true,
-        show_popup_button: true,
-        popup_width: "1980",
-        popup_height: "1080",
-        container_id: containerId,
-      });
-    }
-  }, [containerId, props.props]);
+            new window.TradingView.widget({
+                autosize: true,
+                symbol: `${props.props}USDT`,
+                timezone: "Etc/UTC",
+                theme: "dark",
+                style: "1",
+                locale: "in",
+                toolbar_bg: "#f1f3f6",
+                enable_publishing: false,
+                withdateranges: true,
+                range: "1M",
+                hide_side_toolbar: false,
+                allow_symbol_change: true,
+                show_popup_button: true,
+                popup_width: "1980",
+                popup_height: "1080",
+                container_id: containerId,
+            });
+            }
+        }, [containerId, props.props]);
 
-  return (
-    <div className='tradingview-widget-container'>
-      <div id={containerId} className='tradingviewDiv' />
-    </div>
-  );
-};
+        return (
+            <div className='tradingview-widget-container'>
+            <div id={containerId} className='tradingviewDiv' />
+            </div>
+        );
+    };
+
+    const Layout = () => {
+        const [isOpen, setIsOpen] = useState(false);
+
+        const handleButtonHover = () => {
+            setIsOpen(true);
+        };
+
+        const handleDivMouseLeave = () => {
+            setIsOpen(false);
+        };
+
+        return (
+            <div className='layout-container'>
+            <button onMouseEnter={handleButtonHover} className="layout-btn">
+                <img src='./icons/avatar.png' className='layout-icon'/>
+            </button>
+            {isOpen && (
+                <div className="layout-inner" onMouseLeave={handleDivMouseLeave}>
+                    <div className="charttype-container">
+                        <p className='charttype-title'>1 Chart</p>
+                        <button><img src='./icons/avatar.png' className='layout-icon'/></button>
+                    </div>
+                    <div className="charttype-container">
+                        <p className='charttype-title'>2 Charts</p>
+                        <button><img src='./icons/avatar.png' className='layout-icon'/></button>
+                        <button><img src='./icons/avatar.png' className='layout-icon'/></button>
+                    </div>
+                    <div className="charttype-container">
+                        <p className='charttype-title'>3 Charts</p>
+                        <button><img src='./icons/avatar.png' className='layout-icon'/></button>
+                        <button><img src='./icons/avatar.png' className='layout-icon'/></button>
+                        <button><img src='./icons/avatar.png' className='layout-icon'/></button>
+                        <button><img src='./icons/avatar.png' className='layout-icon'/></button>
+                    </div>
+                    <div className="charttype-container">
+                        <p className='charttype-title'>4 Charts</p>
+                        <button><img src='./icons/avatar.png' className='layout-icon'/></button>
+                    </div>
+                </div>
+            )}
+            </div>
+        );
+    };
 
     function Overlay(props) {
         const [showOverlay, setShowOverlay] = useState(false);
@@ -231,11 +319,11 @@ const Charts = () => {
     return (
         <React.Fragment key={JSON.stringify(chartSymbList)}>
             <div className="bookmark-container">
+                <Layout />
                 <Bookmarks />
             </div>
             <div className="main-char-container">                
                 {ChartSymbListLayout}
-                {chartSymbList.length<4 ? <button onClick={handleAddDiv} className='addChartBtn'><span>+</span></button> : <></>}
             </div>     
         </React.Fragment>
     );
