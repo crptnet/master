@@ -78,10 +78,11 @@ main {
 /*SCROLLBAR*/
 ::-webkit-scrollbar {
   margin: 0;
-  width: 10px;
+  width: 2.5px;
 }
 
 ::-webkit-scrollbar-thumb {
   margin: 0;
-  background-color: white;
+  width: 1px;
+  background-color: #d1d4dc;
 }

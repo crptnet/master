@@ -6,23 +6,28 @@ import Bookmarks from './bookmarks';
 import symbols from '../positions/coinList';
 import './charts.css';
 
-//DRAG AND DROP TO THE MIDDLE OF THE ARRAY IN CHARTS
-
 const Charts = () => {
     
     let tvScriptLoadingPromise;
     let chartSymbArr = [];
-
     const [chartSymbList, setChartSymbList] = useState(() => {
         const savedChartList = localStorage.getItem("bookmarkList");
         if (savedChartList) {
-        return JSON.parse(localStorage.getItem("bookmarkList"));
+            return JSON.parse(localStorage.getItem("bookmarkList"));
         } else {
-        return chartSymbArr;
+            return chartSymbArr;
         }
     })
     const [initialValue, setInitialValue] = useState(true);
-
+    const [ChartSymbListLayout, setchartSymbListLayout] = useState(<></>);
+    const [layoutProps,setLayoutProps] = useState(() => {
+        const savedChartToDisplay = localStorage.getItem("layout");
+        if (savedChartToDisplay) {
+            return JSON.parse(localStorage.getItem("layout"));
+        } else {
+            return {length: 4, type: 1};
+        }
+    })
     useEffect(() => {
         if (initialValue) {
             setInitialValue(false);
@@ -31,8 +36,7 @@ const Charts = () => {
         window.location.reload(true);
     }, [chartSymbList]);
 
-    const [ChartSymbListLayout, setchartSymbListLayout] = useState(<></>);
-
+    
     useEffect(()=>{localStorage.setItem("bookmarkList",JSON.stringify(chartSymbList))},[chartSymbList])
     useEffect(()=>{console.log(chartSymbList)},[chartSymbList])
     useEffect(()=>{ 
@@ -45,7 +49,6 @@ const Charts = () => {
 
             setChartSymbList(items);
         };
-        const chartToDisplay = chartSymbList.slice(0,4);
         const layout = (<DragDropContext onDragEnd={handleDragEnd}>
             <Droppable droppableId="chart-symb-list">
                 {(provided) => (
@@ -55,7 +58,7 @@ const Charts = () => {
                     flexWrap: 'wrap',
                     width: '100%'
                     }}>
-                    {chartToDisplay.map((item, index) => (
+                    {chartSymbList.slice(0,(layoutProps.length)).map((item, index) => (
                     <Draggable key={item.key} draggableId={item.key} index={index}>
                         {(provided) => (
                         <div
@@ -63,25 +66,38 @@ const Charts = () => {
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
                         >
-                            <div className='overChartConsole'>
-                                <div className="charts-title-coin-logo"><img src='./icons/avatar.png' style={{width:'30px'}}/></div>
-                                <div className="charts-title-coin-title">
-                                    <div className="charts-title-coin-title-market">Binance</div>
-                                    <div className="charts-title-coin-title-pair">{item.symb}/USDT<Overlay props={{ chartSymbList: chartSymbList, itemKey: item.key }} /></div>
+                            <div className="overChartConsole">
+                                <div className='overChartConsoleWithoutExit'>
+                                    <div className="charts-title-coin-logo"><img src='./icons/avatar.png' style={{width:'30px'}}/></div>
+                                    <div className="charts-title-coin-title">
+                                        <div className="charts-title-coin-title-market">Binance</div>
+                                        <div className="charts-title-coin-title-pair">{item.symb}/USDT<Overlay props={{ chartSymbList: chartSymbList, itemKey: item.key }} /></div>
+                                    </div>
+                                    <div className="charts-title-coin-lastPrice">
+                                        <div className="charts-title-coin-lastPrice-head">Last Price</div>
+                                        <div className="charts-title-coin-lastPrice-body">27155.74 </div>
+                                    </div>
+                                    <div className="charts-title-coin-24C">
+                                        <div className="charts-title-coin-24C-head">
+                        24h Change</div>
+                                        <div className="charts-title-coin-24C-body">-3.68%</div>
+                                    </div>
+                                    <div className="teminal-title-coin-24H">
+                                    <div className="teminal-title-coin-24H-head">24h High</div>
+                                        <div className="teminal-title-coin-24H-body">28299.15</div>
+                                    </div>
+                                    <div className="teminal-title-coin-24L">
+                                        <div className="teminal-title-coin-24L-head">24h Low</div>
+                                        <div className="teminal-title-coin-24L-body">26777.00</div>
+                                    </div>
+                                    <div className="teminal-title-coin-24V">
+                                        <div className="teminal-title-coin-lastPrice-head">24h Volume</div>
+                                        <div className="teminal-title-coin-lastPrice-body">1.79B USDT / 65.06K BTC / $1.79B</div>
+                                    </div>
                                 </div>
-                                <div className="charts-title-coin-lastPrice">
-                                    <div className="charts-title-coin-lastPrice-head">Last Price</div>
-                                    <div className="charts-title-coin-lastPrice-body">27155.74 </div>
-                                </div>
-                                <div className="charts-title-coin-24C">
-                                    <div className="charts-title-coin-24C-head">
-                    24h Change</div>
-                                    <div className="charts-title-coin-24C-body">-3.68%</div>
-                                </div>
-                                
-                                <button className='deleteBookmarkBtn' onClick={() => { handleDeleteDiv(item) }}>&#215;</button>
+                                <button className='deleteBookmarkBtn-chart' onClick={() => { handleDeleteDiv(item) }}>&#215;</button>
                             </div>
-                            <Chart props={item.symb} />
+                            <Chart props={item.symb} index={index} />
                         </div>
                         )}
                     </Draggable>
@@ -93,7 +109,7 @@ const Charts = () => {
             </Droppable>
         </DragDropContext>);
         setchartSymbListLayout(layout)
-    },[chartSymbList])
+    },[chartSymbList,layoutProps])
 
 
 
@@ -148,7 +164,7 @@ const Charts = () => {
 
         return (
             <div className='tradingview-widget-container'>
-            <div id={containerId} className='tradingviewDiv' />
+            <div id={containerId} className={`tradingviewDiv chart-container-${props.index}-${layoutProps.length}-${layoutProps.type}`}/>
             </div>
         );
     };
@@ -164,6 +180,13 @@ const Charts = () => {
             setIsOpen(false);
         };
 
+        const handleChartLayoutType = (length, type) => {
+            const layoutProps = {length: length, type: type};
+            localStorage.setItem("layout", JSON.stringify(layoutProps));
+            setLayoutProps(localStorage.getItem("layout"));
+            window.location.reload(true);
+        }
+
         return (
             <div className='layout-container'>
             <button onMouseEnter={handleButtonHover} className="layout-btn">
@@ -173,23 +196,21 @@ const Charts = () => {
                 <div className="layout-inner" onMouseLeave={handleDivMouseLeave}>
                     <div className="charttype-container">
                         <p className='charttype-title'>1 Chart</p>
-                        <button><img src='./icons/avatar.png' className='layout-icon'/></button>
+                        <button onClick={()=>{handleChartLayoutType(1,1)}}><img src='./icons/avatar.png' className='layout-icon'/></button>
                     </div>
                     <div className="charttype-container">
                         <p className='charttype-title'>2 Charts</p>
-                        <button><img src='./icons/avatar.png' className='layout-icon'/></button>
-                        <button><img src='./icons/avatar.png' className='layout-icon'/></button>
+                        <button onClick={()=>{handleChartLayoutType(2,1)}}><img src='./icons/avatar.png' className='layout-icon'/></button>
+                        <button onClick={()=>{handleChartLayoutType(2,2)}}><img src='./icons/avatar.png' className='layout-icon'/></button>
                     </div>
                     <div className="charttype-container">
                         <p className='charttype-title'>3 Charts</p>
-                        <button><img src='./icons/avatar.png' className='layout-icon'/></button>
-                        <button><img src='./icons/avatar.png' className='layout-icon'/></button>
-                        <button><img src='./icons/avatar.png' className='layout-icon'/></button>
-                        <button><img src='./icons/avatar.png' className='layout-icon'/></button>
+                        <button onClick={()=>{handleChartLayoutType(3,1)}}><img src='./icons/avatar.png' className='layout-icon'/></button>
+                        <button onClick={()=>{handleChartLayoutType(3,2)}}><img src='./icons/avatar.png' className='layout-icon'/></button>
                     </div>
                     <div className="charttype-container">
                         <p className='charttype-title'>4 Charts</p>
-                        <button><img src='./icons/avatar.png' className='layout-icon'/></button>
+                        <button onClick={()=>{handleChartLayoutType(4,1)}}><img src='./icons/avatar.png' className='layout-icon'/></button>
                     </div>
                 </div>
             )}
@@ -308,7 +329,7 @@ const Charts = () => {
             )}
             </div>
         );
-        }
+    }
     function handleAddDiv() {
         const newElem = { key:uuidv4(), symb: "BTC"};
         setChartSymbList([...chartSymbList, newElem]);
@@ -320,7 +341,7 @@ const Charts = () => {
         <React.Fragment key={JSON.stringify(chartSymbList)}>
             <div className="bookmark-container">
                 <Layout />
-                <Bookmarks />
+                <Bookmarks props={layoutProps}/>
             </div>
             <div className="main-char-container">                
                 {ChartSymbListLayout}
