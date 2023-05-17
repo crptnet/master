@@ -15,7 +15,8 @@ import BTCPrice from './positions/binanceCoins';
 import StarredList from './watchlist/starredList';
 import Terminal from './terminal/terminal';
 import Charts from './charts/charts';
-import { GoogleOAuthProvider } from '@react-oauth/google';
+import SubscriptionPage from './subscription/subscription';
+
 
 
 const scrollRoot = ReactDOM.createRoot(document.getElementById('scroll'));
@@ -41,7 +42,10 @@ if (pathName.includes('/activate')) {
   mainRoot.render(<ResetEmailPage location={window.location} />);
 } else if(pathName.includes('/password-reset')) {
   mainRoot.render(<ResetPasswordPage location={window.location} />);
-} else if(pathName.includes('/terminal')){
+} else if(pathName.includes('/subscription')){
+  mainRoot.render(<SubscriptionPage />)
+}
+else if(pathName.includes('/terminal')){
   mainRoot.render(<Terminal />);
   sidebarRoot.render(<SideBar active={1} />);
 } else if(pathName.includes('/charts')){

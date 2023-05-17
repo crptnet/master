@@ -1,0 +1,39 @@
+.centeredDiv {
+    border: 2px solid black;
+    display: flex;
+    flex-direction: column;
+    border-radius: 15%;
+    padding: 20px;
+    text-align: center;
+  }
+  .subscriptionContainer{
+    display: flex;
+    
+
+  }
+
+  .subscriptionInfo {
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .optionsContainer {
+    flex: 2;
+    justify-content: center;
+  }
+  
+  .optionsContainer button {
+    padding: 8px 16px;
+    margin: 0 5px;
+    font-size: 16px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+  }
+  
+  .optionsContainer button.active {
+    background-color: #ccc;
+  }
+  

@@ -44,6 +44,8 @@ app.use(express.json());
 
 app.use('/api', require('./routes/coinsRouter'))
 
+app.use('/api', require('./routes/subscriptionRouter'))
+
 app.use('/api', require('./routes/userRouter'))
 
 app.use('/api', require('./routes/watchListRouter'))
