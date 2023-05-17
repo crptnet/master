@@ -42,19 +42,17 @@ const PORT = 5000 || process.env.PORT
 app.use(bodyParser.json());
 app.use(express.json());
 
-app.use('/api', require('./routes/coinsRouter'))
+app.use('/api/webhook', require('./routes/subscriptionRouter'))
 
-app.use('/api', require('./routes/subscriptionRouter'))
+app.use('/api', require('./routes/coinsRouter'))
 
 app.use('/api', require('./routes/userRouter'))
 
 app.use('/api', require('./routes/watchListRouter'))
 
-
 app.use('/upload', express.static(path.join(__dirname, 'uploads')))
 app.use('/coin-icon', express.static(path.join(__dirname, 'coin_icon')))
 
-app.use('/*', (req, res) => {res.sendStatus(404)})
-
+app.use('/*', (req, res) => {res.status(404).end()})
 
 httpServer.listen(PORT, () =>{ console.log(`Server started on port ${PORT}`) })

@@ -7,12 +7,10 @@ const {
 } = require('../controllers/watchListController')
 const validateToken = require('../middleware/validateToken')
 
-router.use(validateToken)
+router.post('/watchList/add', validateToken, addCoin)
 
-router.post('/watchList/add', addCoin)
+router.delete('/watchList/remove', validateToken, removeCoin)
 
-router.delete('/watchList/remove', removeCoin)
-
-router.get('/watchList/', getCoin)
+router.get('/watchList/', validateToken, getCoin)
 
 module.exports = router

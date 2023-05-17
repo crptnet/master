@@ -26,19 +26,20 @@ const endpointSecret = "whsec_96512283aec0430a68da5387729af55a96881e23b579b477fc
 
 
 const stripeWebhook = asyncHandler(async (req, res) => {
-
-    const payload = request.body;
+    
+    console.log(req)
+    const payload = req.body;
 
     console.log("Got payload: " + payload);
   
-    response.status(200).end();
+    //response.status(200).end();
 
-    const sig = request.headers['stripe-signature'];
+    const sig = req.headers['stripe-signature'];
 
     let event;
   
     try {
-      event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
+      event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
     } catch (err) {
       response.status(400).send(`Webhook Error: ${err.message}`);
       return;
@@ -68,7 +69,7 @@ const stripeWebhook = asyncHandler(async (req, res) => {
     }
   
     // Return a 200 response to acknowledge receipt of the event
-    response.send();
+    response.status(200).send();
 
 })
 
