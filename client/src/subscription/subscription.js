@@ -14,7 +14,7 @@ const SubscriptionDisplay = () => {
         <div className="subscriptionInfo">
             <h2>Basic</h2>
             <p>basic subscription</p>
-            <form action={`${serverDomain}/create-checkout-session?productId=${}`} method="POST">
+            <form action={`${serverDomain}/create-checkout-session?productId=`} method="POST">
               <button type="submit">Buy Basic</button>
             </form>
         </div>
