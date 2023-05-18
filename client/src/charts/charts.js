@@ -31,25 +31,45 @@ const Charts = () => {
         }
     })
 
+    async function getListOfCoins() {
+        const response = await fetch("http://localhost:5000/api/coins?limit=2500&offset=0&orderby=rank_asc", {
+            method: 'GET'
+        });
+        return response.json();
+    }
 
+    async function subscribeToWebSocket() {
+        const listOfCoins = await getListOfCoins();
+        const listOfNames = listOfCoins.map(elem => elem.name);
+        const socket = io('http://3.8.56.163/coins');
 
-    const socket = io('http://localhost:5000/coins'); // Replace 'http://localhost:5000' with your server's URL
+        socket.on('connect', () => {
+            console.log('Connected to socket');
 
-    socket.on('connect', () => {
-    console.log('Connected to socket');
-    
-    // Subscribe to events or send data to the server
-    socket.emit('subscribe', ['ETH', 'BTC']); // Example subscription event
-    });
+            // Subscribe to events or send data to the server
+            socket.emit('subscribe', listOfNames); // Example subscription event
+        });
 
-    socket.on('subscribed', (data) => {
-    console.log('Subscribed:', data);
-    });
+        socket.on('subscribed', (data) => {
+            console.log('Subscribed:', data);
+        });
 
-    socket.on('error', (err) => {
-    console.error('Socket error:', err);
-    });
+        socket.on('data:update', (updateData) => {
+            console.log('Received real-time data update:', updateData);
+            // Process the received update data as needed
+        });
 
+        socket.on('data:price_update', (updatePrice) => {
+            console.log('Received real-time price update:', updatePrice);
+            // Process the received update data as needed
+        });
+
+        socket.on('error', (err) => {
+            console.error('Socket error:', err);
+        });
+    }
+
+    subscribeToWebSocket();
 
     useEffect(() => {
         if (initialValue) {
