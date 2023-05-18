@@ -6,10 +6,18 @@ const connectToDb = require('./config/connectDB')
 const errorHandler = require('./middleware/errorHandler')
 const path = require('path');
 const { UpdataInfoRun } = require('./controllers/coinSocketController')
+const corsOptions ={
+      origin:'*', 
+      credentials:true,          
+      optionSuccessStatus:200,
+}
 const httpServer = require("http").createServer(app);
-const io = require("socket.io")(httpServer,{ path : '/socket' });
+const io = require("socket.io")(httpServer, {
+      cors : corsOptions
+});
 
 const onConnection = (socket) =>{
+      console.log(`connected with id: ${socket.id}`)
       socket.on('error', (err) => socket.emit(err.message))
       socket
       .on('subscribe', (data) => {
@@ -26,11 +34,6 @@ io.of('/coins').on("connection", onConnection);
 
 
 const bodyParser = require('body-parser');
-const corsOptions ={
-    origin:'*', 
-    credentials:true,          
-    optionSuccessStatus:200,
- }
 
 app.use(errorHandler)
 app.use(cors(corsOptions))
