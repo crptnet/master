@@ -2,14 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom/client';
 import { v4 as uuidv4 } from 'uuid';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { io } from 'socket.io-client';
-
+import GetListOfCoins from '../listOfCoinsAPI';
+import GetDataCoin from '../getDataCoin';
 import Bookmarks from './bookmarks';
 import symbols from '../positions/coinList';
 import './charts.css';
 
 const Charts = () => {
-    
     let tvScriptLoadingPromise;
     let chartSymbArr = [];
     const [chartSymbList, setChartSymbList] = useState(() => {
@@ -30,59 +29,6 @@ const Charts = () => {
             return {length: 4, type: 1};
         }
     })
-
-    async function getListOfCoins() {
-
-
-        const response = await fetch("http://localhost:5000/api/coins?limit=2500&offset=0&orderby=rank_asc", {
-            method: 'GET',
-            mode : 'cors',
-            headers: {
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS"
-            },
-        });
-        return response.json();
-    }
-
-    async function subscribeToWebSocket() {
-        const listOfCoins = await getListOfCoins();
-        const listOfNames = listOfCoins.map(elem => ({ symbol: elem.symbol }));
-        const socket = io('http://3.8.56.163/coins', {
-            withCredentials: true,
-            extraHeaders : {
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS"
-            }
-        });
-
-        socket.on('connect', () => {
-            console.log('Connected to socket');
-
-            // Subscribe to events or send data to the server
-            socket.emit('subscribe', listOfNames); // Example subscription event
-            //socket.emit('data:update', listOfNames);
-            //socket.emit('data:price_update', listOfNames);
-        });
-
-        socket.on('subscribed', (data) => {
-            console.log('Subscribed:', data);
-        });
-
-        socket.on('data:update', (data) => {
-            console.log(data)
-        })
-
-        socket.on('data:price_update', (data) => {
-            console.log(data)
-        })
-
-        socket.on('error', (err) => {
-            console.log(err)
-        })
-    }
-
-    subscribeToWebSocket();
 
     useEffect(() => {
         if (initialValue) {
@@ -130,7 +76,7 @@ const Charts = () => {
                                     </div>
                                     <div className="charts-title-coin-lastPrice">
                                         <div className="charts-title-coin-lastPrice-head">Last Price</div>
-                                        <div className="charts-title-coin-lastPrice-body">27155.74 </div>
+                                        <div className="charts-title-coin-lastPrice-body">{GetDataCoin(item.symb)?.price}</div>
                                     </div>
                                     <div className="charts-title-coin-24C">
                                         <div className="charts-title-coin-24C-head">

@@ -136,7 +136,13 @@ const Bookmarks = (props) => {
     } else if (sortOrder === "name-desc") {
       filteredData = filteredData.sort((a, b) => b.localeCompare(a));
     }
-
+    const createCoin = (newCoin) => {
+        if (Array.isArray(bookmarkList)) {
+            setBookmarkList([...bookmarkList, {key: uuidv4(), symb: newCoin}]); 
+        } else {
+            console.log('ChartSymbList is not defined or is not an array');
+        }
+    };
     useEffect(()=>{
       if(showOverlay)
       {
@@ -184,7 +190,7 @@ const Bookmarks = (props) => {
                     </div>
                 </div>
                 {filteredData.map((coin, index) => (
-                    <button key={index} className="listElemOverlay" onClick={() => {changeCoin(coin); handleCloseOverlay();}}>{coin}</button>
+                    <button key={index} className="listElemOverlay" onClick={() => {createCoin(coin); handleCloseOverlay();}}>{coin}</button>
                 ))}
                 </div>
             </div>
