@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom/client';
 import { v4 as uuidv4 } from 'uuid';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { io } from 'socket.io-client';
+
 import Bookmarks from './bookmarks';
 import symbols from '../positions/coinList';
 import './charts.css';
@@ -28,6 +30,27 @@ const Charts = () => {
             return {length: 4, type: 1};
         }
     })
+
+
+
+    const socket = io('http://localhost:5000/coins'); // Replace 'http://localhost:5000' with your server's URL
+
+    socket.on('connect', () => {
+    console.log('Connected to socket');
+    
+    // Subscribe to events or send data to the server
+    socket.emit('subscribe', ['ETH', 'BTC']); // Example subscription event
+    });
+
+    socket.on('subscribed', (data) => {
+    console.log('Subscribed:', data);
+    });
+
+    socket.on('error', (err) => {
+    console.error('Socket error:', err);
+    });
+
+
     useEffect(() => {
         if (initialValue) {
             setInitialValue(false);
@@ -35,7 +58,6 @@ const Charts = () => {
         }
         window.location.reload(true);
     }, [chartSymbList]);
-
     
     useEffect(()=>{localStorage.setItem("bookmarkList",JSON.stringify(chartSymbList))},[chartSymbList])
     useEffect(()=>{console.log(chartSymbList)},[chartSymbList])
