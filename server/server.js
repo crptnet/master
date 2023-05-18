@@ -7,11 +7,12 @@ const errorHandler = require('./middleware/errorHandler')
 const path = require('path');
 const { UpdataInfoRun } = require('./controllers/coinSocketController')
 const httpServer = require("http").createServer(app);
-const io = require("socket.io")(httpServer);
+const io = require("socket.io")(httpServer,{ path : '/socket' });
 
 const onConnection = (socket) =>{
       socket.on('error', (err) => socket.emit(err.message))
-      socket.on('subscribe', (data) => {
+      socket
+      .on('subscribe', (data) => {
           console.log((new Date).toLocaleTimeString(),': Received socket ID:', socket.id, 'data', data)
           data.forEach(key => {
                 socket.join(key.symbol)
@@ -21,7 +22,7 @@ const onConnection = (socket) =>{
     }
 
 
-io.on("connection", onConnection);
+io.of('/coins').on("connection", onConnection);
 
 
 const bodyParser = require('body-parser');
