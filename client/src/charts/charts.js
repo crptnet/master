@@ -40,7 +40,7 @@ const Charts = () => {
 
     async function subscribeToWebSocket() {
         const listOfCoins = await getListOfCoins();
-        const listOfNames = listOfCoins.map(elem => elem.name);
+        const listOfNames = listOfCoins.map(elem => ({ symbol: elem.symbol }));
         const socket = io('http://3.8.56.163/coins');
 
         socket.on('connect', () => {
@@ -48,25 +48,21 @@ const Charts = () => {
 
             // Subscribe to events or send data to the server
             socket.emit('subscribe', listOfNames); // Example subscription event
+            socket.emit('data:update', listOfNames);
+            socket.emit('data:price_update', listOfNames);
         });
 
         socket.on('subscribed', (data) => {
             console.log('Subscribed:', data);
         });
 
-        socket.on('data:update', (updateData) => {
-            console.log('Received real-time data update:', updateData);
-            // Process the received update data as needed
-        });
+        socket.on('data:update', (data) => {
+            console.log(data)
+        })
 
-        socket.on('data:price_update', (updatePrice) => {
-            console.log('Received real-time price update:', updatePrice);
-            // Process the received update data as needed
-        });
-
-        socket.on('error', (err) => {
-            console.error('Socket error:', err);
-        });
+        socket.on('data:price_update', (data) => {
+            console.log(data)
+        })
     }
 
     subscribeToWebSocket();
