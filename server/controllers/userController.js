@@ -1,11 +1,23 @@
 const asyncHandler = require('express-async-handler')
 const user = require('../models/userModel') 
+const userBilling = require('../models/userSubscriptionModel')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const fs = require('fs');
 const path = require('path')
 const nodemailer = require('nodemailer')
+const stripe = require('stripe')(process.env.STRIPE_KEY)
 
+
+// DO NOT TOUCH IT JUST WORKS
+// DO NOT TOUCH IT JUST WORKS
+// DO NOT TOUCH IT JUST WORKS
+// DO NOT TOUCH IT JUST WORKS
+// DO NOT TOUCH IT JUST WORKS
+// DO NOT TOUCH IT JUST WORKS
+// DO NOT TOUCH IT JUST WORKS
+// DO NOT TOUCH IT JUST WORKS
+// DO NOT TOUCH IT JUST WORKS
 // Create a nodemailer transporter object with your email service provider settings
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -90,7 +102,7 @@ const registerUser = asyncHandler(async (req, res) => {
       from: process.env.EMAIL,
       to: email,
       subject: 'Verify your email address',
-      html: `<p>Please click <a href="http://localhost:3000/activate?key=${hashPassword}&id=${newUser.id}">here</a> to verify your email address.</p>`
+      html: `<p>Please click <a href="http://${process.env.DOMAIN}/activate?key=${hashPassword}&id=${newUser.id}">here</a> to verify your email address.</p>`
     };
     
     
@@ -103,11 +115,38 @@ const registerUser = asyncHandler(async (req, res) => {
         }
       });
 
+      //
+      //Billing
+      //
+
+      await userBill(newUser)
+
+
       return res.status(201).json({ 'email' : email, 'id' : newUser.id})
     }
 
     res.status(500).send()
 })
+
+const userBill = asyncHandler(async (User) => {
+  const customer = await stripe.customers.create({
+    //User.email
+    
+  })
+  const userBill = new userBilling(
+    { 
+      user_id : User.id,
+      billingId : customer.id,
+      plan : 'tryal',
+      endDate: null,
+    }
+  )
+
+  await userBill.save()
+  
+})
+
+
 ///desc Login a user
 ///Route POST /api/login
 ///access public

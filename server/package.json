@@ -33,6 +33,7 @@
     "redis": "^4.6.6",
     "socket.io": "^4.6.1",
     "socket.io-client": "^4.6.1",
+    "stripe": "^12.5.0",
     "ws": "^8.13.0"
   },
   "devDependencies": {

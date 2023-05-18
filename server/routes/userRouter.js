@@ -42,8 +42,6 @@ const upload = multer({
     
 })
 
-
-
 router.get('/email-active', validateGoogleToken, )
 
 router.get('/current', validateToken,getUser)
