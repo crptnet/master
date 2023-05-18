@@ -10,7 +10,7 @@ const userSubscriptionModel = new mongoose.Schema({
     },
     Plan : {
         type : String,
-        enum : ['none', 'tryal', 'basic', 'premium'],
+        enum : ['none', 'trial', 'basic', 'premium'],
         default : 'none'
     },
     endDate : {

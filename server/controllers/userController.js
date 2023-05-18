@@ -130,14 +130,13 @@ const registerUser = asyncHandler(async (req, res) => {
 
 const userBill = asyncHandler(async (User) => {
   const customer = await stripe.customers.create({
-    //User.email
-    
+    email : User.email,
   })
   const userBill = new userBilling(
     { 
       user_id : User.id,
       billingId : customer.id,
-      plan : 'tryal',
+      plan : 'trial',
       endDate: null,
     }
   )
