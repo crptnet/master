@@ -12,9 +12,7 @@ const corsOptions ={
       optionSuccessStatus:200,
 }
 const httpServer = require("http").createServer(app);
-const io = require("socket.io")(httpServer, {
-      cors : corsOptions
-});
+const io = require("socket.io")(httpServer);
 
 const onConnection = (socket) =>{
       console.log(`connected with id: ${socket.id}`)
@@ -28,7 +26,7 @@ const onConnection = (socket) =>{
             console.log((new Date).toLocaleTimeString(),': Received socket ID:', socket.id, 'data', data)
             try{
                   data.forEach(key => {
-                        if (!key.symbol || !key['symbol'] !== undefined) {
+                        if (!key.symbol || key['symbol'] !== undefined) {
                               // Invalid object format
                               socket.emit('error', { message: 'Invalid object format' });
                               return;
