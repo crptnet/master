@@ -5,7 +5,6 @@ const asyncHandler = require('express-async-handler')
 
 const createPaymentSession = asyncHandler(async (req, res) => {
     const { priceId } = req.query
-    console.log(priceId)
     const session = await stripe.checkout.sessions.create({
     line_items: [
       {
@@ -27,12 +26,11 @@ const endpointSecret = "whsec_96512283aec0430a68da5387729af55a96881e23b579b477fc
 
 const stripeWebhook = asyncHandler(async (req, res) => {
     
-    console.log(req)
     const payload = req.body;
 
-    console.log("Got payload: " + payload);
+    console.log("Got payload: ", payload);
   
-    //response.status(200).end();
+    //res.status(200).end();
 
     const sig = req.headers['stripe-signature'];
 
@@ -41,7 +39,7 @@ const stripeWebhook = asyncHandler(async (req, res) => {
     try {
       event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
     } catch (err) {
-      response.status(400).send(`Webhook Error: ${err.message}`);
+      res.status(400).send(`Webhook Error: ${err.message}`);
       return;
     }
   
@@ -68,8 +66,8 @@ const stripeWebhook = asyncHandler(async (req, res) => {
         console.log(`Unhandled event type ${event.type}`);
     }
   
-    // Return a 200 response to acknowledge receipt of the event
-    response.status(200).send();
+    // Return a 200 res to acknowledge receipt of the event
+    res.status(200).send();
 
 })
 

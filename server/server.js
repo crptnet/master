@@ -10,7 +10,8 @@ const httpServer = require("http").createServer(app);
 const io = require("socket.io")(httpServer);
 
 const onConnection = (socket) =>{
-    socket.on('subscribe', (data) => {
+      socket.on('error', (err) => socket.emit(err.message))
+      socket.on('subscribe', (data) => {
           console.log((new Date).toLocaleTimeString(),': Received socket ID:', socket.id, 'data', data)
           data.forEach(key => {
                 socket.join(key.symbol)
@@ -20,7 +21,7 @@ const onConnection = (socket) =>{
     }
 
 
-io.on("connection", errorHandler, onConnection);
+io.on("connection", onConnection);
 
 
 const bodyParser = require('body-parser');
@@ -42,7 +43,7 @@ const PORT = 5000 || process.env.PORT
 app.use(bodyParser.json());
 app.use(express.json());
 
-app.use('/api/webhook', require('./routes/subscriptionRouter'))
+app.use('/api', require('./routes/subscriptionRouter'))
 
 app.use('/api', require('./routes/coinsRouter'))
 
