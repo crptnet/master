@@ -6,13 +6,20 @@ const connectToDb = require('./config/connectDB')
 const errorHandler = require('./middleware/errorHandler')
 const path = require('path');
 const { UpdataInfoRun } = require('./controllers/coinSocketController')
-const corsOptions ={
-      origin:'*', 
-      credentials:true,          
-      optionSuccessStatus:200,
+const corsOptions = {
+      origin: '*', // Set the appropriate origin(s) here
+      credentials: false,
+      optionSuccessStatus: 200,
+      'Access-Control-Allow-Origin' : '*'
 }
+
 const httpServer = require("http").createServer(app);
-const io = require("socket.io")(httpServer);
+const io = require("socket.io")(httpServer, {
+      cors: {
+            origin: 'http://localhost:3000',
+            credentials : true
+      }
+});
 
 const onConnection = (socket) =>{
       console.log(`connected with id: ${socket.id}`)
@@ -49,11 +56,13 @@ io.of('/coins').on("connection", onConnection);
 
 const bodyParser = require('body-parser');
 
+
+
 app.use(errorHandler)
 app.use(cors(corsOptions))
 
 connectToDb()
-UpdataInfoRun(io) 
+UpdataInfoRun(io)
 //startParse()
 
 const PORT = 5000 || process.env.PORT

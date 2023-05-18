@@ -32,8 +32,15 @@ const Charts = () => {
     })
 
     async function getListOfCoins() {
+
+
         const response = await fetch("http://localhost:5000/api/coins?limit=2500&offset=0&orderby=rank_asc", {
-            method: 'GET'
+            method: 'GET',
+            mode : 'cors',
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS"
+            },
         });
         return response.json();
     }
@@ -41,7 +48,13 @@ const Charts = () => {
     async function subscribeToWebSocket() {
         const listOfCoins = await getListOfCoins();
         const listOfNames = listOfCoins.map(elem => ({ symbol: elem.symbol }));
-        const socket = io('http://3.8.56.163/coins');
+        const socket = io('http://3.8.56.163/coins', {
+            withCredentials: true,
+            extraHeaders : {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS"
+            }
+        });
 
         socket.on('connect', () => {
             console.log('Connected to socket');
