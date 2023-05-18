@@ -5,6 +5,12 @@ const userSubscriptionModel = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: true,
     },
+    subscriptionId : {
+        type : String,
+        require : false,
+        default : null,
+        unique : true,
+    },
     billingId : {
         type : String,
     },
@@ -24,6 +30,4 @@ const userSubscriptionModel = new mongoose.Schema({
 
 const userSubscriptions = mongoose.model('userSubscriptions', userSubscriptionModel);
 
-module.exports = {
-    userSubscriptions
-};
+module.exports = userSubscriptions

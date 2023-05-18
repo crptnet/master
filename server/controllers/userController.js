@@ -1,6 +1,6 @@
 const asyncHandler = require('express-async-handler')
 const user = require('../models/userModel') 
-const userBilling = require('../models/userSubscriptionModel')
+const userSubscriptions = require('../models/userSubscriptionModel')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const fs = require('fs');
@@ -94,7 +94,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
     const hashPassword = await bcrypt.hash(password, 8)
 
-    const newUser = new user({ username, email, password: hashPassword, active : false, profilePicture: 'null' });
+    const newUser = new user({ username, email, password: hashPassword, active : false, profilePicture: 'null', watchList : [] });
     await newUser.save();
 
 
@@ -132,7 +132,10 @@ const userBill = asyncHandler(async (User) => {
   const customer = await stripe.customers.create({
     email : User.email,
   })
-  const userBill = new userBilling(
+
+  console.log(customer.id)
+
+  const userBill = new userSubscriptions(
     { 
       user_id : User.id,
       billingId : customer.id,

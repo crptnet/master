@@ -4,11 +4,11 @@ const coinSchema = new mongoose.Schema({
   user_id: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
+    unique : true,
   },
   coin_id: {
     type: String,
     required: true,
-    unique : true,
   },
 }, {
   timestamps:true, 
