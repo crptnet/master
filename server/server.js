@@ -26,15 +26,21 @@ const onConnection = (socket) =>{
             }
 
             console.log((new Date).toLocaleTimeString(),': Received socket ID:', socket.id, 'data', data)
-            data.forEach(key => {
-                  if (!key.symbol) {
-                        // Invalid object format
-                        socket.emit('error', { message: 'Invalid object format' });
-                        return;
-                  }
-                  socket.join(key.symbol)
-            });
-            socket.emit( 'subscribed', { message : `subscribed on ${JSON.stringify(data)}` })
+            try{
+                  data.forEach(key => {
+                        if (!key.symbol) {
+                              // Invalid object format
+                              socket.emit('error', { message: 'Invalid object format' });
+                              return;
+                        }
+                        socket.join(key.symbol)
+                  });
+                  socket.emit( 'subscribed', { message : `subscribed on ${JSON.stringify(data)}` })
+            }
+            catch{
+                  socket.emit('error', { message: 'Invalid object format' });
+                  return;
+            }
     });
     }
 
