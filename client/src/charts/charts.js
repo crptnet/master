@@ -48,8 +48,8 @@ const Charts = () => {
 
             // Subscribe to events or send data to the server
             socket.emit('subscribe', listOfNames); // Example subscription event
-            socket.emit('data:update', listOfNames);
-            socket.emit('data:price_update', listOfNames);
+            //socket.emit('data:update', listOfNames);
+            //socket.emit('data:price_update', listOfNames);
         });
 
         socket.on('subscribed', (data) => {
@@ -62,6 +62,10 @@ const Charts = () => {
 
         socket.on('data:price_update', (data) => {
             console.log(data)
+        })
+
+        socket.on('error', (err) => {
+            console.log(err)
         })
     }
 

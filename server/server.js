@@ -29,9 +29,11 @@ const onConnection = (socket) =>{
                         if (!key.symbol || key['symbol'] !== undefined) {
                               // Invalid object format
                               socket.emit('error', { message: 'Invalid object format' });
-                              return;
+                              throw new Error('Invalid object format')
                         }
-                        socket.join(key.symbol)
+                        else{
+                              socket.join(key.symbol)
+                        }
                   });
                   socket.emit( 'subscribed', { message : `subscribed on ${JSON.stringify(data)}` })
             }
