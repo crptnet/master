@@ -28,7 +28,7 @@ const onConnection = (socket) =>{
             console.log((new Date).toLocaleTimeString(),': Received socket ID:', socket.id, 'data', data)
             try{
                   data.forEach(key => {
-                        if (!key.symbol) {
+                        if (!key.symbol || !key['symbol'] !== undefined) {
                               // Invalid object format
                               socket.emit('error', { message: 'Invalid object format' });
                               return;
