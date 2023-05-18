@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { io } from 'socket.io-client';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import './settings/settings.css';
@@ -16,6 +17,9 @@ import StarredList from './watchlist/starredList';
 import Terminal from './terminal/terminal';
 import Charts from './charts/charts';
 import SubscriptionPage from './subscription/subscription';
+
+import GetListOfCoins from './listOfCoinsAPI';
+import SubscribeToWebSocket from './socket';
 
 
 
@@ -75,6 +79,6 @@ else if(pathName.includes('/terminal')){
   usersideRoot.render(<></>);
 }
 
-
+SubscribeToWebSocket();
 
 export {sidebarRoot,mainRoot,usermainRoot,usersideRoot,modelRoot};
