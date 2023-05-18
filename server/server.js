@@ -27,7 +27,7 @@ const onConnection = (socket) =>{
 
             console.log((new Date).toLocaleTimeString(),': Received socket ID:', socket.id, 'data', data)
             data.forEach(key => {
-                  if (!key.hasOwnProperty('symbol')) {
+                  if (!key.symbol) {
                         // Invalid object format
                         socket.emit('error', { message: 'Invalid object format' });
                         return;
@@ -48,7 +48,7 @@ app.use(errorHandler)
 app.use(cors(corsOptions))
 
 connectToDb()
-UpdataInfoRun(io)
+UpdataInfoRun(io) 
 //startParse()
 
 const PORT = 5000 || process.env.PORT
