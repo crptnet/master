@@ -18,14 +18,23 @@ const io = require("socket.io")(httpServer, {
 
 const onConnection = (socket) =>{
       console.log(`connected with id: ${socket.id}`)
-      socket.on('error', (err) => socket.emit(err.message))
       socket
       .on('subscribe', (data) => {
-          console.log((new Date).toLocaleTimeString(),': Received socket ID:', socket.id, 'data', data)
-          data.forEach(key => {
-                socket.join(key.symbol)
-          });
-          socket.emit( 'subscribed', { message : `subscribed on ${JSON.stringify(data)}` })
+            if (!Array.isArray(data)) {
+                  socket.emit('error', { message: 'Invalid data format' });
+                  return;
+            }
+
+            console.log((new Date).toLocaleTimeString(),': Received socket ID:', socket.id, 'data', data)
+            data.forEach(key => {
+                  if (!key.hasOwnProperty('symbol')) {
+                        // Invalid object format
+                        socket.emit('error', { message: 'Invalid object format' });
+                        return;
+                  }
+                  socket.join(key.symbol)
+            });
+            socket.emit( 'subscribed', { message : `subscribed on ${JSON.stringify(data)}` })
     });
     }
 

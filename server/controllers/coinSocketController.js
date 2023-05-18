@@ -20,7 +20,7 @@ const updateCoinInfo = (async(io) => {
             if(coin.symbol)
             {
                 try{
-                    io.to(coin.symbol).emit('data:update', coin)
+                    io.of('/coins').to(coin.symbol).emit('data:update', coin)
                 }
                 catch(err){
                     console.log(err.message)
@@ -57,7 +57,7 @@ const updateCoinPrices = (async (io) => {
             else if(Math.abs((JSON.parse((await client.hGet('coins', key)))).quotes.USD.price - coin[key]) > 2){
                 const coin_value = JSON.parse((await client.hGet('coins', key)))
                 coin_value.quotes.USD.price = coin[key]
-                io.to(coin_value.symbol).emit('data:price_update', { [coin_value.symbol] : coin[key] })
+                io.of('/coins').to(coin_value.symbol).emit('data:price_update', { [coin_value.symbol] : coin[key] })
                 
                 await client.hSet('coins', key, JSON.stringify(coin_value))
             }
