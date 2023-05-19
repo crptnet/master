@@ -35,21 +35,20 @@ const stripeWebhook = asyncHandler(async (req, res) => {
     
     const payload = req.body;
 
-    console.log("Got payload: ", payload);
-  
-    //res.status(200).end();
-
     const sig = req.headers['stripe-signature'];
 
     let event;
-  
-    try {
-      event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
-    } catch (err) {
+
+    try 
+    {
+      event = stripe.webhooks.constructEvent(payload, sig, endpointSecret);
+    } 
+    catch (err) 
+    {
       res.status(400).send(`Webhook Error: ${err.message}`);
+      console.log('Error message', err.message)
       return;
     }
-  
     // Handle the event
     switch (event.type) {
       case 'checkout.session.async_payment_failed':
@@ -64,9 +63,7 @@ const stripeWebhook = asyncHandler(async (req, res) => {
         const checkoutSessionCompleted = event.data.object;
         const subscription = checkoutSessionCompleted.subscription
         const customer = checkoutSessionCompleted.customer
-        (await userSubscriptions.findByIdAndUpdate({ billingId : customer }, { subscriptionId : subscription }))
-
-        // Then define and call a function to handle the event checkout.session.completed
+        await userSubscriptions.findOneAndUpdate({ billingId : customer }, { subscriptionId : subscription })
         break;
       case 'checkout.session.expired':
         const checkoutSessionExpired = event.data.object;
@@ -74,7 +71,7 @@ const stripeWebhook = asyncHandler(async (req, res) => {
         break;
       // ... handle other event types
       default:
-        console.log(`Unhandled event type ${event.type}`);
+        //console.log(`Unhandled event type ${event.type}`);
     }
   
     // Return a 200 res to acknowledge receipt of the event
