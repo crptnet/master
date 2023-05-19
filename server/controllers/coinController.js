@@ -35,7 +35,34 @@ const getCoinList = asyncHandler(async (req, res) => {
     orderby == '7d_change_asc ' ? data.sort((a, b) => b.quotes[symbol].percent_change_7d - a.quotes[symbol].percent_change_7d) :
     orderby == '1h_change_asc' ? data.sort((a, b) => a.quotes[symbol].percent_change_1h - b.quotes[symbol].percent_change_1h) :
     orderby == '1h_change_asc' ? data.sort((a, b) => b.quotes[symbol].percent_change_1h - a.quotes[symbol].percent_change_1h) : null
-
+    orderby == 'name_asc' ? data.sort((a, b) => {
+        const nameA = a.key.toUpperCase(); // Convert names to uppercase for case-insensitive sorting
+        const nameB = b.key.toUpperCase();
+      
+        if (nameA < nameB) {
+          return -1; // nameA comes before nameB
+        }
+      
+        if (nameA > nameB) {
+          return 1; // nameA comes after nameB
+        }
+      
+        return 0; // names are equal
+    }) : 
+    orderby == 'name_desc' ? data.sort((a, b) => {
+        const nameA = a.key.toUpperCase(); // Convert names to uppercase for case-insensitive sorting
+        const nameB = b.key.toUpperCase();
+      
+        if (nameA < nameB) {
+          return 1; // nameA comes before nameB
+        }
+      
+        if (nameA > nameB) {
+          return -1; // nameA comes after nameB
+        }
+      
+        return 0; // names are equal
+    }) : null
     const lowerCaseQuery = query.toLowerCase();
     data = data.filter((coin) => {
         const lowerCaseSymbol = coin.symbol.toLowerCase();
