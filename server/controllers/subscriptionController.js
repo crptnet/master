@@ -33,9 +33,9 @@ const endpointSecret = "whsec_96512283aec0430a68da5387729af55a96881e23b579b477fc
 
 const stripeWebhook = asyncHandler(async (req, res) => {
     
-    const payload = (req.body).toString();
+    const payload = (req.body);
 
-    console.log(req)
+    console.log(req.body)
 
     const sig = req.headers['stripe-signature'];
 

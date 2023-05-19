@@ -4,10 +4,11 @@ const {
 } = require("../controllers/subscriptionController");
 const router = require("express").Router();
 const bodyParser = require('body-parser')
+const express = require('express')
 const validateToken = require("../middleware/validateToken");
 
 router.post('/create-checkout-session', validateToken, createPaymentSession)
 
-router.post('/stripe_webhook', bodyParser.raw({type: "*/*"}), stripeWebhook)
+router.post('/stripe_webhook', express.raw({type: "*/*"}), stripeWebhook)
 
 module.exports = router;
