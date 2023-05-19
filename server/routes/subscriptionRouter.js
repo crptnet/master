@@ -9,6 +9,6 @@ const validateToken = require("../middleware/validateToken");
 
 router.post('/create-checkout-session', validateToken, createPaymentSession)
 
-router.post('/stripe_webhook', express.raw({type: "*/*"}), stripeWebhook)
+router.post('/stripe_webhook', bodyParser.raw(), stripeWebhook)
 
 module.exports = router;
