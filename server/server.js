@@ -6,6 +6,9 @@ const connectToDb = require('./config/connectDB')
 const errorHandler = require('./middleware/errorHandler')
 const path = require('path');
 const { UpdataInfoRun } = require('./controllers/coinSocketController')
+const asyncHandler = require('express-async-handler')
+const stripe = require('stripe')('sk_test_51N8SZTJja6fn3xLG3zzJrxGFLl44Zm6QhrwGDhlaUtPJe4Rm0u6ImoO3xOyHOrH32bZD3bOMuYwqDV1zsIpHsNju00FyWylTu5')
+
 
 const corsOptions = {
       origin: '*', // Set the appropriate origin(s) here
@@ -72,6 +75,19 @@ app.use((req, res, next) => {
             express.json()(req, res, next);  // ONLY do express.json() if the received request is NOT a WebHook from Stripe.
       }
 });
+
+
+app.post('/api/stripe_webhook', express.raw({type: 'application/json'}), asyncHandler(async (req, res ) => {
+
+      const stripeSignature = req.headers['stripe-signature'];
+      if(stripeSignature == null) { throw new UnknownError('No stripe signature found!');  }
+  
+      const stripePayload = (req).rawBody || req.body;
+      const stripeSecret = `whsec_96512283aec0430a68da5387729af55a96881e23b579b477fc2d9759d9f456bb`
+      const event = stripe.webhooks.constructEvent(stripePayload, stripeSignature?.toString(), stripeSecret);
+  
+      res.sendStatus(200);
+    }));
 
 
 app.use('/api', require('./routes/subscriptionRouter'))

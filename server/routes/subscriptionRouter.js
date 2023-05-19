@@ -10,7 +10,7 @@ const bodyParser = require('body-parser')
 
 router.post('/create-checkout-session', validateToken, createPaymentSession)
 
-router.post('/stripe_webhook', stripeWebhook)
+//router.post('/stripe_webhook', stripeWebhook)
 
 // const endpointSecret = "whsec_96512283aec0430a68da5387729af55a96881e23b579b477fc2d9759d9f456bb";
 
