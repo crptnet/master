@@ -76,20 +76,6 @@ app.use((req, res, next) => {
       }
 });
 
-
-app.post('/api/stripe_webhook', express.raw({type: 'application/json'}), asyncHandler(async (req, res ) => {
-
-      const stripeSignature = req.headers['stripe-signature'];
-      if(stripeSignature == null) { throw new UnknownError('No stripe signature found!');  }
-  
-      const stripePayload = (req).rawBody || req.body;
-      const stripeSecret = `whsec_96512283aec0430a68da5387729af55a96881e23b579b477fc2d9759d9f456bb`
-      const event = stripe.webhooks.constructEvent(stripePayload, stripeSignature?.toString(), stripeSecret);
-  
-      res.sendStatus(200);
-    }));
-
-
 app.use('/api', require('./routes/subscriptionRouter'))
 app.use('/api', require('./routes/coinsRouter'))
 app.use('/api', require('./routes/userRouter'))

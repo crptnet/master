@@ -29,7 +29,7 @@ const createPaymentSession = asyncHandler(async (req, res) => {
   res.redirect(200, session.url);
 })
 
-const endpointSecret = "whsec_96512283aec0430a68da5387729af55a96881e23b579b477fc2d9759d9f456bb";
+const endpointSecret = "whsec_10s1R8QjmskZYkVoroWiHCMkBMB4maPC";
 
 
 const stripeWebhook = asyncHandler(async (req, res) => {
