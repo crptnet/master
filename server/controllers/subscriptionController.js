@@ -60,6 +60,7 @@ const stripeWebhook = asyncHandler(async (req, res) => {
         // Then define and call a function to handle the event checkout.session.async_payment_succeeded
         break;
       case 'checkout.session.completed':
+        console.log((new Date).toLocaleTimeString(), payload)
         const checkoutSessionCompleted = event.data.object;
         const subscription = checkoutSessionCompleted.subscription
         const customer = checkoutSessionCompleted.customer
