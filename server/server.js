@@ -73,6 +73,7 @@ app.use((req, res, next) => {
       }
 });
 
+
 app.use('/api', require('./routes/subscriptionRouter'))
 app.use('/api', require('./routes/coinsRouter'))
 app.use('/api', require('./routes/userRouter'))
