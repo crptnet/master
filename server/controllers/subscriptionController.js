@@ -35,7 +35,7 @@ const stripeWebhook = asyncHandler(async (req, res) => {
     
     const payload = (req.body);
 
-    console.log(req.body)
+    console.log(typeof(req.body))
 
     const sig = req.headers['stripe-signature'];
 
