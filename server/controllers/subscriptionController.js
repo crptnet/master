@@ -3,6 +3,7 @@ const stripe = require('stripe')(process.env.STRIPE_KEY)
 const DOMAIN = process.env.DOMAIN
 const asyncHandler = require('express-async-handler')
 const userSubscriptions = require('../models/userSubscriptionModel')
+const { buffer } = require('micro')
 
 
 const createPaymentSession = asyncHandler(async (req, res) => {
@@ -33,9 +34,11 @@ const endpointSecret = "whsec_96512283aec0430a68da5387729af55a96881e23b579b477fc
 
 const stripeWebhook = asyncHandler(async (req, res) => {
     
-    const payload = (req.body);
+    const reqBuffer = await buffer(req)
 
-    console.log(typeof(req.body))
+    const payload = reqBuffer;
+
+    console.log(payload)
 
     const sig = req.headers['stripe-signature'];
 
