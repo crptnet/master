@@ -38,7 +38,7 @@ body {
 
 .activate-submit {
     padding: 5px;
-    color: white;
+    color: #d1d4dc;
     background-color: #5CC082;
     font-size: 1.25rem;
     font-weight: bold;
@@ -50,7 +50,7 @@ body {
 
 .activate-submit:hover {
     color: #5CC082;
-    background-color: white;
+    background-color: #d1d4dc;
     font-weight: bold;
     border-color: #5CC082;
     cursor: pointer;

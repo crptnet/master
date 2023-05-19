@@ -11,7 +11,7 @@ body {
     margin: 0;
     padding: 0;
     background-color: #252525;
-    color: white;
+    color: #d1d4dc;
     font-family: roboto, poppins, sans-serif;
 }
 
@@ -113,7 +113,7 @@ body {
 }
 .userNameInner,.emailInner,.accLevelInner {
     margin: 2px;
-    color: white;
+    color: #d1d4dc;
     font-weight:bold;
 }
 
@@ -127,7 +127,7 @@ body {
     width: 100px;
     margin: 5px;
     padding: 5px;
-    color: white;
+    color: #d1d4dc;
     background-color: #4682B4;
     border: 2px #4682B4 solid;
     border-radius: 5px;
@@ -138,14 +138,14 @@ body {
 
 .logOutBtn:hover {
     color: #4682B4;
-    background-color: white;
+    background-color: #d1d4dc;
 }
 
 .deleteUserBtn {
     width: 100px;
     margin: 5px;
     padding: 5px;
-    color: white;
+    color: #d1d4dc;
     background-color: #DC4C41;
     border: 2px #DC4C41 solid;
     border-radius: 5px;
@@ -156,7 +156,7 @@ body {
 
 .deleteUserBtn:hover {
     color: #DC4C41;
-    background-color: white;
+    background-color: #d1d4dc;
 }
 
 /*SIDE-DATA*/
@@ -191,7 +191,7 @@ body {
     min-width: 75px;
     min-height: 30px;
     background-color: #4682B4;
-    color: white;
+    color: #d1d4dc;
     border: none;
     border-radius: 5px;
     font-size: 1rem;
@@ -309,17 +309,17 @@ body {
 }
 
 .haveAccBtn:hover {
-    color: white;
+    color: #d1d4dc;
     background-color: transparent;
     font-weight: bold;
-    border-color: white;
+    border-color: #d1d4dc;
     cursor: pointer;
 }
 
 .submitLogin {
     margin-top: 25px;
     padding: 10px 15px 10px 15px;
-    color: white;
+    color: #d1d4dc;
     background-color: #4682B4;
     border: 2px #333333 solid;
     border-radius: 5px;
@@ -331,7 +331,7 @@ body {
 
 .submitLogin:hover {
     color: #4682B4;
-    background-color: white;
+    background-color: #d1d4dc;
     border-color:#4682B4;
 }
 
@@ -406,7 +406,7 @@ body {
     width: 400px;
     position: absolute;
     background-color: #252525;
-    border: 1px solid white;
+    border: 1px solid #d1d4dc;
     border-radius: 5px;
     padding: 20px;
     text-align: center;
@@ -428,7 +428,7 @@ body {
 .delete-content button {
     margin: 15px 15px 0 15px;
     padding: 5px;
-    color: white;
+    color: #d1d4dc;
     border-radius: 5px;
     transition: all 0.3s ease-in-out;
     cursor: pointer;
@@ -442,7 +442,7 @@ body {
 
 .deleteConfirmBtn:hover {
     color: #DC4C41;
-    background-color: white;
+    background-color: #d1d4dc;
     border: 2px #DC4C41 solid;
 }
 
@@ -454,7 +454,7 @@ body {
 
 .deleteCancelBtn:hover {
     color: #4682B4;
-    background-color: white;
+    background-color: #d1d4dc;
     border: 2px #4682B4 solid;
 }
 

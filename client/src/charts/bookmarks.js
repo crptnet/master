@@ -2,9 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom/client';
 import { v4 as uuidv4 } from 'uuid';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import GetListOfCoins from '../listOfCoinsAPI';
 import symbols from '../positions/coinList';
 import './charts.css';
-import { modelRoot } from '..';
+import { modelRoot } from '../index';
 
 const bookmarksArr = [];
 
@@ -20,7 +21,6 @@ const Bookmarks = (props) => {
   });
   const [BookListLayout, setBookListLayout] = useState(<></>);
   const [initialValue, setInitialValue] = useState(true);
-
   useEffect(() => {
       if (initialValue) {
           setInitialValue(false);
@@ -100,9 +100,22 @@ const Bookmarks = (props) => {
   function Overlay(props) {
     const [showOverlay, setShowOverlay] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
-    const [sortOrder, setSortOrder] = useState(null);
+    const [sortOrder, setSortOrder] = useState("default");
     const [activeButton, setActiveButton] = useState(null);
-    const [data, setData] = useState([...symbols]);
+    const [data, setData] = useState([]);
+
+    async function getDataStored() {
+      try {
+        const symbs = await GetListOfCoins();
+        setData(symbs.map(elem => ({ symbol: elem.symbol, price: elem.quotes.USD.price })));
+        console.log("Initial Coin Data:",data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+
+    getDataStored();
+    
     let sortedData;
     const { bookmarkList }  = props.props;
     const handleOpenOverlay = () => {
@@ -113,32 +126,58 @@ const Bookmarks = (props) => {
       setShowOverlay(false);
     };
 
-    const handleResetSort = () => {
-      setData([...symbols]);
-      setSortOrder("none");
+    const handleResetSort = async () => {
+      const symbs = await GetListOfCoins();
+      const symbData = symbs.map(elem => ({key: uuidv4(), symbol:elem.symbol, price: elem.quotes.USD.price}));
+      setData([...symbData]);
+      setSortOrder("default");
+      setFilteredData([...symbData]);
     };
 
-    const handleSort = (order) => {
+    const handleSort = async (order) => {
       sortedData = {};
+      let link;
       if (order === "name-asc") {
-        sortedData = data.sort((a, b) => a.localeCompare(b));
+        link = "http://3.8.190.201/api/coins?limit=2500&offset=0&orderby=price_asc"
       } else if (order === "name-desc") {
-        sortedData = data.sort((a, b) => b.localeCompare(a));
+        link = "http://3.8.190.201/api/coins?limit=2500&offset=0&orderby=price_desc"
       }
-      setData(sortedData);
+      const response = await fetch(link, {
+        method: 'GET',
+        mode : 'cors',
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS"
+        },
+      });
+      const symbs = await response.json();
+      console.log("SORTED!", symbs)
+      const symbNames = symbs.map(elem => ({key: uuidv4(), symbol:elem.symbol, price: elem.quotes.USD.price}));
+      setData([...symbNames]);
       setSortOrder(order);
     };
-    let filteredData = Object.values(symbols).filter(item =>
-      item.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    if (sortOrder === "name-asc") {
-      filteredData = filteredData.sort((a, b) => a.localeCompare(b));
-    } else if (sortOrder === "name-desc") {
-      filteredData = filteredData.sort((a, b) => b.localeCompare(a));
-    }
-    const createCoin = (newCoin) => {
+    // SORTED DATA EXPIRED AUTOMATICALLY AFTER DATA IS UPDATED.
+    const [filteredData, setFilteredData] = useState([]);
+    useEffect(()=>{
+      async function updatedFiltered () {
+        if(data!=[] && data!=null)
+        {
+          let updatedFilteredData = data;
+          setFilteredData(updatedFilteredData.filter(item => item.symbol.toLowerCase().includes(searchTerm.toLowerCase())));
+          // if (sortOrder === "name-asc") {
+          //   setFilteredData(updatedFilteredData.filter(item => item.symbol.toLowerCase().includes(searchTerm.toLowerCase())).sort((a, b) => a.symbol.localeCompare(b.symbol)));
+          // } else if (sortOrder === "name-desc") {
+          //   setFilteredData(updatedFilteredData.filter(item => item.symbol.toLowerCase().includes(searchTerm.toLowerCase())).sort((a, b) => b.symbol.localeCompare(a.symbol)));
+          // } else {
+          //   setFilteredData(updatedFilteredData.filter(item => item.symbol.toLowerCase().includes(searchTerm.toLowerCase())));
+          // }
+        }
+      }
+      updatedFiltered();
+    },[data])
+    const createCoin = (newCoin, newPrice) => {
         if (Array.isArray(bookmarkList)) {
-            setBookmarkList([...bookmarkList, {key: uuidv4(), symb: newCoin}]); 
+            setBookmarkList([...bookmarkList, {key: uuidv4(), symb: newCoin, price: newPrice}]); 
         } else {
             console.log('ChartSymbList is not defined or is not an array');
         }
@@ -152,14 +191,12 @@ const Bookmarks = (props) => {
             <div className="overlayContainer">
                 <div className="overlayHeader">
                 <p className='overlayTitle'>Select a coin</p>
-                <button onClick={handleCloseOverlay} className='closeOverlay'>&#215;</button>
-                </div>
-                <div className='listOfCrypto'>
-                <div className='searchSortOverlay'>
-                    <input className="input-search-convert" placeholder="Search coins" type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+                <input className="input-search-convert" placeholder="Search coins" type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+                <div className="searchSortOverlayOuter">
+                  <div className='searchSortOverlayInner'>
                     <div style={{display:'flex', flexDirection:'row', alignItems:'center'}}>
-                    <div className='sortOverlay'>Sort by name</div>
-                    <div className='sortBtns'>
+                      <div className='sortOverlay'>Symbol</div>
+                      <div className='sortBtns'>
                         <button
                         onClick={() => {
                             if (sortOrder === "name-asc") {
@@ -186,13 +223,87 @@ const Bookmarks = (props) => {
                         >
                         &#9660;
                         </button>
+                      </div>
                     </div>
+                  </div>
+                  <div className='searchSortOverlayInner'>
+                    <div style={{display:'flex', flexDirection:'row', alignItems:'center'}}>
+                      <div className='sortOverlay'>Price</div>
+                      <div className='sortBtns'>
+                        <button
+                        onClick={() => {
+                            if (sortOrder === "name-asc") {
+                            handleResetSort();
+                            } else {
+                            handleSort("name-asc");
+                            }
+                            setActiveButton(activeButton === "name-asc" ? null : "name-asc");
+                        }}
+                        className={`sort-button ${activeButton === "name-asc" ? "active" : ""}`}
+                        >
+                        &#9650;
+                        </button>
+                        <button
+                        onClick={() => {
+                            if (sortOrder === "name-desc") {
+                            handleResetSort();
+                            } else {
+                            handleSort("name-desc");
+                            }
+                            setActiveButton(activeButton === "name-desc" ? null : "name-desc");
+                        }}
+                        className={`sort-button ${activeButton === "name-desc" ? "active" : ""}`}
+                        >
+                        &#9660;
+                        </button>
+                      </div>
                     </div>
+                  </div>
+                  <div className='searchSortOverlayInner'>
+                    <div style={{display:'flex', flexDirection:'row', alignItems:'center'}}>
+                      <div className='sortOverlay'>Change</div>
+                      <div className='sortBtns'>
+                        <button
+                        onClick={() => {
+                            if (sortOrder === "name-asc") {
+                            handleResetSort();
+                            } else {
+                            handleSort("name-asc");
+                            }
+                            setActiveButton(activeButton === "name-asc" ? null : "name-asc");
+                        }}
+                        className={`sort-button ${activeButton === "name-asc" ? "active" : ""}`}
+                        >
+                        &#9650;
+                        </button>
+                        <button
+                        onClick={() => {
+                            if (sortOrder === "name-desc") {
+                            handleResetSort();
+                            } else {
+                            handleSort("name-desc");
+                            }
+                            setActiveButton(activeButton === "name-desc" ? null : "name-desc");
+                        }}
+                        className={`sort-button ${activeButton === "name-desc" ? "active" : ""}`}
+                        >
+                        &#9660;
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                {filteredData.map((coin, index) => (
-                    <button key={index} className="listElemOverlay" onClick={() => {createCoin(coin); handleCloseOverlay();}}>{coin}</button>
-                ))}
+                <button onClick={handleCloseOverlay} className='closeOverlay'>&#215;</button>
+              </div>
+                
+                <div className='listOfCrypto'>
+                  
+                <div className="inner-overlay-container">
+                  {filteredData.map((elem) => (
+                    <button key={uuidv4()} className="listElemOverlay" onClick={() => {createCoin(elem.symbol,elem.price); handleCloseOverlay();}}><span>{elem.symbol}</span><span>$ &nbsp;{elem.price>1 ? parseFloat(elem.price).toFixed(2) : parseFloat(elem.price).toFixed(5)}</span></button>
+                  ))}
                 </div>
+              </div>
             </div>
           </div>
         )
@@ -201,7 +312,7 @@ const Bookmarks = (props) => {
       {
         modelRoot.render(<></>);
       }   
-    },[showOverlay])
+    },[showOverlay, filteredData])
 
     return (
       <button onClick={handleOpenOverlay} className='addBookmarkBtnChart'><span>+</span></button>
@@ -219,7 +330,13 @@ const Bookmarks = (props) => {
     const [searchTerm, setSearchTerm] = useState("");
     const [sortOrder, setSortOrder] = useState(null);
     const [activeButton, setActiveButton] = useState(null);
-    const [data, setData] = useState([...symbols]);
+    const [data, setData] = useState(null);
+    async function getDataStored () {
+      const symbs = await GetListOfCoins();
+      const symbData = symbs.map(elem => ({symbol:elem.symbol, price: elem.quotes.USD.price}));
+      setData([...symbData])
+    }
+    getDataStored();
     let sortedData;
     const { bookmarkList, itemKey}  = props.props;
     let chartOverlay = [...bookmarkList]; 
@@ -232,8 +349,8 @@ const Bookmarks = (props) => {
         setShowOverlay(false);
     };
 
-    const handleResetSort = () => {
-        setData([...symbols]);
+    const handleResetSort = async () => {
+        await getDataStored();
         setSortOrder("none");
     };
 
