@@ -33,10 +33,7 @@ const endpointSecret = "whsec_10s1R8QjmskZYkVoroWiHCMkBMB4maPC";
 
 
 const stripeWebhook = asyncHandler(async (req, res) => {
-    
-    const reqBuffer = await buffer(req)
-
-    const payload = reqBuffer;
+    const payload = req.body;
 
     console.log(payload)
 
@@ -55,7 +52,6 @@ const stripeWebhook = asyncHandler(async (req, res) => {
       return;
     }
 
-    (new Date).toLocaleTimeString
     // Handle the event
     switch (event.type) {
       case 'checkout.session.async_payment_failed':
@@ -88,9 +84,9 @@ const stripeWebhook = asyncHandler(async (req, res) => {
 })
 
 const getSubscription = asyncHandler(async (res, req) => {
-  const subscription = await stripe.subscriptions.retrieve(
+  // const subscription = await stripe.subscriptions.retrieve(
 
-  )
+  // )
 
 
 
