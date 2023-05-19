@@ -8,5 +8,5 @@ export default async function GetDataCoin(symbol) {
       },
   });
   const data = response.json();
-  return {name: data.name, description: data.description, image: data.image, price: data.market_data.current_price}
+  return {name: data.name, description: data.description, image: data.image}
 }

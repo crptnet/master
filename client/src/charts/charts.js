@@ -76,7 +76,7 @@ const Charts = () => {
                                     </div>
                                     <div className="charts-title-coin-lastPrice">
                                         <div className="charts-title-coin-lastPrice-head">Last Price</div>
-                                        <div className="charts-title-coin-lastPrice-body">{GetDataCoin(item.symb)?.price}</div>
+                                        <div className="charts-title-coin-lastPrice-body">$ 27.200</div>
                                     </div>
                                     <div className="charts-title-coin-24C">
                                         <div className="charts-title-coin-24C-head">

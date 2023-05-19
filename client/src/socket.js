@@ -4,7 +4,7 @@ import GetListOfCoins from './listOfCoinsAPI';
 export default async function SubscribeToWebSocket() {
     const listOfCoins = await GetListOfCoins();
   const listOfNames = listOfCoins.map(elem => ({ symbol: elem.symbol }));
-  const socket = io('http://3.8.56.163/coins', {
+  const socket = io('http://3.8.190.201/coins', {
       withCredentials: true,
       extraHeaders : {
           "Access-Control-Allow-Origin": "*",
@@ -22,7 +22,7 @@ export default async function SubscribeToWebSocket() {
   });
 
   socket.on('subscribed', (data) => {
-      console.log('Subscribed:', data);
+      //console.log('Subscribed:', data);
   });
 
   socket.on('data:update', (data) => {

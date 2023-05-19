@@ -5,7 +5,7 @@
 }
 body {
   background-color: #252525;
-  color: white;
+  color: #d1d4dc;
   font-family: roboto, poppins, sans-serif;
 }
 
@@ -33,7 +33,7 @@ body {
 .sideBtn {
   width: 50px;
   padding: 5px;
-  color: white;
+  color: #d1d4dc;
   background-color: transparent;
   border: none;
   border-radius: 5px;

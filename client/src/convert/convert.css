@@ -11,7 +11,7 @@ body {
     margin: 0;
     padding: 0;
     background-color: #252525;
-    color: white;
+    color: #d1d4dc;
     font-family: roboto, poppins, sans-serif;
 }
 
@@ -57,7 +57,7 @@ input[type=number] {
 .sideBtn {
     width: 50px;
     padding: 5px;
-    color: white;
+    color: #d1d4dc;
     background-color: transparent;
     border: none;
     border-radius: 5px;
@@ -148,7 +148,7 @@ input[type=number] {
 }
 
 .openListBtn {
-    color: white;
+    color: #d1d4dc;
     border: none;
     background-color: transparent;
 }
@@ -166,7 +166,7 @@ input[type=number] {
 
 .inputAmount {
     margin: 20px;
-    color: white;
+    color: #d1d4dc;
     background-color: transparent;
     border: none;
     font-size: 1.25rem;
@@ -175,7 +175,7 @@ input[type=number] {
 }
 
 .inputAmount::placeholder {
-    color: white;
+    color: #d1d4dc;
     font-size: 1.25rem;
     font-weight: bold;
 }
@@ -202,7 +202,7 @@ input[type=number] {
     width: 660px;
     height: 60px;
     margin: 5px 20px 20px 20px;
-    color: white;
+    color: #d1d4dc;
     background-color: #4682B4;
     font-weight: bold;
     border: none;
@@ -280,22 +280,34 @@ input[type=number] {
 }
 
 .overlayContainer {
-    min-width: 340px;
+    width: 100vw;
     height: auto;
-    margin-top: 40px;
     padding: 20px;
+    position: fixed;
     background-color: #333333;
     border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .overlayHeader {
     position: absolute;
     left: 50%;
     transform: translate(-50%, 0);
-    width: 300px;
+    width: 80vw;
+    height: 20vh;
+    min-height: 90px;
     display: flex;
     justify-content: space-between;
-    
+    align-items: center;
+}
+
+.inner-overlay-container {
+    flex-wrap: wrap;
+    max-height: 75vh;
+    display: flex;
+    justify-content: center;
 }
 
 .overlayTitle {
@@ -304,7 +316,7 @@ input[type=number] {
 }
 
 .closeOverlay {
-    color: white; 
+    color: #d1d4dc; 
     background-color: transparent;
     font-size: 2.5rem;
     border: none; 
@@ -312,6 +324,7 @@ input[type=number] {
 }
 
 .listOfCrypto {
+    margin-top: 20vh;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -319,28 +332,46 @@ input[type=number] {
 }
 
 .listElemOverlay {
-    width: 300px;
+    width: 40vh;
     height: 30px;
     margin: 5px;
-    color: white;
+    color: #d1d4dc;
     background-color: #252525;
     font-size: 1.25rem;
     font-weight: bold;
     border: none;
     border-radius: 3px;
     cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.listElemOverlay span {
+    margin-left: 1vw;
+    margin-right: 1vw;
 }
 
 .listElemOverlay:hover {
-    color: #4682B4;
-    background-color: white;
+    color: #2962ff;
+    background-color: #d1d4dc;
     transition: 0.3s ease-in-out;
 }
 
-.searchSortOverlay {
-    width: 300px;
+.searchSortOverlayOuter {
+    max-width: 50vw;
+    min-height: 30px;
+    flex-wrap: wrap;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.searchSortOverlayInner {
+    width: auto;
     height: 30px;
-    margin: 50px 0 20px 0;
+    margin-left: 5px;
+    margin-right: 5px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -351,7 +382,8 @@ input[type=number] {
     max-width: 150px;
     height: 30px;
     float: left;
-    color: #4682B4;
+    color: #2962ff;
+    background-color: #d1d4dc;
     border: none;
     border-radius: 3px;
     font-size: 1.25rem;
@@ -359,7 +391,7 @@ input[type=number] {
 }
 
 .input-search-convert::placeholder {
-    color: #4682B4;
+    color: #2962ff;
     font-size: 1.25rem;
     font-weight: bold;
 }
@@ -378,7 +410,7 @@ input[type=number] {
 
 .sort-button {
     margin-left: 5px;
-    color: white;
+    color: #d1d4dc;
     background-color: transparent;
     border: none;
     cursor: pointer;
@@ -386,14 +418,14 @@ input[type=number] {
 
 .sort-button:hover {
     transition: 0.3s ease-in-out;
-    color: #4682B4;
+    color: #2962ff;
 }
 
 .active {
-    color: #4682B4;
+    color: #2962ff;
 }
 
 .active:hover {
     transition: 0.3s ease-in-out;
-    color: white;
+    color: #d1d4dc;
 }
