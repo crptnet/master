@@ -19,7 +19,9 @@ const endpointSecret = "whsec_96512283aec0430a68da5387729af55a96881e23b579b477fc
 router.post('/stripe_webhook', bodyParser.raw({ type: 'application/json' }), (req, res) => {
     const sig = req.headers['stripe-signature'];
   
-    console.log(req.body.toString())
+    console.log(sig)
+
+    //console.log(req.body.toString())
 
     let event;
   
