@@ -10,7 +10,7 @@ const bodyParser = require('body-parser')
 
 router.post('/create-checkout-session', validateToken, createPaymentSession)
 
-router.post('/stripe_webhook', stripeWebhook)
+router.post('/stripe_webhook', bodyParser.raw({type: 'application/json'}), stripeWebhook)
   
 
 module.exports = router;
