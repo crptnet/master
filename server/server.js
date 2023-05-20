@@ -20,7 +20,7 @@ const corsOptions = {
 const httpServer = require("http").createServer(app);
 const io = require("socket.io")(httpServer, {
       cors: {
-            origin: 'http://localhost:3000',
+            origin: ['http://localhost:3000', 'http://3.8.190.201.nip.io', 'http://3.8.190.201'],
             credentials : true
       }
 });

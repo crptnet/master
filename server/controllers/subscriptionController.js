@@ -8,7 +8,10 @@ const { buffer } = require('micro')
 
 const createPaymentSession = asyncHandler(async (req, res) => {
     const { priceId } = req.query
-    const customerID = (await userSubscriptions.findOne({ user_id : req.user.id })).billingId
+    const customer = (await userSubscriptions.findOne({ user_id : req.user.id }))
+    if(customer.subscriptionId !== 'null'){
+      res.sendStatus(403)
+    }
 
     console.log(customerID)
     const session = await stripe.checkout.sessions.create({
@@ -20,7 +23,7 @@ const createPaymentSession = asyncHandler(async (req, res) => {
           quantity: 1,
         },
       ],
-    customer: customerID,
+    customer: customer.billingId,
     mode: 'subscription',
     success_url: `${DOMAIN}/subscription?success=true`,
     cancel_url: `${DOMAIN}/subscription?canceled=true`,
@@ -29,7 +32,8 @@ const createPaymentSession = asyncHandler(async (req, res) => {
   res.redirect(200, session.url);
 })
 
-const endpointSecret = "whsec_10s1R8QjmskZYkVoroWiHCMkBMB4maPC";
+//local secret
+const endpointSecret = "whsec_96512283aec0430a68da5387729af55a96881e23b579b477fc2d9759d9f456bb";
 
 
 const stripeWebhook = asyncHandler(async (req, res) => {
@@ -83,17 +87,30 @@ const stripeWebhook = asyncHandler(async (req, res) => {
 
 })
 
-const getSubscription = asyncHandler(async (res, req) => {
-  // const subscription = await stripe.subscriptions.retrieve(
+const getSubscription = asyncHandler(async (req, res) => {
+  const customer = (await userSubscriptions.findOne({ user_id : req.user.id }))
 
-  // )
+  if(!customer.subscriptionId){
+    return res.sendStatus(400).end()
+  }
+  const subscription = await stripe.subscriptions.retrieve(
+    customer.subscriptionId
+  )
 
 
+
+  res.send({
+    id : subscription.id,
+    object : subscription.object,
+    created : subscription.created,
+    current_period_end : subscription.current_period_end,
+  }).status(200)
 
 })
 
 module.exports = {
     createPaymentSession,
     stripeWebhook,
+    getSubscription,
 };
 
