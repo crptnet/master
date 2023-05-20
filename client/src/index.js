@@ -22,8 +22,6 @@ import GetListOfCoins from './listOfCoinsAPI';
 
 const scrollRoot = ReactDOM.createRoot(document.getElementById('scroll'));
 const sidebarRoot = ReactDOM.createRoot(document.getElementById('sidebar'));
-const usermainRoot = ReactDOM.createRoot(document.getElementById('user-main'));
-const usersideRoot = ReactDOM.createRoot(document.getElementById('user-side'));
 const modelRoot = ReactDOM.createRoot(document.getElementById('model'));
 const mainRoot = ReactDOM.createRoot(document.getElementById('main'));
 
@@ -58,18 +56,14 @@ console.log(pathName);
     if (!localStorage.getItem('token')) {
       mainRoot.render(<NotRegistered />);
     } else {
-      mainRoot.render(<></>);
-      usermainRoot.render(<MainUserData />);
-      usersideRoot.render(<SideUserData />);
+      mainRoot.render(<><MainUserData /><SideUserData /></>);
     }
   } else {
     scrollRoot.render(<Main />);
-    usermainRoot.render(<></>);
-    usersideRoot.render(<></>);
   }
 
 
 const serverLink = "http://3.8.190.201.nip.io/";
 export {serverLink};
 
-export {sidebarRoot,mainRoot,usermainRoot,usersideRoot,modelRoot};
+export {sidebarRoot,mainRoot,modelRoot};

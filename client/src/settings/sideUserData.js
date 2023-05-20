@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './settings.css';
 import {serverLink} from '../index';
-import { sidebarRoot, mainRoot, usermainRoot, usersideRoot, modelRoot } from '../index';
+import { sidebarRoot, mainRoot, modelRoot } from '../index';
 import SideUserBtns from './sideUserBtns';
 import MainUserData from './mainUserData';
 import { GoogleOAuthProvider } from '@react-oauth/google';
