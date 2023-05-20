@@ -205,7 +205,7 @@ const getUser = asyncHandler(async (req, res) => {
 
     //console.log(User.profilePicture, pattern.test(User.profilePicture))
 
-    const profilePicture = !User.profilePicture.includes("googleusercontent.com")  ? (`http://${process.env.SERVER_DOMAIN}/upload/${(User.profilePicture !== 'null') ? (User.profilePicture).substring((User.profilePicture).lastIndexOf('uploads') + 2) : 'def.jpg'}`) : User.profilePicture
+    const profilePicture = !User.profilePicture.includes("googleusercontent.com")  ? (`http://${process.env.SERVER_DOMAIN}/upload/${(User.profilePicture !== 'null') ? (User.profilePicture).substring((User.profilePicture).lastIndexOf('/') + 2) : 'def.jpg'}`) : User.profilePicture
     res.status(200).json(
     {
       username : User.username,
