@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import ReactDOM from 'react-dom/client';
 import {serverLink} from '../index';
-import { sidebarRoot, mainRoot, usermainRoot, usersideRoot, modelRoot } from '../index';
+import { sidebarRoot, mainRoot, modelRoot } from '../index';
 import SideUserData from './sideUserData';
 import NotRegistered from './notRegistered';
 import './settings.css';
@@ -73,8 +73,6 @@ function MainUserData () {
       </>
     );
     setTimeout(() => {
-      usermainRoot.render(<></>);
-      usersideRoot.render(<></>);
       mainRoot.render(<NotRegistered/>);
     }, 800);
     setTimeout(() => {
@@ -105,8 +103,6 @@ function MainUserData () {
       </>
     );
     setTimeout(() => {
-      usermainRoot.render(<></>);
-      usersideRoot.render(<></>);
       mainRoot.render(<NotRegistered/>);
     }, 800);
     setTimeout(() => {

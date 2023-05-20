@@ -6,7 +6,7 @@
 // 5.Increase the number of fields for every coin DONE
 // 6.Display data on charts page                  DONE
 // BONUS.Fix pagination search
-// BONUS.Connect AccountPage to WebServer
+// BONUS.Connect AccountPage to WebServer         DONE
 
 import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom/client';

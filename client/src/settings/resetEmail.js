@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import {serverLink} from '../index';
-import { sidebarRoot, mainRoot, usermainRoot, usersideRoot, modelRoot } from '../index';
+import { sidebarRoot, mainRoot, modelRoot } from '../index';
 import './active.css';
 
 

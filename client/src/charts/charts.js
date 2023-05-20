@@ -6,7 +6,7 @@ import GetListOfCoins from '../listOfCoinsAPI';
 import GetDataCoin from '../getDataCoin';
 import Bookmarks from './bookmarks';
 import symbols from '../positions/coinList';
-import { modelRoot } from '../index';
+import { modelRoot, serverLink } from '../index';
 import './charts.css';
 
 const Charts = () => {
@@ -85,11 +85,11 @@ const Charts = () => {
                                     </div>
                                     <div className="teminal-title-coin-24V">
                                     <div className="teminal-title-coin-24H-head">Volume</div>
-                                        <div className="teminal-title-coin-24H-body">{item.volume.toFixed(2)}</div>
+                                        <div className="teminal-title-coin-24H-body">{parseFloat(item.volume).toFixed(2)}</div>
                                     </div>
                                     <div className="teminal-title-coin-24M">
                                         <div className="teminal-title-coin-24L-head">Market Cap</div>
-                                        <div className="teminal-title-coin-24L-body">{item.marketCap.toFixed(2)}</div>
+                                        <div className="teminal-title-coin-24L-body">{parseFloat(item.marketCap).toFixed(2)}</div>
                                     </div>
                                 </div>
                                 <button className='deleteBookmarkBtn-chart' onClick={() => { handleDeleteDiv(item) }}>&#215;</button>
@@ -214,8 +214,23 @@ const Charts = () => {
             </div>
         );
     };
-
-    function Overlay(props) { 
+  async function handleAddDiv() {
+      const link = `${serverLink}api/coins?limit=1&offset=0&orderby=rank_asc`;
+      const response = await fetch(link, {
+        method: 'GET',
+        mode : 'cors',
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS"
+        },
+      });
+    console.log(link)
+    const symbs = await response.json();
+    console.log(symbs,"SYMBS")
+    const symbNames = {key: uuidv4(), symbol:symbs[0].symbol, price: symbs[0].quotes.USD.price, change:symbs[0].quotes.USD.percent_change_7d, volume: symbs[0].quotes.USD.volume_24h, marketCap: symbs[0].quotes.USD.market_cap_change_24h};
+    setChartSymbList([...chartSymbList, symbNames]);
+  }
+  function Overlay(props) { 
       console.log("props",props)
     const itemKey = props.props.itemKey;
     const [bookmarkList, setBookmarkList] = useState(props.props.bookmarkList);
@@ -419,10 +434,7 @@ const Charts = () => {
         <button onClick={handleOpenOverlay} className='openListBtn'>&#9660;</button>
     );
   }
-    function handleAddDiv() {
-        const newElem = { key:uuidv4(), symb: "BTC"};
-        setChartSymbList([...chartSymbList, newElem]);
-    }
+    
     function handleDeleteDiv(item) {
         setChartSymbList(chartSymbList.filter(elem => elem.key != item.key));
     }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {serverLink} from '../index';
-import { sidebarRoot, mainRoot, usermainRoot, usersideRoot, modelRoot } from '../index';
+import { sidebarRoot, mainRoot, modelRoot } from '../index';
 import MainUserData from './mainUserData';
 import SideUserData from './sideUserData';
 import './settings.css';
@@ -149,9 +149,7 @@ const NotRegistered = () => {
           console.log('error:',errorPos);
           if(errorPos.current=='')
           {
-            mainRoot.render(<></>);
-            usermainRoot.render(<MainUserData />);
-            usersideRoot.render(<SideUserData />);
+            mainRoot.render(<><MainUserData /><SideUserData /></>);
           }
         }
       }
@@ -178,9 +176,7 @@ const NotRegistered = () => {
         console.log('error:',errorPos);
         if(errorPos.current=='')
         {
-          mainRoot.render(<></>);
-          usermainRoot.render(<MainUserData />);
-          usersideRoot.render(<SideUserData />);
+          mainRoot.render(<><MainUserData /><SideUserData /></>);
         }
       }
     }
