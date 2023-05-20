@@ -11,10 +11,9 @@ const stripe = require('stripe')('sk_test_51N8SZTJja6fn3xLG3zzJrxGFLl44Zm6QhrwGD
 
 
 const corsOptions = {
-      origin: '*', // Set the appropriate origin(s) here
+      origin: ['http://localhost:3000', 'http://3.8.190.201.nip.io', 'http://3.8.190.201'],
       credentials: false,
       optionSuccessStatus: 200,
-      'Access-Control-Allow-Origin' : '*'
 }
 
 const httpServer = require("http").createServer(app);
