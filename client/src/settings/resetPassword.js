@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import {serverLink} from '../index';
 import { sidebarRoot, mainRoot, usermainRoot, usersideRoot, modelRoot } from '../index';
 import './active.css';
 
@@ -15,7 +16,7 @@ const ResetPasswordPage = (props) => {
             const queryParams = new URLSearchParams(props.location.search);
             const token = queryParams.get("token");
             try {
-                const response = await fetch(`http://localhost:5000/api/change-password?token=${token}&password=${passwordToRecover}`, {
+                const response = await fetch(`${serverLink}api/change-password?token=${token}&password=${passwordToRecover}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
