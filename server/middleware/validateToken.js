@@ -8,17 +8,15 @@ const validateToken = asyncHandler(async (req, res, next) => {
   if (authHeader && authHeader.startsWith("Bearer")) {
     token = authHeader.split(" ")[1];
     
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECERT, (err, decoded) => {
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECERT, async (err, decoded) => {
       if (err) {
         res.status(401);
         throw new Error(err);
       }
       
       req.user = decoded.user;
-      console.log(req.user)
-      next();
     });
-    if(!user.findById(req.user.id)){
+    if(!(await user.findById(req.user.id))){
       res.status(404)
       throw new Error("User not found");  
     }
@@ -26,6 +24,7 @@ const validateToken = asyncHandler(async (req, res, next) => {
       res.status(401);
       throw new Error("User is not authorized or token is missing");
     }
+    next();
   }
   else{
     res.status(401);

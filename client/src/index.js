@@ -28,8 +28,8 @@ const modelRoot = ReactDOM.createRoot(document.getElementById('model'));
 const mainRoot = ReactDOM.createRoot(document.getElementById('main'));
 
 const pathName = window.location.pathname;
-console.log(pathName);
-
+  console.log(pathName);
+  console.log(process.env.REACT_APP_LOCAL_DOMAIN)
   if (pathName.includes('/activate')) {
     mainRoot.render(<ActiveAccountPage location={window.location} />);
   } else if (pathName.includes('/reset-email')) {

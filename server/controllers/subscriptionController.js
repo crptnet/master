@@ -5,31 +5,36 @@ const asyncHandler = require('express-async-handler')
 const userSubscriptions = require('../models/userSubscriptionModel')
 const { buffer } = require('micro')
 
+const options = ['price_1N8Sq2Jja6fn3xLGLkkO55uF', 'price_1N8Sq2Jja6fn3xLG8OzFJugh', 'price_1N8oE5Jja6fn3xLGAMtu7XlC', 'price_1N8oE5Jja6fn3xLGKWrRKw5Z']
 
 const createPaymentSession = asyncHandler(async (req, res) => {
-    const { priceId } = req.query
-    const customer = (await userSubscriptions.findOne({ user_id : req.user.id }))
-    if(customer.subscriptionId !== 'null'){
-      res.sendStatus(403)
+    const { option } = req.query
+    const priceId = options[option - 1] 
+    if(!priceId){
+      return res.status(403).json({ message : 'not valid option', uri : `http://${process.env.DOMAIN}/settings` })
     }
 
-    console.log(customerID)
+    const customer = (await userSubscriptions.findOne({ user_id : req.user.id }))
+    console.log(customer.subscriptionId !== null)
+    if((customer.subscriptionId !== null && await stripe.subscriptions.retrieve(customer.subscriptionId)).plan?.id === priceId){
+      return res.json({ "message" : "User already subscribed to this plan", uri : `http://${process.env.DOMAIN}/settings`}).status(403)
+    }
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
         {
           // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-          price: 'price_1N8Sq2Jja6fn3xLGLkkO55uF',
+          price: priceId,
           quantity: 1,
         },
       ],
     customer: customer.billingId,
     mode: 'subscription',
-    success_url: `${DOMAIN}/subscription?success=true`,
-    cancel_url: `${DOMAIN}/subscription?canceled=true`,
+    success_url: `http://${DOMAIN}/settings`,
+    cancel_url: `http://${DOMAIN}/settings`,
   });
-
-  res.redirect(200, session.url);
+  res.status(200).json({ uri : session.url });
 })
 
 //local secret
@@ -58,14 +63,6 @@ const stripeWebhook = asyncHandler(async (req, res) => {
 
     // Handle the event
     switch (event.type) {
-      case 'checkout.session.async_payment_failed':
-        const checkoutSessionAsyncPaymentFailed = event.data.object;
-        // Then define and call a function to handle the event checkout.session.async_payment_failed
-        break;
-      case 'checkout.session.async_payment_succeeded':
-        const checkoutSessionAsyncPaymentSucceeded = event.data.object;
-        // Then define and call a function to handle the event checkout.session.async_payment_succeeded
-        break;
       case 'checkout.session.completed':
         console.log((new Date).toLocaleTimeString(), payload)
         const checkoutSessionCompleted = event.data.object;
@@ -73,11 +70,6 @@ const stripeWebhook = asyncHandler(async (req, res) => {
         const customer = checkoutSessionCompleted.customer
         await userSubscriptions.findOneAndUpdate({ billingId : customer }, { subscriptionId : subscription })
         break;
-      case 'checkout.session.expired':
-        const checkoutSessionExpired = event.data.object;
-        // Then define and call a function to handle the event checkout.session.expired
-        break;
-      // ... handle other event types
       default:
         //console.log(`Unhandled event type ${event.type}`);
     }
@@ -91,13 +83,11 @@ const getSubscription = asyncHandler(async (req, res) => {
   const customer = (await userSubscriptions.findOne({ user_id : req.user.id }))
 
   if(!customer.subscriptionId){
-    return res.sendStatus(400).end()
+    return res.json({ message : 'user does not have any subscription'}).status(400).end()
   }
   const subscription = await stripe.subscriptions.retrieve(
     customer.subscriptionId
   )
-
-
 
   res.send({
     id : subscription.id,
