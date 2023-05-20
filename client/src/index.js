@@ -63,7 +63,8 @@ const pathName = window.location.pathname;
   }
 
 
-const serverLink = "http://3.8.190.201.nip.io/";
+//const serverLink = "http://3.8.190.201.nip.io/";
+const serverLink = "http://localhost:5000/";
 export {serverLink};
 
 export {sidebarRoot,mainRoot,modelRoot};

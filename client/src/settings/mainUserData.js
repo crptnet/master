@@ -51,7 +51,6 @@ function MainUserData () {
     try {
         const headersList = {
           "Accept": "*/*",
-          "User-Agent": "Thunder Client (https://www.thunderclient.com)",
           "Authorization": `Bearer ${localStorage.getItem('token')}`,
         };
         if(localStorage.getItem('token')) {
@@ -160,23 +159,25 @@ function MainUserData () {
 
     const headersList = {
       "Authorization": `Bearer ${localStorage.getItem('token')}`,
-      "Content-Type": 'multipart/form-data; boundary=<calculated when request is sent>'
+      "Content-Type": 'multipart/form-data'
     };
 
     try {
       const response = await axios.post(`${serverLink}api/profile-picture`, formData, {
-        headers: headersList
+        headers: {
+          "Authorization": `Bearer ${localStorage.getItem('token')}`,
+          "Content-Type": 'multipart/form-data'
+        }
       });
       console.log(response.data, "<-- response data");
       console.log("Successfully uploaded image");
     } catch (error) {
       console.log("Error Found", error);
+      
     }
   }
 
-  if (imageFile !== null) {
-    pageSendToServer();
-  }
+  pageSendToServer();
 
 
   async function pageGetFromServer() {
@@ -189,7 +190,7 @@ function MainUserData () {
     console.log('!');
     if(avatar!='./icons/avatar.png')
     {
-      window.location.reload(true);
+      //window.location.reload(true);
     }
   }
   },[imageFile]);

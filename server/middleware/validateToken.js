@@ -24,6 +24,8 @@ const validateToken = asyncHandler(async (req, res, next) => {
       res.status(401);
       throw new Error("User is not authorized or token is missing");
     }
+    if(req.method == 'POST')
+      console.log('Token validated')
     next();
   }
   else{

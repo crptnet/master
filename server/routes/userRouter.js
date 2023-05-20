@@ -25,7 +25,8 @@ const validateToken = require('../middleware/validateToken')
 const fileFilterMiddleware = require('../middleware/multerHandler')
 const multer = require('multer')
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
+  destination: function (req, file, cb) {
+      console.log('Uploaded new Image')
       cb(null, './uploads/')
     },
     filename: function (req, file, cb) {
@@ -34,11 +35,20 @@ const storage = multer.diskStorage({
     }
   })
 const upload = multer({ 
-    storage : storage,
-    limits:{
-        fileSize: 8*1024*1024,
-    },
-    fileFilter : fileFilterMiddleware
+  storage : storage,
+  onFileUploadStart: function (file) {
+    console.log(file.fieldname + ' is starting ...')
+  },
+  onFileUploadData: function (file, data) {
+    console.log(data.length + ' of ' + file.fieldname + ' arrived')
+  },
+  onFileUploadComplete: function (file) {
+    console.log(file.fieldname + ' uploaded to  ' + file.path)
+  },
+  limits:{
+      fileSize: 8*1024*1024,
+  },
+  fileFilter : fileFilterMiddleware
     
 })
 
@@ -58,7 +68,11 @@ router.post('/login', loginUser)
 
 router.post('/change-email', validateToken, changeEmailRequest)
 
-router.post('/profile-picture', validateToken, upload.single('profilePicture'), setProfilePicture)
+router.post('/profile-picture', validateToken, () => {
+  console.log('Trying to upload picture')
+  console.log(upload.single('profilePicture'))
+
+}, setProfilePicture)
 
 router.post('/change-password', changePasswordRequest)
 

@@ -6,10 +6,7 @@ const connectToDb = require('./config/connectDB')
 const errorHandler = require('./middleware/errorHandler')
 const path = require('path');
 const { UpdataInfoRun } = require('./controllers/coinSocketController')
-const asyncHandler = require('express-async-handler')
-const stripe = require('stripe')('sk_test_51N8SZTJja6fn3xLG3zzJrxGFLl44Zm6QhrwGDhlaUtPJe4Rm0u6ImoO3xOyHOrH32bZD3bOMuYwqDV1zsIpHsNju00FyWylTu5')
-
-
+const bodyParser = require('body-parser')
 const corsOptions = {
       origin: ['http://localhost:3000', 'http://3.8.190.201.nip.io', 'http://3.8.190.201'],
       credentials: false,
@@ -71,6 +68,8 @@ app.use((req, res, next) => {
       } 
       else
       {
+            req.method == 'POST' ? 
+            console.log((new Date).toLocaleTimeString(), 'new request', req.method, req.file) :  null
             express.json()(req, res, next);  // ONLY do express.json() if the received request is NOT a WebHook from Stripe.
       }
 });
