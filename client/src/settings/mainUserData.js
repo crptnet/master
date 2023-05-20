@@ -10,7 +10,6 @@ import './settings.css';
 const getData = async () => {
   try {
     const headersList = {
-      "Accept": "*/*",
       'Content-Type': 'application/json',
       "Authorization": `Bearer ${localStorage.getItem('token')}`,
     };
@@ -21,10 +20,14 @@ const getData = async () => {
       });
       const userData = await response.json();
       return userData;
-    } else {
+    } 
+    else {
+      // TODO #redirect to login page
       return {email:'Unauthorized', password: 'Unauthorized'};
     }
-  } catch (error) {
+  } 
+  catch (error) 
+  {
     console.error(error);
   }
 }
@@ -150,7 +153,7 @@ function MainUserData () {
     e.preventDefault();
   }
   useEffect(()=>{
-    async function pageSendToServer() {
+  async function pageSendToServer() {
     const formData = new FormData();
     formData.append("profilePicture", imageFile.pictureAsFile);
 
@@ -181,7 +184,7 @@ function MainUserData () {
 
   async function pageGetFromServer() {
     const userData = await getData();
-    setAvatar(userData.profilePicture);
+    //setAvatar(userData.profilePicture);
   }
   if(localStorage.getItem('token'))
   {
@@ -189,8 +192,7 @@ function MainUserData () {
     console.log('!');
     if(avatar!='./icons/avatar.png')
     {
-      
-
+      setAvatar(userData.profilePicture);
       //window.location.reload(true);
     }
   }

@@ -73,6 +73,7 @@ const updateCoinData = async (io) => {
         await delay(60000*5);// 5 min
       } catch (error) {
         console.error('An error occurred:', error);
+        await delay(60000*5);// 5 min
       }
     }
   }
