@@ -189,6 +189,8 @@ function MainUserData () {
     console.log('!');
     if(avatar!='./icons/avatar.png')
     {
+      
+
       //window.location.reload(true);
     }
   }

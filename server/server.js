@@ -71,7 +71,6 @@ app.use((req, res, next) => {
       } 
       else
       {
-            console.log((new Date).toLocaleTimeString(), req.file)
             express.json()(req, res, next);  // ONLY do express.json() if the received request is NOT a WebHook from Stripe.
       }
 });
