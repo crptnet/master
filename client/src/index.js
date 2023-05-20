@@ -69,7 +69,7 @@ console.log(pathName);
   }
 
 
-const serverLink = "http://3.8.190.201/";
+const serverLink = "http://3.8.190.201.nip.io/";
 export {serverLink};
 
 export {sidebarRoot,mainRoot,usermainRoot,usersideRoot,modelRoot};
