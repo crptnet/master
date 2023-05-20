@@ -19,7 +19,6 @@ import Charts from './charts/charts';
 import SubscriptionPage from './subscription/subscription';
 
 import GetListOfCoins from './listOfCoinsAPI';
-import SubscribeToWebSocket from './socket';
 
 const scrollRoot = ReactDOM.createRoot(document.getElementById('scroll'));
 const sidebarRoot = ReactDOM.createRoot(document.getElementById('sidebar'));
@@ -30,8 +29,6 @@ const mainRoot = ReactDOM.createRoot(document.getElementById('main'));
 
 const pathName = window.location.pathname;
 console.log(pathName);
-
-const init = () => {
 
   if (pathName.includes('/activate')) {
     mainRoot.render(<ActiveAccountPage location={window.location} />);
@@ -70,10 +67,5 @@ const init = () => {
     usermainRoot.render(<></>);
     usersideRoot.render(<></>);
   }
-};
-
-SubscribeToWebSocket();
-
-init();
 
 export {sidebarRoot,mainRoot,usermainRoot,usersideRoot,modelRoot};

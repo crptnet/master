@@ -1,22 +1,32 @@
+// TO DO LIST - WEEKEND
+// 1.Fix pagination
+// 2.Fix pagination sort
+// 3.Upgrade overlay for changing coin
+// 4.Connect websocket
+// 5.Increase the number of fields for every coin
+// 6.Update data on charts page
+
+
 import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom/client';
 import { v4 as uuidv4 } from 'uuid';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import ReactPaginate from 'react-paginate';
 import GetListOfCoins from '../listOfCoinsAPI';
 import symbols from '../positions/coinList';
 import './charts.css';
 import { modelRoot } from '../index';
-
-const bookmarksArr = [];
+import SubscribeToWebSocket from '../socket';
 
 const Bookmarks = (props) => {
-  const {length, type} = props.props;
+  //SubscribeToWebSocket();
+  const length = props.props;
   const [bookmarkList, setBookmarkList] = useState(() => {
     const savedDivList = localStorage.getItem("bookmarkList");
     if (savedDivList) {
       return JSON.parse(savedDivList);
     } else {
-      return bookmarksArr;
+      return [];
     }
   });
   const [BookListLayout, setBookListLayout] = useState(<></>);
@@ -98,28 +108,20 @@ const Bookmarks = (props) => {
 
 
   function Overlay(props) {
+    console.log("!!")
     const [showOverlay, setShowOverlay] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [sortOrder, setSortOrder] = useState("default");
     const [activeButton, setActiveButton] = useState(null);
     const [data, setData] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [coinsPerPage, setCoinsPerPage] = useState(25);
 
-    async function getDataStored() {
-      try {
-        const symbs = await GetListOfCoins();
-        setData(symbs.map(elem => ({ symbol: elem.symbol, price: elem.quotes.USD.price })));
-        console.log("Initial Coin Data:",data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    }
-
-    getDataStored();
-    
     let sortedData;
     const { bookmarkList }  = props.props;
     const handleOpenOverlay = () => {
       setShowOverlay(true);
+      handleResetSort();
     };
 
     const handleCloseOverlay = () => {
@@ -127,20 +129,27 @@ const Bookmarks = (props) => {
     };
 
     const handleResetSort = async () => {
-      const symbs = await GetListOfCoins();
+      const symbs = await GetListOfCoins(coinsPerPage,coinsPerPage*(currentPage-1));
       const symbData = symbs.map(elem => ({key: uuidv4(), symbol:elem.symbol, price: elem.quotes.USD.price}));
       setData([...symbData]);
       setSortOrder("default");
-      setFilteredData([...symbData]);
     };
 
     const handleSort = async (order) => {
       sortedData = {};
       let link;
-      if (order === "name-asc") {
-        link = "http://3.8.190.201/api/coins?limit=2500&offset=0&orderby=price_asc"
-      } else if (order === "name-desc") {
-        link = "http://3.8.190.201/api/coins?limit=2500&offset=0&orderby=price_desc"
+      if (order === "Name-asc") {
+        link = `http://3.8.190.201/api/coins?limit=${coinsPerPage}&offset=${coinsPerPage*(currentPage-1)}&orderby=name_asc`;
+      } else if (order === "Name-desc") {
+        link = `http://3.8.190.201/api/coins?limit=${coinsPerPage}&offset=${coinsPerPage*(currentPage-1)}&orderby=name_desc`;
+      } else if (order === "Price-asc") {
+        link = `http://3.8.190.201/api/coins?limit=${coinsPerPage}&offset=${coinsPerPage*(currentPage-1)}&orderby=price_asc`;
+      } else if (order === "Price-desc") {
+        link = `http://3.8.190.201/api/coins?limit=${coinsPerPage}&offset=${coinsPerPage*(currentPage-1)}&orderby=price_desc`;
+      } else if (order === "Change-asc") {
+        link = `http://3.8.190.201/api/coins?limit=${coinsPerPage}&offset=${coinsPerPage*(currentPage-1)}&orderby=24h_change_asc`;
+      } else if (order === "Change-desc") {
+        link = `http://3.8.190.201/api/coins?limit=${coinsPerPage}&offset=${coinsPerPage*(currentPage-1)}&orderby=24h_change_desc`;
       }
       const response = await fetch(link, {
         method: 'GET',
@@ -156,25 +165,12 @@ const Bookmarks = (props) => {
       setData([...symbNames]);
       setSortOrder(order);
     };
-    // SORTED DATA EXPIRED AUTOMATICALLY AFTER DATA IS UPDATED.
+
     const [filteredData, setFilteredData] = useState([]);
     useEffect(()=>{
-      async function updatedFiltered () {
-        if(data!=[] && data!=null)
-        {
-          let updatedFilteredData = data;
-          setFilteredData(updatedFilteredData.filter(item => item.symbol.toLowerCase().includes(searchTerm.toLowerCase())));
-          // if (sortOrder === "name-asc") {
-          //   setFilteredData(updatedFilteredData.filter(item => item.symbol.toLowerCase().includes(searchTerm.toLowerCase())).sort((a, b) => a.symbol.localeCompare(b.symbol)));
-          // } else if (sortOrder === "name-desc") {
-          //   setFilteredData(updatedFilteredData.filter(item => item.symbol.toLowerCase().includes(searchTerm.toLowerCase())).sort((a, b) => b.symbol.localeCompare(a.symbol)));
-          // } else {
-          //   setFilteredData(updatedFilteredData.filter(item => item.symbol.toLowerCase().includes(searchTerm.toLowerCase())));
-          // }
-        }
-      }
-      updatedFiltered();
+      if(data!=[] && data!=null) setFilteredData(data.filter(item => item.symbol.toLowerCase().includes(searchTerm.toLowerCase())));
     },[data])
+
     const createCoin = (newCoin, newPrice) => {
         if (Array.isArray(bookmarkList)) {
             setBookmarkList([...bookmarkList, {key: uuidv4(), symb: newCoin, price: newPrice}]); 
@@ -182,10 +178,16 @@ const Bookmarks = (props) => {
             console.log('ChartSymbList is not defined or is not an array');
         }
     };
+
+
     useEffect(()=>{
+      console.log("limit:",coinsPerPage)
+      console.log("offset:",currentPage)
+      console.log(filteredData)
       if(showOverlay)
       {
         window.scrollTo(0,0);
+        const coinSorts = ["Name","Price","Change"];
         modelRoot.render(
           <div className="overlay" style={{zIndex:'1001'}}>
             <div className="overlayContainer">
@@ -193,117 +195,109 @@ const Bookmarks = (props) => {
                 <p className='overlayTitle'>Select a coin</p>
                 <input className="input-search-convert" placeholder="Search coins" type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
                 <div className="searchSortOverlayOuter">
-                  <div className='searchSortOverlayInner'>
+                {coinSorts.map(elem => (
+                  <div className='searchSortOverlayInner' key={elem}>
                     <div style={{display:'flex', flexDirection:'row', alignItems:'center'}}>
-                      <div className='sortOverlay'>Symbol</div>
+                      <div className='sortOverlay'>{elem}</div>
                       <div className='sortBtns'>
                         <button
                         onClick={() => {
-                            if (sortOrder === "name-asc") {
+                            if (sortOrder === `${elem}-asc`) {
                             handleResetSort();
                             } else {
-                            handleSort("name-asc");
+                            handleSort(`${elem}-asc`);
                             }
-                            setActiveButton(activeButton === "name-asc" ? null : "name-asc");
+                            setActiveButton(activeButton === `${elem}-asc` ? null : `${elem}-asc`);
                         }}
-                        className={`sort-button ${activeButton === "name-asc" ? "active" : ""}`}
+                        className={`sort-button ${activeButton === `${elem}-asc` ? "active" : ""}`}
                         >
                         &#9650;
                         </button>
                         <button
                         onClick={() => {
-                            if (sortOrder === "name-desc") {
+                            if (sortOrder === `${elem}-desc`) {
                             handleResetSort();
                             } else {
-                            handleSort("name-desc");
+                            handleSort(`${elem}-desc`);
                             }
-                            setActiveButton(activeButton === "name-desc" ? null : "name-desc");
+                            setActiveButton(activeButton === `${elem}-desc` ? null : `${elem}-desc`);
                         }}
-                        className={`sort-button ${activeButton === "name-desc" ? "active" : ""}`}
+                        className={`sort-button ${activeButton === `${elem}-desc` ? "active" : ""}`}
                         >
                         &#9660;
                         </button>
                       </div>
                     </div>
                   </div>
-                  <div className='searchSortOverlayInner'>
-                    <div style={{display:'flex', flexDirection:'row', alignItems:'center'}}>
-                      <div className='sortOverlay'>Price</div>
-                      <div className='sortBtns'>
-                        <button
-                        onClick={() => {
-                            if (sortOrder === "name-asc") {
-                            handleResetSort();
-                            } else {
-                            handleSort("name-asc");
-                            }
-                            setActiveButton(activeButton === "name-asc" ? null : "name-asc");
-                        }}
-                        className={`sort-button ${activeButton === "name-asc" ? "active" : ""}`}
-                        >
-                        &#9650;
-                        </button>
-                        <button
-                        onClick={() => {
-                            if (sortOrder === "name-desc") {
-                            handleResetSort();
-                            } else {
-                            handleSort("name-desc");
-                            }
-                            setActiveButton(activeButton === "name-desc" ? null : "name-desc");
-                        }}
-                        className={`sort-button ${activeButton === "name-desc" ? "active" : ""}`}
-                        >
-                        &#9660;
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <div className='searchSortOverlayInner'>
-                    <div style={{display:'flex', flexDirection:'row', alignItems:'center'}}>
-                      <div className='sortOverlay'>Change</div>
-                      <div className='sortBtns'>
-                        <button
-                        onClick={() => {
-                            if (sortOrder === "name-asc") {
-                            handleResetSort();
-                            } else {
-                            handleSort("name-asc");
-                            }
-                            setActiveButton(activeButton === "name-asc" ? null : "name-asc");
-                        }}
-                        className={`sort-button ${activeButton === "name-asc" ? "active" : ""}`}
-                        >
-                        &#9650;
-                        </button>
-                        <button
-                        onClick={() => {
-                            if (sortOrder === "name-desc") {
-                            handleResetSort();
-                            } else {
-                            handleSort("name-desc");
-                            }
-                            setActiveButton(activeButton === "name-desc" ? null : "name-desc");
-                        }}
-                        className={`sort-button ${activeButton === "name-desc" ? "active" : ""}`}
-                        >
-                        &#9660;
-                        </button>
-                      </div>
-                    </div>
-                  </div>
+                ))}
                 </div>
                 <button onClick={handleCloseOverlay} className='closeOverlay'>&#215;</button>
               </div>
-                
-                <div className='listOfCrypto'>
-                  
+              <div className='listOfCrypto'>
                 <div className="inner-overlay-container">
-                  {filteredData.map((elem) => (
-                    <button key={uuidv4()} className="listElemOverlay" onClick={() => {createCoin(elem.symbol,elem.price); handleCloseOverlay();}}><span>{elem.symbol}</span><span>$ &nbsp;{elem.price>1 ? parseFloat(elem.price).toFixed(2) : parseFloat(elem.price).toFixed(5)}</span></button>
+                {filteredData
+                  .slice((currentPage - 1) * coinsPerPage, currentPage * coinsPerPage)
+                  .map((elem) => (
+                    <button
+                      key={uuidv4()}
+                      className="listElemOverlay"
+                      onClick={() => {
+                        createCoin(elem.symbol, elem.price);
+                        handleCloseOverlay();
+                      }}
+                    >
+                      <span>{elem.symbol}</span>
+                      <span>${elem.price > 1 ? parseFloat(elem.price).toFixed(2) : parseFloat(elem.price).toFixed(8)}</span>
+                    </button>
                   ))}
                 </div>
               </div>
+              <div className="pagination">
+                <button
+                  className={`coinsPerPageButton ${coinsPerPage === 25 ? "active" : ""}`}
+                  onClick={() => {
+                    setCoinsPerPage(25);
+                    setCurrentPage(1);
+                    handleSort(sortOrder);
+                  }}
+                >
+                  25
+                </button>
+                <button
+                  className={`coinsPerPageButton ${coinsPerPage === 50 ? "active" : ""}`}
+                  onClick={() => {
+                    setCoinsPerPage(50);
+                    setCurrentPage(1);
+                    handleSort(sortOrder);
+                  }}
+                >
+                  50
+                </button>
+                <button
+                  className={`coinsPerPageButton ${coinsPerPage === 100 ? "active" : ""}`}
+                  onClick={() => {
+                    setCoinsPerPage(100);
+                    setCurrentPage(1);
+                    handleSort(sortOrder);
+                  }}
+                >
+                  100
+                </button>
+                {data.length > coinsPerPage && (
+                  <ReactPaginate
+                    previousLabel={"Previous"}
+                    nextLabel={"Next"}
+                    pageCount={Math.ceil(filteredData.length / coinsPerPage)}
+                    onPageChange={({ selected }) => handlePageChange(selected + 1)}
+                    containerClassName={"paginationButtons"}
+                    previousLinkClassName={"previousButton"}
+                    nextLinkClassName={"nextButton"}
+                    disabledClassName={"paginationDisabled"}
+                    activeClassName={"paginationActive"}
+                  />
+                )}
+              </div>
+
             </div>
           </div>
         )
@@ -312,7 +306,7 @@ const Bookmarks = (props) => {
       {
         modelRoot.render(<></>);
       }   
-    },[showOverlay, filteredData])
+    },[showOverlay, filteredData, coinsPerPage, currentPage])
 
     return (
       <button onClick={handleOpenOverlay} className='addBookmarkBtnChart'><span>+</span></button>
@@ -332,7 +326,7 @@ const Bookmarks = (props) => {
     const [activeButton, setActiveButton] = useState(null);
     const [data, setData] = useState(null);
     async function getDataStored () {
-      const symbs = await GetListOfCoins();
+      const symbs = await GetListOfCoins(0,0);
       const symbData = symbs.map(elem => ({symbol:elem.symbol, price: elem.quotes.USD.price}));
       setData([...symbData])
     }
@@ -356,9 +350,9 @@ const Bookmarks = (props) => {
 
     const handleSort = (order) => {
         sortedData = {};
-        if (order === "name-asc") {
+        if (order === "price-asc") {
         sortedData = data.sort((a, b) => a.localeCompare(b));
-        } else if (order === "name-desc") {
+        } else if (order === "price-desc") {
         sortedData = data.sort((a, b) => b.localeCompare(a));
         }
         setData(sortedData);
@@ -367,9 +361,9 @@ const Bookmarks = (props) => {
     let filteredData = Object.values(symbols).filter(item =>
         item.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    if (sortOrder === "name-asc") {
+    if (sortOrder === "price-asc") {
         filteredData = filteredData.sort((a, b) => a.localeCompare(b));
-    } else if (sortOrder === "name-desc") {
+    } else if (sortOrder === "price-desc") {
         filteredData = filteredData.sort((a, b) => b.localeCompare(a));
     }
     const changeCoin = (newCoin) => {
@@ -407,27 +401,27 @@ const Bookmarks = (props) => {
                     <div className='sortBtns'>
                         <button
                         onClick={() => {
-                            if (sortOrder === "name-asc") {
+                            if (sortOrder === "price-asc") {
                             handleResetSort();
                             } else {
-                            handleSort("name-asc");
+                            handleSort("price-asc");
                             }
-                            setActiveButton(activeButton === "name-asc" ? null : "name-asc");
+                            setActiveButton(activeButton === "price-asc" ? null : "price-asc");
                         }}
-                        className={`sort-button ${activeButton === "name-asc" ? "active" : ""}`}
+                        className={`sort-button ${activeButton === "price-asc" ? "active" : ""}`}
                         >
                         &#9650;
                         </button>
                         <button
                         onClick={() => {
-                            if (sortOrder === "name-desc") {
+                            if (sortOrder === "price-desc") {
                             handleResetSort();
                             } else {
-                            handleSort("name-desc");
+                            handleSort("price-desc");
                             }
-                            setActiveButton(activeButton === "name-desc" ? null : "name-desc");
+                            setActiveButton(activeButton === "price-desc" ? null : "price-desc");
                         }}
-                        className={`sort-button ${activeButton === "name-desc" ? "active" : ""}`}
+                        className={`sort-button ${activeButton === "price-desc" ? "active" : ""}`}
                         >
                         &#9660;
                         </button>

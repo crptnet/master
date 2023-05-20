@@ -338,11 +338,12 @@ const Charts = () => {
     function handleDeleteDiv(item) {
         setChartSymbList(chartSymbList.filter(elem => elem.key != item.key));
     }
+    console.log("**")
     return (
         <React.Fragment key={JSON.stringify(chartSymbList)}>
             <div className="bookmark-container">
                 <Layout />
-                <Bookmarks props={layoutProps}/>
+                <Bookmarks props={layoutProps.length}/>
             </div>
             <div className="main-char-container">                
                 {ChartSymbListLayout}
