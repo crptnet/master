@@ -1,4 +1,5 @@
 import React from 'react';
+import {serverLink} from '../index';
 import './settings.css';
 import { useGoogleLogin } from '@react-oauth/google';
 
@@ -8,7 +9,7 @@ const Google = () => {
     clientId: "22208776050-nv7hj7qppl8h39vpl9gkq31utgj43op8.apps.googleusercontent.com",
     onSuccess: async (res) => {
       console.log(res);
-      var token = await fetch('http://localhost:5000/api/googleSingIn', {
+      var token = await fetch(`${serverLink}api/googleSingIn`, {
         method : 'POST',
         headers : {
           'Authorization' : `Bearer ${res.access_token}`

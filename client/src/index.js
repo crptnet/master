@@ -68,4 +68,8 @@ console.log(pathName);
     usersideRoot.render(<></>);
   }
 
+
+const serverLink = "http://3.8.190.201/";
+export {serverLink};
+
 export {sidebarRoot,mainRoot,usermainRoot,usersideRoot,modelRoot};

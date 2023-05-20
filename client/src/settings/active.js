@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
+import {serverLink} from '../index';
 import './active.css';
 const mainRoot = document.getElementById('main');
 
@@ -13,7 +14,7 @@ const ActiveAccountPage = (props) => {
         const key = queryParams.get("key");
         const id = queryParams.get("id");
         try {
-            const response = await fetch(`http://localhost:5000/api/activate?key=${key}&id=${id}`, {
+            const response = await fetch(`${serverLink}api/activate?key=${key}&id=${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

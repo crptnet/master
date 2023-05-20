@@ -151,6 +151,7 @@ input[type=number] {
     color: #d1d4dc;
     border: none;
     background-color: transparent;
+    cursor: pointer;
 }
 
 .openListBtn:hover {

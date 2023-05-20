@@ -1,11 +1,12 @@
 // TO DO LIST - WEEKEND
-// 1.Fix pagination                          DONE
-// 2.Fix pagination sort                     DONE
-// 3.Upgrade overlay for changing coin
+// 1.Fix pagination                               DONE
+// 2.Fix pagination sort                          DONE
+// 3.Upgrade overlay for changing coin            DONE
 // 4.Connect websocket
-// 5.Increase the number of fields for every coin
-// 6.Update data on charts page
+// 5.Increase the number of fields for every coin DONE
+// 6.Display data on charts page                  DONE
 // BONUS.Fix pagination search
+// BONUS.Connect AccountPage to WebServer
 
 import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom/client';
@@ -91,14 +92,6 @@ const Bookmarks = (props) => {
     setBookmarkList(items);
   }
 
-  function handleAddDiv(coin) {
-    
-    const newDiv = {
-      key: uuidv4(),
-      symb: `${coin}`,
-    };
-    setBookmarkList([...bookmarkList, newDiv]);
-  }
   function handleDeleteDiv(id) {
     setBookmarkList(bookmarkList.filter(elem => elem.key != id));
   }
@@ -130,7 +123,7 @@ const Bookmarks = (props) => {
 
     const handleResetSort = async () => {
       const symbs = await GetListOfCoins(coinsPerPage,coinsPerPage*(currentPage-1));
-      const symbData = symbs.map(elem => ({key: uuidv4(), symbol:elem.symbol, price: elem.quotes.USD.price}));
+      const symbData = symbs.map(elem => ({key: uuidv4(), symbol:elem.symbol, price: elem.quotes.USD.price, change:elem.quotes.USD.percent_change_7d, volume: elem.quotes.USD.volume_24h, marketCap: elem.quotes.USD.market_cap_change_24h}));
       setData([...symbData]);
       setSortOrder("rank_asc");
     };
@@ -149,7 +142,7 @@ const Bookmarks = (props) => {
       console.log(link)
       const symbs = await response.json();
       console.log("SORTED!", symbs)
-      const symbNames = symbs.map(elem => ({key: uuidv4(), symbol:elem.symbol, price: elem.quotes.USD.price}));
+      const symbNames = symbs.map(elem => ({key: uuidv4(), symbol:elem.symbol, price: elem.quotes.USD.price, change:elem.quotes.USD.percent_change_7d, volume: elem.quotes.USD.volume_24h, marketCap: elem.quotes.USD.market_cap_change_24h}));
       setData([...symbNames]);
       setSortOrder(order);
     };
@@ -161,9 +154,9 @@ const Bookmarks = (props) => {
       if(data!=[] && data!=null) setFilteredData(data.filter(item => item.symbol.toLowerCase().includes(searchTerm.toLowerCase())));
     },[data])
 
-    const createCoin = (newCoin, newPrice) => {
+    const createCoin = (newCoin, newPrice, newChange, newVolume, newMarketCap) => {
         if (Array.isArray(bookmarkList)) {
-            setBookmarkList([...bookmarkList, {key: uuidv4(), symb: newCoin, price: newPrice}]); 
+            setBookmarkList([...bookmarkList, {key: uuidv4(), symbol:newCoin, price: newPrice, change:newChange, volume: newVolume, marketCap: newMarketCap}]); 
         } else {
             console.log('ChartSymbList is not defined or is not an array');
         }
@@ -257,7 +250,7 @@ const Bookmarks = (props) => {
                       key={uuidv4()}
                       className="listElemOverlay"
                       onClick={() => {
-                        createCoin(elem.symbol, elem.price);
+                        createCoin(elem.symbol, elem.price, elem.change, elem.volume, elem.marketCap);
                         handleCloseOverlay();
                       }}
                     >
@@ -305,58 +298,94 @@ const Bookmarks = (props) => {
 
 
   function OverlayWithSymb(props) { 
-    const [showOverlay, setShowOverlay] = useState(false);
-    const [searchTerm, setSearchTerm] = useState("");
-    const [sortOrder, setSortOrder] = useState(null);
-    const [activeButton, setActiveButton] = useState(null);
-    const [data, setData] = useState(null);
-    async function getDataStored () {
-      const symbs = await GetListOfCoins(0,0);
-      const symbData = symbs.map(elem => ({symbol:elem.symbol, price: elem.quotes.USD.price}));
-      setData([...symbData])
-    }
-    getDataStored();
-    let sortedData;
     const { bookmarkList, itemKey}  = props.props;
     let chartOverlay = [...bookmarkList]; 
     let index = chartOverlay.findIndex(element => element.key === itemKey);
+    console.log("??")
+    const [showOverlay, setShowOverlay] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [sortOrder, setSortOrder] = useState("rank_asc");
+    const [activeButton, setActiveButton] = useState(null);
+    const [data, setData] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [coinsPerPage, setCoinsPerPage] = useState(50);
+
+    let sortedData;
     const handleOpenOverlay = () => {
-        setShowOverlay(true);
+      setShowOverlay(true);
+      handleResetSort();
     };
 
     const handleCloseOverlay = () => {
-        setShowOverlay(false);
+      setShowOverlay(false);
     };
 
     const handleResetSort = async () => {
-        await getDataStored();
-        setSortOrder("none");
+      const symbs = await GetListOfCoins(coinsPerPage,coinsPerPage*(currentPage-1));
+      const symbData = symbs.map(elem => ({key: uuidv4(), symbol:elem.symbol, price: elem.quotes.USD.price, change:elem.quotes.USD.percent_change_7d, volume: elem.quotes.USD.volume_24h, marketCap: elem.quotes.USD.market_cap_change_24h}));
+      setData([...symbData]);
+      setSortOrder("rank_asc");
     };
 
-    const handleSort = (order) => {
-        sortedData = {};
-        if (order === "price_asc") {
-        sortedData = data.sort((a, b) => a.localeCompare(b));
-        } else if (order === "price_desc") {
-        sortedData = data.sort((a, b) => b.localeCompare(a));
-        }
-        setData(sortedData);
-        setSortOrder(order);
+    const handleSort = async (order) => {
+      sortedData = {};
+      const link = `http://3.8.190.201/api/coins?limit=${coinsPerPage}&offset=${coinsPerPage*(currentPage-1)}&orderby=${order.toLowerCase()}`;
+      const response = await fetch(link, {
+        method: 'GET',
+        mode : 'cors',
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS"
+        },
+      });
+      console.log(link)
+      const symbs = await response.json();
+      console.log("SORTED!", symbs)
+      const symbNames = symbs.map(elem => ({key: uuidv4(), symbol:elem.symbol, price: elem.quotes.USD.price, change:elem.quotes.USD.percent_change_7d, volume: elem.quotes.USD.volume_24h, marketCap: elem.quotes.USD.market_cap_change_24h}));
+      setData([...symbNames]);
+      setSortOrder(order);
     };
-    let filteredData = Object.values(symbols).filter(item =>
-        item.toLowerCase().includes(searchTerm.toLowerCase())
+
+    useEffect(()=>{handleSort(sortOrder)},[coinsPerPage,currentPage])
+
+    const [filteredData, setFilteredData] = useState([]);
+    useEffect(()=>{
+      if(data!=[] && data!=null) setFilteredData(data.filter(item => item.symbol.toLowerCase().includes(searchTerm.toLowerCase())));
+    },[data])
+
+
+
+      const Pagination = () => {
+    const handlePageChange = (e) => {
+      const pageNumber = parseInt(e.target.value, 10);
+      if (pageNumber >= 1 && pageNumber <= Math.ceil(2500 / coinsPerPage)) {
+        setCurrentPage(pageNumber);
+      }
+    };
+
+    return (
+      <div>
+        <input
+          type="number"
+          value={currentPage} 
+          min="1"
+          max={Math.ceil(2500 / coinsPerPage)}
+          onChange={handlePageChange}
+        />
+        <span> of {Math.ceil(2500 / coinsPerPage)}</span>
+        <button onClick={() => setCurrentPage(currentPage + 1)} className='paginationBtn'>Next</button>
+        <button onClick={() => setCurrentPage(currentPage - 1)} className='paginationBtn'>Previous</button>
+      </div>
     );
-    if (sortOrder === "price_asc") {
-        filteredData = filteredData.sort((a, b) => a.localeCompare(b));
-    } else if (sortOrder === "price_desc") {
-        filteredData = filteredData.sort((a, b) => b.localeCompare(a));
-    }
-    const changeCoin = (newCoin) => {
+  };
+
+    const changeCoin = (newCoin, newPrice) => {
         if (Array.isArray(bookmarkList)) {
             chartOverlay = [...bookmarkList]; 
             index = chartOverlay.findIndex(element => element.key === itemKey);
             if (index !== -1) {
-                chartOverlay[index].symb = newCoin;
+                chartOverlay[index].symbol = newCoin;
+                chartOverlay[index].price = newPrice;
                 setBookmarkList(chartOverlay);
                 window.location.reload(true);
             } else {
@@ -368,62 +397,101 @@ const Bookmarks = (props) => {
     };
     
     useEffect(()=>{
+      console.log("limit:",coinsPerPage)
+      console.log("offset:",coinsPerPage*(currentPage-1))
+      console.log(filteredData)
       if(showOverlay)
       {
         window.scrollTo(0,0);
+        const coinSorts = ["Name","Price","24h_Change"];
+        const paginationBtns = [25,50,100,200,500,1000];
         modelRoot.render(
           <div className="overlay" style={{zIndex:'1001'}}>
             <div className="overlayContainer">
                 <div className="overlayHeader">
                 <p className='overlayTitle'>Select a coin</p>
-                <button onClick={handleCloseOverlay} className='closeOverlay'>&#215;</button>
-                </div>
-                <div className='listOfCrypto'>
-                <div className='searchSortOverlay'>
-                    <input className="input-search-convert" placeholder="Search coins" type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+                <input className="input-search-convert" placeholder="Search coins" type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+                <div className="searchSortOverlayOuter">
+                {coinSorts.map(elem => (
+                  <div className='searchSortOverlayInner' key={elem}>
                     <div style={{display:'flex', flexDirection:'row', alignItems:'center'}}>
-                    <div className='sortOverlay'>Sort by name</div>
-                    <div className='sortBtns'>
+                      <div className='sortOverlay'>{elem!="24h_Change" ? elem : "Change"}</div>
+                      <div className='sortBtns'>
                         <button
                         onClick={() => {
-                            if (sortOrder === "price_asc") {
+                            if (sortOrder === `${elem}_asc`) {
                             handleResetSort();
                             } else {
-                            handleSort("price_asc");
+                            handleSort(`${elem}_asc`);
                             }
-                            setActiveButton(activeButton === "price_asc" ? null : "price_asc");
+                            setActiveButton(activeButton === `${elem}_asc` ? null : `${elem}_asc`);
                         }}
-                        className={`sort-button ${activeButton === "price_asc" ? "active" : ""}`}
+                        className={`sort-button ${activeButton === `${elem}_asc` ? "active" : ""}`}
                         >
                         &#9650;
                         </button>
                         <button
                         onClick={() => {
-                            if (sortOrder === "price_desc") {
+                            if (sortOrder === `${elem}_desc`) {
                             handleResetSort();
                             } else {
-                            handleSort("price_desc");
+                            handleSort(`${elem}_desc`);
                             }
-                            setActiveButton(activeButton === "price_desc" ? null : "price_desc");
+                            setActiveButton(activeButton === `${elem}_desc` ? null : `${elem}_desc`);
                         }}
-                        className={`sort-button ${activeButton === "price_desc" ? "active" : ""}`}
+                        className={`sort-button ${activeButton === `${elem}_desc` ? "active" : ""}`}
                         >
                         &#9660;
                         </button>
+                      </div>
                     </div>
-                    </div>
-                </div>
-                {filteredData.map((coin, index) => (
-                    <button key={index} className="listElemOverlay" onClick={() => {changeCoin(coin); handleCloseOverlay();}}>{coin}</button>
+                  </div>
                 ))}
                 </div>
+                <button onClick={handleCloseOverlay} className='closeOverlay'>&#215;</button>
+              </div>
+                <div className='listOfCrypto'>
+                <div className="inner-overlay-container">
+                {filteredData
+                  .slice(0, currentPage * coinsPerPage)
+                  .map((elem) => (
+                    <button
+                      key={uuidv4()}
+                      className="listElemOverlay"
+                      onClick={() => {
+                        changeCoin(elem.symbol, elem.price, elem.change, elem.volume, elem.marketCap);
+                        handleCloseOverlay();
+                      }}
+                    >
+                      <span>{elem.symbol}</span>
+                      <span>${elem.price > 1 ? parseFloat(elem.price).toFixed(2) : parseFloat(elem.price).toFixed(8)}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="pagination">
+                <div>
+                  {paginationBtns.map(elem => (
+                    <button
+                      className={`coinsPerPageButton ${coinsPerPage === elem ? "active" : ""}`}
+                      onClick={() => {
+                        setCoinsPerPage(elem);
+                        setCurrentPage(1);
+                      }}
+                    >
+                      {elem}
+                    </button>
+                  ))}
+                </div>
+                <Pagination />
+              </div>
             </div>
           </div>
         )
       }    
     },[showOverlay])
     return (
-        <button onClick={handleOpenOverlay} className='openListFromSymb'>{chartOverlay[index].symb}</button>
+        <button onClick={handleOpenOverlay} className='openListFromSymb'><p>{chartOverlay[index].symbol}</p><p>${parseFloat(chartOverlay[index].price).toFixed(2)}</p></button>
     );
   }
 

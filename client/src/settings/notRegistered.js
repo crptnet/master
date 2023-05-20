@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import {serverLink} from '../index';
 import { sidebarRoot, mainRoot, usermainRoot, usersideRoot, modelRoot } from '../index';
 import MainUserData from './mainUserData';
 import SideUserData from './sideUserData';
@@ -46,7 +47,7 @@ const NotRegistered = () => {
     };
     
     if(localStorage.getItem('token')) {
-      const response = await fetch("http://localhost:5000/api/current", {
+      const response = await fetch(`${serverLink}api/current`, {
         method: 'GET',
         headers: headersList
       });
@@ -70,7 +71,7 @@ const NotRegistered = () => {
 
   const sendJSONToServer = async (userData) => {
     try {
-      const response = await fetch('http://localhost:5000/api/register', {
+      const response = await fetch(`${serverLink}api/register`, {
         method: 'POST',
         body: userData,
         headers: {
@@ -97,7 +98,7 @@ const NotRegistered = () => {
   
   const getToken = async (userData) => {
     try {
-      const response = await fetch('http://localhost:5000/api/login', {
+      const response = await fetch(`${serverLink}api/login`, {
         method: 'POST',
         body: userData,
         headers: {
@@ -201,7 +202,7 @@ const NotRegistered = () => {
         const headersList = {
           "Content-Type": 'application/json'
         };
-        const response = await fetch('http://localhost:5000/api/change-password', {
+        const response = await fetch(`${serverLink}api/change-password`, {
           method: 'POST',
           body: JSON.stringify({ email : emailToRecover }),
           headers: headersList

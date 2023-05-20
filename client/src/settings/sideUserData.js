@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './settings.css';
+import {serverLink} from '../index';
 import { sidebarRoot, mainRoot, usermainRoot, usersideRoot, modelRoot } from '../index';
 import SideUserBtns from './sideUserBtns';
 import MainUserData from './mainUserData';
@@ -31,7 +32,7 @@ const getData = async () => {
       "Authorization": `Bearer ${localStorage.getItem('token')}`,
     };
     if(localStorage.getItem('token')) {
-      const response = await fetch("http://localhost:5000/api/current", {
+      const response = await fetch(`${serverLink}api/current`, {
         method: 'GET',
         headers: headersList
       });
@@ -53,7 +54,7 @@ const requestChangeEmail = async () => {
       "Content-Type": 'application/json'
     };
     if(localStorage.getItem('token')) {
-      const response = await fetch(`http://localhost:5000/api/change-email  `, {
+      const response = await fetch(`${serverLink}api/change-email  `, {
         method: 'POST',
         body: JSON.stringify({ email : newEmail }),
         headers: headersList
@@ -94,7 +95,7 @@ useEffect(() => {
           "Content-Type": 'application/json'
         };
         if(localStorage.getItem('token')) {
-          const response = await fetch("http://localhost:5000/api/change-email", {
+          const response = await fetch(`${serverLink}api/change-email`, {
             method: 'PUT',
             body: JSON.stringify({code:newCode}),
             headers: headersList
@@ -151,7 +152,7 @@ const requestChangePassword = async () => {
       "Content-Type": 'application/json'
     };
     if(localStorage.getItem('token')) {
-      const response = await fetch(`http://localhost:5000/api/change-password-authed  `, {
+      const response = await fetch(`${serverLink}api/change-password-authed  `, {
         method: 'PUT',
         body: JSON.stringify({currecntPassword:oldPassword,password:newPassword}),
         headers: headersList

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import ReactDOM from 'react-dom/client';
+import {serverLink} from '../index';
 import { sidebarRoot, mainRoot, usermainRoot, usersideRoot, modelRoot } from '../index';
 import SideUserData from './sideUserData';
 import NotRegistered from './notRegistered';
@@ -14,7 +15,7 @@ const getData = async () => {
       "Authorization": `Bearer ${localStorage.getItem('token')}`,
     };
     if(localStorage.getItem('token')) {
-      const response = await fetch("http://localhost:5000/api/current", {
+      const response = await fetch(`${serverLink}api/current`, {
         method: 'GET',
         headers: headersList
       });
@@ -54,7 +55,7 @@ function MainUserData () {
           "Authorization": `Bearer ${localStorage.getItem('token')}`,
         };
         if(localStorage.getItem('token')) {
-          const response = await fetch("http://localhost:5000/api/delete", {
+          const response = await fetch(`${serverLink}api/delete`, {
             method: 'DELETE',
             headers: headersList
           });
@@ -167,7 +168,7 @@ function MainUserData () {
     };
 
     try {
-      const response = await axios.post("http://localhost:5000/api/profile-picture", formData, {
+      const response = await axios.post(`${serverLink}api/profile-picture`, formData, {
         headers: headersList
       });
       console.log(response.data, "<-- response data");
