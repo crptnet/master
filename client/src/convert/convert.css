@@ -252,6 +252,7 @@ input[type=number] {
 .overlay {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
     position: absolute;
     top: 0;
@@ -296,8 +297,7 @@ input[type=number] {
     left: 50%;
     transform: translate(-50%, 0);
     width: 80vw;
-    height: 20vh;
-    min-height: 90px;
+    height: 10vh;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -308,6 +308,44 @@ input[type=number] {
     max-height: 75vh;
     display: flex;
     justify-content: center;
+}
+
+.pagination {
+    padding: 2px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+}
+
+.pagination input{
+    color: #252525;
+    background-color: #d1d4dc;
+    border: none;
+    border-radius: 3px;
+    font-weight: bold;
+}
+
+.coinsPerPageButton, .paginationBtn {
+    padding: 5px;
+    margin: 0 5px 0 5px;
+    color: #d1d4dc;
+    background-color: #252525;
+    border: none;
+    border-radius: 10%;
+    font-weight: bold;
+    transform: all 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+.pagination button:hover {
+    color: #2962ff;
+    background-color: #d1d4dc;
+}
+
+.pagination div {
+    padding: 1vh;
 }
 
 .overlayTitle {
@@ -324,7 +362,7 @@ input[type=number] {
 }
 
 .listOfCrypto {
-    margin-top: 20vh;
+    margin-top: 10vh;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -382,7 +420,7 @@ input[type=number] {
     max-width: 150px;
     height: 30px;
     float: left;
-    color: #2962ff;
+    color: #252525;
     background-color: #d1d4dc;
     border: none;
     border-radius: 3px;
@@ -391,7 +429,7 @@ input[type=number] {
 }
 
 .input-search-convert::placeholder {
-    color: #2962ff;
+    color: #252525;
     font-size: 1.25rem;
     font-weight: bold;
 }
@@ -423,9 +461,11 @@ input[type=number] {
 
 .active {
     color: #2962ff;
+    background-color: #d1d4dc;
 }
 
 .active:hover {
     transition: 0.3s ease-in-out;
     color: #d1d4dc;
+    background-color: #2962ff;
 }

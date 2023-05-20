@@ -1,11 +1,11 @@
 // TO DO LIST - WEEKEND
-// 1.Fix pagination
-// 2.Fix pagination sort
+// 1.Fix pagination                          DONE
+// 2.Fix pagination sort                     DONE
 // 3.Upgrade overlay for changing coin
 // 4.Connect websocket
 // 5.Increase the number of fields for every coin
 // 6.Update data on charts page
-
+// BONUS.Fix pagination search
 
 import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom/client';
@@ -111,11 +111,11 @@ const Bookmarks = (props) => {
     console.log("!!")
     const [showOverlay, setShowOverlay] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
-    const [sortOrder, setSortOrder] = useState("default");
+    const [sortOrder, setSortOrder] = useState("rank_asc");
     const [activeButton, setActiveButton] = useState(null);
     const [data, setData] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [coinsPerPage, setCoinsPerPage] = useState(25);
+    const [coinsPerPage, setCoinsPerPage] = useState(50);
 
     let sortedData;
     const { bookmarkList }  = props.props;
@@ -132,25 +132,12 @@ const Bookmarks = (props) => {
       const symbs = await GetListOfCoins(coinsPerPage,coinsPerPage*(currentPage-1));
       const symbData = symbs.map(elem => ({key: uuidv4(), symbol:elem.symbol, price: elem.quotes.USD.price}));
       setData([...symbData]);
-      setSortOrder("default");
+      setSortOrder("rank_asc");
     };
 
     const handleSort = async (order) => {
       sortedData = {};
-      let link;
-      if (order === "Name-asc") {
-        link = `http://3.8.190.201/api/coins?limit=${coinsPerPage}&offset=${coinsPerPage*(currentPage-1)}&orderby=name_asc`;
-      } else if (order === "Name-desc") {
-        link = `http://3.8.190.201/api/coins?limit=${coinsPerPage}&offset=${coinsPerPage*(currentPage-1)}&orderby=name_desc`;
-      } else if (order === "Price-asc") {
-        link = `http://3.8.190.201/api/coins?limit=${coinsPerPage}&offset=${coinsPerPage*(currentPage-1)}&orderby=price_asc`;
-      } else if (order === "Price-desc") {
-        link = `http://3.8.190.201/api/coins?limit=${coinsPerPage}&offset=${coinsPerPage*(currentPage-1)}&orderby=price_desc`;
-      } else if (order === "Change-asc") {
-        link = `http://3.8.190.201/api/coins?limit=${coinsPerPage}&offset=${coinsPerPage*(currentPage-1)}&orderby=24h_change_asc`;
-      } else if (order === "Change-desc") {
-        link = `http://3.8.190.201/api/coins?limit=${coinsPerPage}&offset=${coinsPerPage*(currentPage-1)}&orderby=24h_change_desc`;
-      }
+      const link = `http://3.8.190.201/api/coins?limit=${coinsPerPage}&offset=${coinsPerPage*(currentPage-1)}&orderby=${order.toLowerCase()}`;
       const response = await fetch(link, {
         method: 'GET',
         mode : 'cors',
@@ -159,12 +146,15 @@ const Bookmarks = (props) => {
             "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS"
         },
       });
+      console.log(link)
       const symbs = await response.json();
       console.log("SORTED!", symbs)
       const symbNames = symbs.map(elem => ({key: uuidv4(), symbol:elem.symbol, price: elem.quotes.USD.price}));
       setData([...symbNames]);
       setSortOrder(order);
     };
+
+    useEffect(()=>{handleSort(sortOrder)},[coinsPerPage,currentPage])
 
     const [filteredData, setFilteredData] = useState([]);
     useEffect(()=>{
@@ -179,15 +169,40 @@ const Bookmarks = (props) => {
         }
     };
 
+    const Pagination = () => {
+  const handlePageChange = (e) => {
+    const pageNumber = parseInt(e.target.value, 10);
+    if (pageNumber >= 1 && pageNumber <= Math.ceil(2500 / coinsPerPage)) {
+      setCurrentPage(pageNumber);
+    }
+  };
+
+  return (
+    <div>
+      <input
+        type="number"
+        value={currentPage} 
+        min="1"
+        max={Math.ceil(2500 / coinsPerPage)}
+        onChange={handlePageChange}
+      />
+      <span> of {Math.ceil(2500 / coinsPerPage)}</span>
+      <button onClick={() => setCurrentPage(currentPage + 1)} className='paginationBtn'>Next</button>
+      <button onClick={() => setCurrentPage(currentPage - 1)} className='paginationBtn'>Previous</button>
+    </div>
+  );
+};
+
 
     useEffect(()=>{
       console.log("limit:",coinsPerPage)
-      console.log("offset:",currentPage)
+      console.log("offset:",coinsPerPage*(currentPage-1))
       console.log(filteredData)
       if(showOverlay)
       {
         window.scrollTo(0,0);
-        const coinSorts = ["Name","Price","Change"];
+        const coinSorts = ["Name","Price","24h_Change"];
+        const paginationBtns = [25,50,100,200,500,1000];
         modelRoot.render(
           <div className="overlay" style={{zIndex:'1001'}}>
             <div className="overlayContainer">
@@ -198,31 +213,31 @@ const Bookmarks = (props) => {
                 {coinSorts.map(elem => (
                   <div className='searchSortOverlayInner' key={elem}>
                     <div style={{display:'flex', flexDirection:'row', alignItems:'center'}}>
-                      <div className='sortOverlay'>{elem}</div>
+                      <div className='sortOverlay'>{elem!="24h_Change" ? elem : "Change"}</div>
                       <div className='sortBtns'>
                         <button
                         onClick={() => {
-                            if (sortOrder === `${elem}-asc`) {
+                            if (sortOrder === `${elem}_asc`) {
                             handleResetSort();
                             } else {
-                            handleSort(`${elem}-asc`);
+                            handleSort(`${elem}_asc`);
                             }
-                            setActiveButton(activeButton === `${elem}-asc` ? null : `${elem}-asc`);
+                            setActiveButton(activeButton === `${elem}_asc` ? null : `${elem}_asc`);
                         }}
-                        className={`sort-button ${activeButton === `${elem}-asc` ? "active" : ""}`}
+                        className={`sort-button ${activeButton === `${elem}_asc` ? "active" : ""}`}
                         >
                         &#9650;
                         </button>
                         <button
                         onClick={() => {
-                            if (sortOrder === `${elem}-desc`) {
+                            if (sortOrder === `${elem}_desc`) {
                             handleResetSort();
                             } else {
-                            handleSort(`${elem}-desc`);
+                            handleSort(`${elem}_desc`);
                             }
-                            setActiveButton(activeButton === `${elem}-desc` ? null : `${elem}-desc`);
+                            setActiveButton(activeButton === `${elem}_desc` ? null : `${elem}_desc`);
                         }}
-                        className={`sort-button ${activeButton === `${elem}-desc` ? "active" : ""}`}
+                        className={`sort-button ${activeButton === `${elem}_desc` ? "active" : ""}`}
                         >
                         &#9660;
                         </button>
@@ -236,7 +251,7 @@ const Bookmarks = (props) => {
               <div className='listOfCrypto'>
                 <div className="inner-overlay-container">
                 {filteredData
-                  .slice((currentPage - 1) * coinsPerPage, currentPage * coinsPerPage)
+                  .slice(0, currentPage * coinsPerPage)
                   .map((elem) => (
                     <button
                       key={uuidv4()}
@@ -253,51 +268,21 @@ const Bookmarks = (props) => {
                 </div>
               </div>
               <div className="pagination">
-                <button
-                  className={`coinsPerPageButton ${coinsPerPage === 25 ? "active" : ""}`}
-                  onClick={() => {
-                    setCoinsPerPage(25);
-                    setCurrentPage(1);
-                    handleSort(sortOrder);
-                  }}
-                >
-                  25
-                </button>
-                <button
-                  className={`coinsPerPageButton ${coinsPerPage === 50 ? "active" : ""}`}
-                  onClick={() => {
-                    setCoinsPerPage(50);
-                    setCurrentPage(1);
-                    handleSort(sortOrder);
-                  }}
-                >
-                  50
-                </button>
-                <button
-                  className={`coinsPerPageButton ${coinsPerPage === 100 ? "active" : ""}`}
-                  onClick={() => {
-                    setCoinsPerPage(100);
-                    setCurrentPage(1);
-                    handleSort(sortOrder);
-                  }}
-                >
-                  100
-                </button>
-                {data.length > coinsPerPage && (
-                  <ReactPaginate
-                    previousLabel={"Previous"}
-                    nextLabel={"Next"}
-                    pageCount={Math.ceil(filteredData.length / coinsPerPage)}
-                    onPageChange={({ selected }) => handlePageChange(selected + 1)}
-                    containerClassName={"paginationButtons"}
-                    previousLinkClassName={"previousButton"}
-                    nextLinkClassName={"nextButton"}
-                    disabledClassName={"paginationDisabled"}
-                    activeClassName={"paginationActive"}
-                  />
-                )}
+                <div>
+                  {paginationBtns.map(elem => (
+                    <button
+                      className={`coinsPerPageButton ${coinsPerPage === elem ? "active" : ""}`}
+                      onClick={() => {
+                        setCoinsPerPage(elem);
+                        setCurrentPage(1);
+                      }}
+                    >
+                      {elem}
+                    </button>
+                  ))}
+                </div>
+                <Pagination />
               </div>
-
             </div>
           </div>
         )
@@ -350,9 +335,9 @@ const Bookmarks = (props) => {
 
     const handleSort = (order) => {
         sortedData = {};
-        if (order === "price-asc") {
+        if (order === "price_asc") {
         sortedData = data.sort((a, b) => a.localeCompare(b));
-        } else if (order === "price-desc") {
+        } else if (order === "price_desc") {
         sortedData = data.sort((a, b) => b.localeCompare(a));
         }
         setData(sortedData);
@@ -361,9 +346,9 @@ const Bookmarks = (props) => {
     let filteredData = Object.values(symbols).filter(item =>
         item.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    if (sortOrder === "price-asc") {
+    if (sortOrder === "price_asc") {
         filteredData = filteredData.sort((a, b) => a.localeCompare(b));
-    } else if (sortOrder === "price-desc") {
+    } else if (sortOrder === "price_desc") {
         filteredData = filteredData.sort((a, b) => b.localeCompare(a));
     }
     const changeCoin = (newCoin) => {
@@ -401,27 +386,27 @@ const Bookmarks = (props) => {
                     <div className='sortBtns'>
                         <button
                         onClick={() => {
-                            if (sortOrder === "price-asc") {
+                            if (sortOrder === "price_asc") {
                             handleResetSort();
                             } else {
-                            handleSort("price-asc");
+                            handleSort("price_asc");
                             }
-                            setActiveButton(activeButton === "price-asc" ? null : "price-asc");
+                            setActiveButton(activeButton === "price_asc" ? null : "price_asc");
                         }}
-                        className={`sort-button ${activeButton === "price-asc" ? "active" : ""}`}
+                        className={`sort-button ${activeButton === "price_asc" ? "active" : ""}`}
                         >
                         &#9650;
                         </button>
                         <button
                         onClick={() => {
-                            if (sortOrder === "price-desc") {
+                            if (sortOrder === "price_desc") {
                             handleResetSort();
                             } else {
-                            handleSort("price-desc");
+                            handleSort("price_desc");
                             }
-                            setActiveButton(activeButton === "price-desc" ? null : "price-desc");
+                            setActiveButton(activeButton === "price_desc" ? null : "price_desc");
                         }}
-                        className={`sort-button ${activeButton === "price-desc" ? "active" : ""}`}
+                        className={`sort-button ${activeButton === "price_desc" ? "active" : ""}`}
                         >
                         &#9660;
                         </button>
