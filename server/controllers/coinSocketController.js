@@ -57,7 +57,6 @@ const updateCoinPrices = (async (io) => {
             else if(Math.abs((JSON.parse((await client.hGet('coins', key)))).quotes.USD.price - coin[key]) > 1){
                 const coin_value = JSON.parse((await client.hGet('coins', key)))
                 coin_value.quotes.USD.price = coin[key]
-                console.log(key, coin_value.symbol)
                 io.of('/coins').to(coin_value.symbol).emit('data:price_update', { [coin_value.symbol] : coin[key] })
                 
                 await client.hSet('coins', key, JSON.stringify(coin_value))

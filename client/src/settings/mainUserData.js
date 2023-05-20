@@ -51,6 +51,7 @@ function MainUserData () {
     try {
         const headersList = {
           "Accept": "*/*",
+          "User-Agent": "Thunder Client (https://www.thunderclient.com)",
           "Authorization": `Bearer ${localStorage.getItem('token')}`,
         };
         if(localStorage.getItem('token')) {
@@ -159,25 +160,23 @@ function MainUserData () {
 
     const headersList = {
       "Authorization": `Bearer ${localStorage.getItem('token')}`,
-      "Content-Type": 'multipart/form-data'
+      "Content-Type": 'multipart/form-data; boundary=<calculated when request is sent>'
     };
 
     try {
       const response = await axios.post(`${serverLink}api/profile-picture`, formData, {
-        headers: {
-          "Authorization": `Bearer ${localStorage.getItem('token')}`,
-          "Content-Type": 'multipart/form-data'
-        }
+        headers: headersList
       });
       console.log(response.data, "<-- response data");
       console.log("Successfully uploaded image");
     } catch (error) {
       console.log("Error Found", error);
-      
     }
   }
 
-  pageSendToServer();
+  if (imageFile !== null) {
+    pageSendToServer();
+  }
 
 
   async function pageGetFromServer() {
