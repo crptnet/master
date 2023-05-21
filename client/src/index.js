@@ -18,7 +18,7 @@ import Terminal from './terminal/terminal';
 import Charts from './charts/charts';
 import SubscriptionPage from './components/subscription/subscription';
 import NotFoundPage from './components/notFound/notFound';
-
+import SubscriptionView from './components/userProfile/subscriptionComponent/subscriptionView';
 
 import GetListOfCoins from './listOfCoinsAPI';
 
@@ -59,15 +59,15 @@ const pathName = window.location.pathname;
     if (!localStorage.getItem('token')) {
       mainRoot.render(<NotRegistered />);
     } else {
-      mainRoot.render(<><MainUserData /><SideUserData /></>);
+      mainRoot.render(<><MainUserData /><SideUserData /> <SubscriptionView/></>);
     }
   } else {
     scrollRoot.render(<NotFoundPage />);
   }
 
 
-//const serverLink = "http://3.8.190.201.nip.io/";
-const serverLink = "http://localhost:5000/";
+const serverLink = "http://3.8.190.201.nip.io/";
+//const serverLink = "http://localhost:5000/";
 export {serverLink};
 
 export {sidebarRoot,mainRoot,modelRoot};

@@ -49,19 +49,19 @@ export const sidebtns = [
     ,
     {
         id: 9,
-        img: './icons/help_dark.png',
+        img: 'http://3.8.190.201/upload/help_dark.png',
         title: 'Help'
     }
     ,
     {
         id: 10,
-        img: './icons/theme_dark.png',
+        img: 'http://3.8.190.201/upload/theme_dark.png',
         title: 'Theme'
     }
     ,
     {
         id: 11,
-        img: './icons/settings_dark.png',
+        img: 'http://3.8.190.201/upload/settings_dark.png',
         title: 'Settings'
     }
 ];

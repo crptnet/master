@@ -4,14 +4,13 @@ const coinSchema = new mongoose.Schema({
   user_id: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    unique : true,
   },
   coin_id: {
     type: String,
     required: true,
-    unique : false,
   },
-}, {
+}, 
+{
   timestamps:true, 
 });
 
@@ -56,7 +55,8 @@ const userSchema = new mongoose.Schema({
   },
   watchList : {
     type : [coinSchema],
-    required : false
+    required : false,
+    default : null,
   }
 }, 
 {

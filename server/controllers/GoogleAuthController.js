@@ -2,6 +2,8 @@ const asyncHandler = require('express-async-handler')
 const user = require('../models/userModel') 
 const jwt = require('jsonwebtoken')
 const crypto = require('crypto');
+const { userBill } = require('./userController')
+
 
 const hashUsername = (username) =>{
     const hashLength = 12;
@@ -18,14 +20,15 @@ const googleSignIn = asyncHandler(async(req, res) =>{
     if(!User){
       var newUser
       if((await user.findOne({ username : req.user.name}))){       
-          newUser = new user({ username : hashUsername(req.user.name), email : req.user.email, active : true, profilePicture: req.user.picture, googleActive : true });
+          newUser = new user({ username : hashUsername(req.user.name), email : req.user.email, active : true, profilePicture: req.user.picture, googleActive : true, watchList : null });
           await newUser.save();
-      }
-      else{
-        newUser = new user({ username : req.user.name, email : req.user.email, active : true, profilePicture: req.user.picture, googleActive : true });
-        await newUser.save();
-      }
-
+        }
+        else{
+          newUser = new user({ username : req.user.name, email : req.user.email, active : true, profilePicture: req.user.picture, googleActive : true, watchList : null });
+          await newUser.save();
+        }
+      userBill(newUser)
+        
 
       const accessToken = jwt.sign(
         {

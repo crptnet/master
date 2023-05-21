@@ -101,7 +101,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
     const hashPassword = await bcrypt.hash(password, 8)
 
-    const newUser = new user({ username, email, password: hashPassword, active : false, profilePicture: 'null', watchList : [] });
+    const newUser = new user({ username, email, password: hashPassword, active : false, profilePicture: 'null', watchList : null });
     await newUser.save();
 
 
@@ -126,7 +126,7 @@ const registerUser = asyncHandler(async (req, res) => {
       //Billing
       //
 
-      await userBill(newUser)
+      userBill(newUser)
 
 
       return res.status(201).json({ 'email' : email, 'id' : newUser.id})
@@ -142,12 +142,13 @@ const userBill = asyncHandler(async (User) => {
 
   console.log(customer.id)
 
+
   const userBill = new userSubscriptions(
     { 
       user_id : User.id,
       billingId : customer.id,
       plan : 'trial',
-      endDate: null,
+      endDate: new Date((Math.floor(Date.now() / 1000) + (14 * 24 * 60 * 60)) * 1000),
     }
   )
 
@@ -594,6 +595,7 @@ const changePasswordByToken = asyncHandler( async(req, res) => {
 
 
 module.exports = {
+    userBill,
     registerUser,
     getUserInfoForActivation,
     loginUser,

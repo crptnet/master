@@ -23,9 +23,9 @@ body {
     color: #4682B4;
 }
 
-.mainDataContainer {
+.mainDataContainer, .subscriptionContainer {
     min-width: 500px;
-    min-height: 320px;
+    /* min-height: 320px; */
     display: flex;
     flex-direction: column;
     justify-content: center;

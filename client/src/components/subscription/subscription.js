@@ -11,7 +11,7 @@ const SubscriptionDisplay = () => {
 
   const handleSubmit = async (event, option) => {
     event.preventDefault();
-    const response = await fetch(`${serverLink}/api/create-checkout-session?option=${option}`, {
+    const response = await fetch(`${serverLink}api/create-checkout-session?option=${option}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

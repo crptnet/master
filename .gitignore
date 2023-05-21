@@ -9,10 +9,10 @@
 # testing
 /coverage
 /configs
-
 # production
 
 # # misc
+/server/uploads
 # .DS_Store
 # .env.local
 # .env.development.local

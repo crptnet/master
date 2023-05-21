@@ -38,7 +38,7 @@ const createPaymentSession = asyncHandler(async (req, res) => {
 })
 
 //local secret
-const endpointSecret = "whsec_96512283aec0430a68da5387729af55a96881e23b579b477fc2d9759d9f456bb";
+const endpointSecret = "whsec_10s1R8QjmskZYkVoroWiHCMkBMB4maPC";
 
 
 const stripeWebhook = asyncHandler(async (req, res) => {
@@ -83,7 +83,14 @@ const getSubscription = asyncHandler(async (req, res) => {
   const customer = (await userSubscriptions.findOne({ user_id : req.user.id }))
 
   if(!customer.subscriptionId){
-    return res.json({ message : 'user does not have any subscription'}).status(400).end()
+    
+    return res.json({ 
+      id : null,
+      object : null,
+      plan : customer.Plan,
+      created : customer.createdAt,
+      current_period_end : customer.endDate,
+    }).status(200).end()
   }
   const subscription = await stripe.subscriptions.retrieve(
     customer.subscriptionId

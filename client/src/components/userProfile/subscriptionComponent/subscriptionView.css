@@ -1,0 +1,50 @@
+.side-right-subscription, .side-left-subscription  {
+    display: flex;
+    flex-direction: column;
+}
+
+.side-left-subscription {
+    justify-content: center;
+    align-items: center;
+
+}
+
+.left-subscription-content {
+    text-align: left;
+    margin-right: auto;
+    padding: 8px;
+}
+
+.left-subscription-content:first-of-type > p {
+    font-size: 20px;
+}
+
+
+.subscription-status{
+    margin-top: 5px;
+    font-size: 14px;
+}
+
+.update-subscription {
+    display: flex;
+    justify-content: right;
+}
+
+.update-subscription > button  {
+    min-width: 100px;
+    min-height: 50px;
+    background-color: #4682B4;
+    color: #d1d4dc;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+
+.update-subscription > button:hover  {
+    border: 2px #4682B4 solid;
+    border-radius: 5px;
+    background-color: white;
+    color: black;
+}
