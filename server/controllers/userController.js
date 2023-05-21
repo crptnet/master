@@ -83,8 +83,15 @@ const registerUser = asyncHandler(async (req, res) => {
     }
 
     //Check if user with the same email exists
-    if(await user.findOne({ email })){
+    const tryUser = await user.findOne({ email }) 
+    if(tryUser){
+      if(tryUser.email === email){
+        return res.status(409).json({ message: 'Email already taken'})    
+      }  
+      else if(tryUser.username === username){
         return res.status(409).json({ message: 'User already taken'})
+      }
+      return res.status(409).json({ message: 'Conflict'})
     }
     
     //Check if user with the same username exists

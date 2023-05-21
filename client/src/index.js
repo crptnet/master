@@ -16,7 +16,9 @@ import BTCPrice from './positions/binanceCoins';
 import StarredList from './watchlist/starredList';
 import Terminal from './terminal/terminal';
 import Charts from './charts/charts';
-import SubscriptionPage from './subscription/subscription';
+import SubscriptionPage from './components/subscription/subscription';
+import NotFoundPage from './components/notFound/notFound';
+
 
 import GetListOfCoins from './listOfCoinsAPI';
 
@@ -34,8 +36,9 @@ const pathName = window.location.pathname;
     mainRoot.render(<ResetEmailPage location={window.location} />);
   } else if (pathName.includes('/password-reset')) {
     mainRoot.render(<ResetPasswordPage location={window.location} />);
-  } else if (pathName.includes('/subscription')) {
+  } else if (pathName.includes('/settings/subscription')) {
     mainRoot.render(<SubscriptionPage />);
+    sidebarRoot.render(<SideBar active={11} />);
   } else if (pathName.includes('/terminal')) {
     mainRoot.render(<Terminal />);
     sidebarRoot.render(<SideBar active={1} />);
@@ -59,12 +62,12 @@ const pathName = window.location.pathname;
       mainRoot.render(<><MainUserData /><SideUserData /></>);
     }
   } else {
-    scrollRoot.render(<Main />);
+    scrollRoot.render(<NotFoundPage />);
   }
 
 
-const serverLink = "http://3.8.190.201.nip.io/";
-//const serverLink = "http://localhost:5000/";
+//const serverLink = "http://3.8.190.201.nip.io/";
+const serverLink = "http://localhost:5000/";
 export {serverLink};
 
 export {sidebarRoot,mainRoot,modelRoot};

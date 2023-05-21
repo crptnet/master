@@ -1,6 +1,7 @@
 import React from 'react';
 import './positions.css';
 import {sidebtns} from './sidebtns';
+import { serverLink } from '..';
 
 const Btn = (props) => {
   const {id, img, title} = props.btn;
@@ -24,7 +25,7 @@ function SideBar ({ active }) {
     <>
       <div className='fullSideBar'>
         <div className='logo'>
-          <img src='./icons/logo.png' />
+          <img src={`${serverLink}upload/logo.png`} />
         </div>
         <div className='sideBarWithoutLogo'>
           <SideButtons active={active} />
