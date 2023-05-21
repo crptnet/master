@@ -174,14 +174,14 @@ function MainUserData() {
       }
     }
 
-    uploadImage();
-
+    
     if (localStorage.getItem('token')) {
       const fetchData = async () => {
+        await uploadImage();
         const userData = await getData();
         console.log('Trying to update image');
-        console.log(userData);
-        // setAvatar(userData);
+        setAvatar(userData.profilePicture);
+        console.log(avatar);
       };
       fetchData();
     }
