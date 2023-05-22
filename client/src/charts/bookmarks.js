@@ -317,6 +317,7 @@ const Bookmarks = (props) => {
     };
 
     const handleCloseOverlay = () => {
+      modelRoot.render(<></>);
       setShowOverlay(false);
     };
 

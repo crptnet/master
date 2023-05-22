@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom/client';
 import './terminal.css';
-import Bookmarks from './components/bookmarks';
+import Bookmarks from '../charts/bookmarks';
 import Title from './components/title';
 import Charts from './components/chart';
 import Markets from './components/markets';
@@ -16,7 +16,7 @@ const Terminal = () => {
   return (
     <>
         <div className='terminal-main'>
-            <Bookmarks />
+            <Bookmarks props={1}/>
             <Title />
             <div style={{display:'flex', width:'calc(100vw - 57.5px)'}}>
                 <Charts />

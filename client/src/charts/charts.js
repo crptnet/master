@@ -264,7 +264,7 @@ const Charts = () => {
     const [filteredData, setFilteredData] = useState([]);
     const handleSort = async (order) => {
       sortedData = {};
-      const link = `http://3.8.190.201/api/coins?limit=${coinsPerPage}&offset=${coinsPerPage*(currentPage-1)}&orderby=${order.toLowerCase()}&query=${searchTerm}`;
+      const link = `http://3.8.190.201/api/coins?limit=${coinsPerPage.toString()}&offset=${(coinsPerPage*(currentPage-1)).toString()}&orderby=${order.toLowerCase()}&query=${searchTerm}`;
       const response = await fetch(link, {
         method: 'GET',
         mode : 'cors',

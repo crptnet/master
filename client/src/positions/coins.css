@@ -61,33 +61,31 @@ body {
     width: 30px;
 }
 
-/*<--MAIN-->*/
-
-/* #main {
-    display: block;
-    margin: 0;
-} */
-
 /*LIST-OF-COINS*/
 
 table {
     border-collapse: separate;
     border-spacing: 0px 10px;
     width: calc(100vw - 90px);
-    font-size: 1.25rem;
+    font-size: 0.8rem;
     font-weight: bold;
 }
 
 tr {
-    padding: 20px;
+    padding: 10px;
     border-top: 10px solid transparent;
     border-bottom: 10px solid transparent;
+
 }
 
 td, th {
     width: 10vw;
-    padding: 20px;
+    padding: 10px;
     text-align: center;
+}
+
+th {
+    font-size: 1rem;
 }
 
 th:first-child, td:first-child {
@@ -148,7 +146,7 @@ tr.blueHigh {
     color: #d1d4dc;
     background-color: transparent;
     border: none;
-    font-size: 1.25rem;
+    font-size: 0.8rem;
     font-weight: bold;
     cursor: pointer;
 }
@@ -158,7 +156,6 @@ tr.blueHigh {
     color: #4682B4;
     background-color: transparent;
     border: none;
-    font-size: 1.25rem;
     font-weight: bold;
 }
 
@@ -174,7 +171,6 @@ tr.blueHigh {
     color: #d1d4dc;
     background-color: transparent;
     border: none;
-    font-size: 1.25rem;
     font-weight: bold;
     cursor: pointer;
 }
@@ -184,7 +180,6 @@ tr.blueHigh {
     color: #4682B4;
     background-color: transparent;
     border: none;
-    font-size: 1.25rem;
     font-weight: bold;
 }
 
@@ -198,7 +193,7 @@ tr.blueHigh {
     text-align: center;
     background-color: #4682B4;
     color: #d1d4dc;
-    font-size: 1.25rem;
+    font-size: 1rem;
     font-weight: bold;
     border: none;
     border-radius: 10px;
@@ -206,7 +201,7 @@ tr.blueHigh {
 .input-search::placeholder {
     color: #d1d4dc;
     font-weight: bold;
-    font-size: 1.25rem;
+    font-size: 1rem;
  }
 
 /*DOWNLOAD*/
