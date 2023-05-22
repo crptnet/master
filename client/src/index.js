@@ -21,6 +21,9 @@ import NotFoundPage from './components/notFound/notFound';
 import SubscriptionView from './components/userProfile/subscriptionComponent/subscriptionView';
 
 import GetListOfCoins from './listOfCoinsAPI';
+import SubscribeToWebSocket from './socket';
+
+const serverLink = "http://3.8.190.201.nip.io/";
 
 const scrollRoot = ReactDOM.createRoot(document.getElementById('scroll'));
 const sidebarRoot = ReactDOM.createRoot(document.getElementById('sidebar'));
@@ -65,8 +68,6 @@ const pathName = window.location.pathname;
     scrollRoot.render(<NotFoundPage />);
   }
 
-
-const serverLink = "http://3.8.190.201.nip.io/";
 //const serverLink = "http://localhost:5000/";
 export {serverLink};
 

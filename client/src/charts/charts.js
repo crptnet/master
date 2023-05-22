@@ -231,7 +231,7 @@ const Charts = () => {
     setChartSymbList([...chartSymbList, symbNames]);
   }
   function Overlay(props) { 
-      console.log("props",props)
+    console.log("props",props)
     const itemKey = props.props.itemKey;
     const [bookmarkList, setBookmarkList] = useState(props.props.bookmarkList);
     let chartOverlay = [...bookmarkList]; 
@@ -261,10 +261,10 @@ const Charts = () => {
       setData([...symbData]);
       setSortOrder("rank_asc");
     };
-
+    const [filteredData, setFilteredData] = useState([]);
     const handleSort = async (order) => {
       sortedData = {};
-      const link = `http://3.8.190.201/api/coins?limit=${coinsPerPage}&offset=${coinsPerPage*(currentPage-1)}&orderby=${order.toLowerCase()}`;
+      const link = `http://3.8.190.201/api/coins?limit=${coinsPerPage}&offset=${coinsPerPage*(currentPage-1)}&orderby=${order.toLowerCase()}&query=${searchTerm}`;
       const response = await fetch(link, {
         method: 'GET',
         mode : 'cors',
@@ -277,16 +277,16 @@ const Charts = () => {
       const symbs = await response.json();
       console.log("SORTED!", symbs)
       const symbNames = symbs.map(elem => ({key: uuidv4(), symbol:elem.symbol, price: elem.quotes.USD.price, change:elem.quotes.USD.percent_change_7d, volume: elem.quotes.USD.volume_24h, marketCap: elem.quotes.USD.market_cap_change_24h}));
-      setData([...symbNames]);
+      setFilteredData([...symbNames]);
       setSortOrder(order);
     };
 
-    useEffect(()=>{handleSort(sortOrder)},[coinsPerPage,currentPage])
+    useEffect(()=>{handleSort(sortOrder)},[coinsPerPage,currentPage,searchTerm])
 
-    const [filteredData, setFilteredData] = useState([]);
-    useEffect(()=>{
-      if(data!=[] && data!=null) setFilteredData(data.filter(item => item.symbol.toLowerCase().includes(searchTerm.toLowerCase())));
-    },[data])
+    
+    // useEffect(()=>{
+    //   if(data!=[] && data!=null) setFilteredData(data.filter(item => item.symbol.toLowerCase().includes(searchTerm.toLowerCase())));
+    // },[data])
 
 
 
@@ -320,14 +320,14 @@ const Charts = () => {
             index = chartOverlay.findIndex(element => element.key === itemKey);
             if (index !== -1) {
               console.log("SHOULD BE CHANGED!")
-                chartOverlay[index].symbol = newCoin;
-                chartOverlay[index].price = newPrice;
-                chartOverlay[index].change = newChange;
-                chartOverlay[index].volume = newVolume;
-                chartOverlay[index].marketCap = newMarketCap;
-                setBookmarkList(chartOverlay);
-                setChartSymbList(chartOverlay);
-                window.location.reload(true);
+              chartOverlay[index].symbol = newCoin;
+              chartOverlay[index].price = newPrice;
+              chartOverlay[index].change = newChange;
+              chartOverlay[index].volume = newVolume;
+              chartOverlay[index].marketCap = newMarketCap;
+              setBookmarkList(chartOverlay);
+              setChartSymbList(chartOverlay);
+              window.location.reload(true);
             } else {
                 console.log('Element is not found');
             }
