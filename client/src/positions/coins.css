@@ -72,14 +72,12 @@ table {
 }
 
 tr {
-    padding: 10px;
+    padding: 5px;
     border-top: 10px solid transparent;
     border-bottom: 10px solid transparent;
-
 }
 
 td, th {
-    width: 10vw;
     padding: 10px;
     text-align: center;
 }
@@ -88,9 +86,14 @@ th {
     font-size: 1rem;
 }
 
+tr td:nth-child(2) {
+    width: 5vw;
+}
+
 th:first-child, td:first-child {
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
+    width: 5vw;
 }
 
 th:last-child, td:last-child {

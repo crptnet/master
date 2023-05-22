@@ -40,7 +40,7 @@ const Charts = () => {
     }, [chartSymbList]);
     
     useEffect(()=>{localStorage.setItem("bookmarkList",JSON.stringify(chartSymbList))},[chartSymbList])
-    useEffect(()=>{console.log(chartSymbList)},[chartSymbList])
+    //useEffect(()=>{console.log(chartSymbList)},[chartSymbList])
     useEffect(()=>{ 
         const handleDragEnd = (result) => {
             if (!result.destination) return;
@@ -226,17 +226,14 @@ const Charts = () => {
       });
     console.log(link)
     const symbs = await response.json();
-    console.log(symbs,"SYMBS")
     const symbNames = {key: uuidv4(), symbol:symbs[0].symbol, price: symbs[0].quotes.USD.price, change:symbs[0].quotes.USD.percent_change_7d, volume: symbs[0].quotes.USD.volume_24h, marketCap: symbs[0].quotes.USD.market_cap_change_24h};
     setChartSymbList([...chartSymbList, symbNames]);
   }
   function Overlay(props) { 
-    console.log("props",props)
     const itemKey = props.props.itemKey;
     const [bookmarkList, setBookmarkList] = useState(props.props.bookmarkList);
     let chartOverlay = [...bookmarkList]; 
     let index = chartOverlay.findIndex(element => element.key === itemKey);
-    console.log("??")
     const [showOverlay, setShowOverlay] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [sortOrder, setSortOrder] = useState("rank_asc");
@@ -273,9 +270,9 @@ const Charts = () => {
             "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS"
         },
       });
-      console.log(link)
+      //console.log(link)
       const symbs = await response.json();
-      console.log("SORTED!", symbs)
+      //console.log("SORTED!", symbs)
       const symbNames = symbs.map(elem => ({key: uuidv4(), symbol:elem.symbol, price: elem.quotes.USD.price, change:elem.quotes.USD.percent_change_7d, volume: elem.quotes.USD.volume_24h, marketCap: elem.quotes.USD.market_cap_change_24h}));
       setFilteredData([...symbNames]);
       setSortOrder(order);
@@ -319,7 +316,6 @@ const Charts = () => {
             chartOverlay = [...bookmarkList]; 
             index = chartOverlay.findIndex(element => element.key === itemKey);
             if (index !== -1) {
-              console.log("SHOULD BE CHANGED!")
               chartOverlay[index].symbol = newCoin;
               chartOverlay[index].price = newPrice;
               chartOverlay[index].change = newChange;
@@ -337,9 +333,9 @@ const Charts = () => {
     };
     
     useEffect(()=>{
-      console.log("limit:",coinsPerPage)
-      console.log("offset:",coinsPerPage*(currentPage-1))
-      console.log(filteredData)
+      //console.log("limit:",coinsPerPage)
+      //console.log("offset:",coinsPerPage*(currentPage-1))
+      //console.log(filteredData)
       if(showOverlay)
       {
         window.scrollTo(0,0);
@@ -438,7 +434,6 @@ const Charts = () => {
     function handleDeleteDiv(item) {
         setChartSymbList(chartSymbList.filter(elem => elem.key != item.key));
     }
-    console.log("**")
     return (
         <React.Fragment key={JSON.stringify(chartSymbList)}>
             <div className="bookmark-container">

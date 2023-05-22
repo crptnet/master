@@ -338,6 +338,8 @@ const BinanceBTC = () => {
           <thead>
             <tr className="blueHigh">
               <th>
+              </th>
+              <th>
                 <p>
                   Id
                 </p>
@@ -573,7 +575,8 @@ const BinanceBTC = () => {
           <tbody>
             {currentCoins.map((coin) => (
               <tr key={coin.smb} className="coin">
-                <td style={{display:'flex',flexDirection:'row',justifyContent:'center',alignItems:'center'}}><img src="./icons/watchlist_dark.png" className="addToWatch"/>{coin.id}</td>
+                <td><img src="./icons/watchlist_dark.png" className="addToWatch"/></td>
+                <td>{coin.id}</td>
                 <td>{coin.smb.slice(0,-4)}</td>
                 <td style={{color: coin.flash}}>{coin.price > 999 ? new Intl.NumberFormat('en-US').format(coin.price) : coin.price}</td>
                 <td style={{ color: coin.percentChange1d >= 0 ? '#5CC082' : '#DC4C41' }}>{coin.percentChange1d}</td>

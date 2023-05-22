@@ -2,7 +2,7 @@
 // 1.Fix pagination                               DONE
 // 2.Fix pagination sort                          DONE
 // 3.Upgrade overlay for changing coin            DONE
-// 4.Connect websocket
+// 4.Connect websocket                            DONE
 // 5.Increase the number of fields for every coin DONE
 // 6.Display data on charts page                  DONE
 // BONUS.Fix pagination search                    IN PROCESS
@@ -20,7 +20,6 @@ import { modelRoot } from '../index';
 import SubscribeToWebSocket from '../socket';
 
 const Bookmarks = (props) => {
-  //SubscribeToWebSocket();
   const length = props.props;
   const [bookmarkList, setBookmarkList] = useState(() => {
     const savedDivList = localStorage.getItem("bookmarkList");
@@ -139,9 +138,9 @@ const Bookmarks = (props) => {
             "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS"
         },
       });
-      console.log(link)
+      //console.log(link)
       const symbs = await response.json();
-      console.log("SORTED!", symbs)
+      //console.log("SORTED!", symbs)
       const symbNames = symbs.map(elem => ({key: uuidv4(), symbol:elem.symbol, price: elem.quotes.USD.price, change:elem.quotes.USD.percent_change_7d, volume: elem.quotes.USD.volume_24h, marketCap: elem.quotes.USD.market_cap_change_24h}));
       setData([...symbNames]);
       setSortOrder(order);
@@ -188,9 +187,9 @@ const Bookmarks = (props) => {
 
 
     useEffect(()=>{
-      console.log("limit:",coinsPerPage)
-      console.log("offset:",coinsPerPage*(currentPage-1))
-      console.log(filteredData)
+      //console.log("limit:",coinsPerPage)
+      //console.log("offset:",coinsPerPage*(currentPage-1))
+      //console.log(filteredData)
       if(showOverlay)
       {
         window.scrollTo(0,0);
@@ -301,7 +300,7 @@ const Bookmarks = (props) => {
     const { bookmarkList, itemKey}  = props.props;
     let chartOverlay = [...bookmarkList]; 
     let index = chartOverlay.findIndex(element => element.key === itemKey);
-    console.log("??")
+    //console.log("??")
     const [showOverlay, setShowOverlay] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [sortOrder, setSortOrder] = useState("rank_asc");
@@ -339,9 +338,9 @@ const Bookmarks = (props) => {
             "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS"
         },
       });
-      console.log(link)
+      //console.log(link)
       const symbs = await response.json();
-      console.log("SORTED!", symbs)
+      //console.log("SORTED!", symbs)
       const symbNames = symbs.map(elem => ({key: uuidv4(), symbol:elem.symbol, price: elem.quotes.USD.price, change:elem.quotes.USD.percent_change_7d, volume: elem.quotes.USD.volume_24h, marketCap: elem.quotes.USD.market_cap_change_24h}));
       setData([...symbNames]);
       setSortOrder(order);
@@ -398,9 +397,9 @@ const Bookmarks = (props) => {
     };
     
     useEffect(()=>{
-      console.log("limit:",coinsPerPage)
-      console.log("offset:",coinsPerPage*(currentPage-1))
-      console.log(filteredData)
+      //console.log("limit:",coinsPerPage)
+      //console.log("offset:",coinsPerPage*(currentPage-1))
+      //console.log(filteredData)
       if(showOverlay)
       {
         window.scrollTo(0,0);
@@ -490,7 +489,7 @@ const Bookmarks = (props) => {
           </div>
         )
       }    
-    },[showOverlay])
+    },[showOverlay,bookmarkList])
     return (
         <button onClick={handleOpenOverlay} className='openListFromSymb'><p>{chartOverlay[index].symbol}</p><p>${parseFloat(chartOverlay[index].price).toFixed(2)}</p></button>
     );
