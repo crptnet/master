@@ -21,10 +21,9 @@ import NotFoundPage from './components/notFound/notFound';
 import SubscriptionView from './components/userProfile/subscriptionComponent/subscriptionView';
 
 import GetListOfCoins from './listOfCoinsAPI';
-import SubscribeToWebSocket from './socket';
 
 const serverLink = "http://3.8.190.201.nip.io/";
-SubscribeToWebSocket();
+
 const scrollRoot = ReactDOM.createRoot(document.getElementById('scroll'));
 const sidebarRoot = ReactDOM.createRoot(document.getElementById('sidebar'));
 const modelRoot = ReactDOM.createRoot(document.getElementById('model'));
@@ -46,7 +45,7 @@ const pathName = window.location.pathname;
     mainRoot.render(<Terminal />);
     sidebarRoot.render(<SideBar active={1} />);
   } else if (pathName.includes('/charts')) {
-    mainRoot.render(<Charts initialData={GetListOfCoins()}/>);
+    mainRoot.render(<Charts />);
     sidebarRoot.render(<SideBar active={2} />);
   } else if (pathName.includes('/list')) {
     mainRoot.render(<BTCPrice />);
