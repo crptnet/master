@@ -31,6 +31,7 @@ function MainUserData() {
   const [email, setEmail] = useState('Not Registered');
   const [username, setUsername] = useState('Not Registered');
   const [avatar, setAvatar] = useState('./icons/avatar.png');
+  const [plan, setPlan] = useState(null)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,6 +44,19 @@ function MainUserData() {
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const FetchSubData = async () => {
+        const response = await axios(`${serverLink}api/user-subscription`, {
+            method : 'GET', 
+            headers : {
+              Authorization : `Bearer ${localStorage.getItem('token')}`
+            }
+          })
+          setPlan(response.data.plan)
+    }
+    FetchSubData()
+}, [])
 
   async function confirmDeletion() {
     try {
@@ -207,7 +221,7 @@ function MainUserData() {
         </div>
         <div className="accLevel">
           <p className="accLevelOuter">Account level</p>
-          <p className="accLevelInner">Basic</p>
+          <p className="accLevelInner">{plan ? plan.charAt(0).toUpperCase() + plan.slice(1) : 'Loading..' }</p>
         </div>
         <div className="mainBtns">
           <button className="logOutBtn" onClick={logOut}>
