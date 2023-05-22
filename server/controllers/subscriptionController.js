@@ -15,11 +15,13 @@ const createPaymentSession = asyncHandler(async (req, res) => {
     }
 
     const customer = (await userSubscriptions.findOne({ user_id : req.user.id }))
-    console.log(customer.subscriptionId !== null)
-    if((customer.subscriptionId !== null && await stripe.subscriptions.retrieve(customer.subscriptionId)).plan?.id === priceId){
-      return res.json({ "message" : "User already subscribed to this plan", uri : `http://${process.env.DOMAIN}/settings`}).status(403)
+    
+    if(customer.subscriptionId !== null && (await stripe.subscriptions.retrieve( customer.subscriptionId )).plan.id === priceId){
+      if(customer.active === 'cancelled'){
+        return res.status(403).json({ "message" : "Wait till the end of the perid to resubscribe on the same subscription", uri : `http://${process.env.DOMAIN}/settings`})
+      }
+      return res.status(403).json({ "message" : "User already subscribed to this plan", uri : `http://${process.env.DOMAIN}/settings`})
     }
-
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
@@ -38,18 +40,13 @@ const createPaymentSession = asyncHandler(async (req, res) => {
 })
 
 //local secret
-const endpointSecret = "whsec_10s1R8QjmskZYkVoroWiHCMkBMB4maPC";
+const endpointSecret = "whsec_96512283aec0430a68da5387729af55a96881e23b579b477fc2d9759d9f456bb";
 
 
 const stripeWebhook = asyncHandler(async (req, res) => {
     const payload = req.body;
-
-    console.log(payload)
-
     const sig = req.headers['stripe-signature'];
-
     let event;
-
     try 
     {
       event = stripe.webhooks.constructEvent(payload, sig, endpointSecret);
@@ -61,53 +58,61 @@ const stripeWebhook = asyncHandler(async (req, res) => {
       return;
     }
 
-    // Handle the event
     switch (event.type) {
       case 'checkout.session.completed':
-        console.log((new Date).toLocaleTimeString(), payload)
         const checkoutSessionCompleted = event.data.object;
-        const subscription = checkoutSessionCompleted.subscription
-        const customer = checkoutSessionCompleted.customer
-        await userSubscriptions.findOneAndUpdate({ billingId : customer }, { subscriptionId : subscription })
+        const subscription = await stripe.subscriptions.retrieve( checkoutSessionCompleted.subscription )
+        const priceId = subscription.plan.id
+        const customerId = checkoutSessionCompleted.customer
+        const customer = await userSubscriptions.findOne({ billingId : customerId }) 
+        if(customer.subscriptionId && customer.active !== 'cancelled'){
+          await stripe.subscriptions.del(customer.subscriptionId)
+        }
+
+        await userSubscriptions.findOneAndUpdate({ billingId : customerId }, { subscriptionId : subscription.id, endDate : subscription.current_period_end, Plan : (await stripe.prices.retrieve(priceId)).metadata.plan, active : 'active' })
         break;
-      default:
-        //console.log(`Unhandled event type ${event.type}`);
     }
   
-    // Return a 200 res to acknowledge receipt of the event
     res.status(200).send();
 
 })
 
 const getSubscription = asyncHandler(async (req, res) => {
-  const customer = (await userSubscriptions.findOne({ user_id : req.user.id }))
-
-  if(!customer.subscriptionId){
-    
-    return res.json({ 
-      id : null,
-      object : null,
-      plan : customer.Plan,
-      created : customer.createdAt,
-      current_period_end : customer.endDate,
-    }).status(200).end()
-  }
-  const subscription = await stripe.subscriptions.retrieve(
-    customer.subscriptionId
-  )
-
+  const customer = await userSubscriptions.findById(req.customer)
+  const priceId = req.subscription.plan.id
+  //return res.send(req.subscription)
   res.send({
-    id : subscription.id,
-    object : subscription.object,
-    created : subscription.created,
-    current_period_end : subscription.current_period_end,
-  }).status(200)
-
+    id : req.subscription.id,
+    object : req.subscription.object,
+    plan : customer.Plan,
+    status : customer.active,
+    interval : (await stripe.prices.retrieve(priceId)).recurring.interval,
+    created : req.subscription.created,
+    current_period_end : req.subscription.current_period_end,
+    period_ended : Math.floor(Date.now() / 1000) > customer.endDate ? true : false,
+    canceled_at : req.subscription.canceled_at,
+    cancel_at_period_end : req.subscription.cancel_at_period_end,
+    start_date : req.subscription.start_date,
+  })
 })
+
+const canceleSubscription = asyncHandler(async (req, res) => {
+  const customer = (await userSubscriptions.findOne({ user_id : req.user.id }))
+  try{
+    await stripe.subscriptions.del( customer.subscriptionId )
+    res.status(200).json({ message : 'success'})
+  }
+  catch(err){
+    res.status(500).json({ message : err.message})
+  }
+  await customer.updateOne({ active : 'cancelled' })
+})
+
 
 module.exports = {
     createPaymentSession,
     stripeWebhook,
     getSubscription,
+    canceleSubscription,
 };
 
