@@ -7,8 +7,6 @@ const subscriptionValidation = async (req, res, next) => {
         return res.status(500).json({ message : 'Customer not found'})
     }
 
-    console.log(customer.endDate)
-
     if(!customer.subscriptionId){
         return res.status(200).json({
             id : null,
@@ -19,11 +17,10 @@ const subscriptionValidation = async (req, res, next) => {
             period_ended : Math.floor(Date.now() / 1000) > customer.endDate ? true : false, 
         })
     }
+    
     const subscription = await stripe.subscriptions.retrieve(customer.subscriptionId)
-
-    console.log(subscription)
-
     req.subscription = subscription
+    req.customer = customer.id
     next()
 }
 

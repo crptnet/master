@@ -33,6 +33,7 @@ body {
     margin: 20px;
     background-color: #333333;
     border-radius: 15px;
+    padding-bottom: 10px;
 }
 
 .sideDataContainer {

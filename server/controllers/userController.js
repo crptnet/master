@@ -148,7 +148,8 @@ const userBill = asyncHandler(async (User) => {
       user_id : User.id,
       billingId : customer.id,
       plan : 'trial',
-      endDate: new Date((Math.floor(Date.now() / 1000) + (14 * 24 * 60 * 60)) * 1000),
+      endDate: Math.floor((Date.now() + (14 * 24 * 60 * 60 * 1000)) / 1000),
+      active : 'active',
     }
   )
 
@@ -245,7 +246,12 @@ const deleteUser = asyncHandler(async (req, res) => {
       console.log('Picture not found')
     }
   }
-
+  const customer = (await userSubscriptions.findOne({ user_id : req.user.id }))
+  if(customer.subscriptionId && customer.active !== 'cancelled'){
+    console.log(customer)
+    await stripe.subscriptions.del( (await userSubscriptions.findOne({ user_id : req.user.id })).subscriptionId )
+  }
+  await userSubscriptions.findOneAndDelete({ user_id : req.user.id })
   await User.deleteOne()
   res.status(200).json(req.user)
 

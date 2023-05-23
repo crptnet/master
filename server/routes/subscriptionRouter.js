@@ -2,6 +2,7 @@ const {
     createPaymentSession,
     stripeWebhook,
     getSubscription,
+    canceleSubscription,
 } = require("../controllers/subscriptionController");
 const {
     subscriptionValidation
@@ -14,6 +15,7 @@ router.post('/create-checkout-session', validateToken, createPaymentSession)
 
 router.post('/stripe_webhook', bodyParser.raw({type: 'application/json'}), stripeWebhook)
   
-router.get('/user-subscription', validateToken, subscriptionValidation)
+router.get('/user-subscription', validateToken, subscriptionValidation, getSubscription)
 
+router.delete('/subscription-delete', validateToken, canceleSubscription)
 module.exports = router;

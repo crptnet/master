@@ -1,66 +1,121 @@
 .centeredDiv {
-    border: 2px solid black;
-    display: flex;
-    flex-direction: column;
-    border-radius: 5%;
-    padding: 20px;
-    text-align: center;
-    color: white;
-  }
-  .subscriptionContainer{
-    display: flex;
-  }
+  border: 2px solid black;
+  display: flex;
+  flex-direction: column;
+  border-radius: 5%;
+  padding: 20px;
+  text-align: center;
+  color: white;
+}
 
-  .subscriptionFeatures{
-    margin: 10px;
-    text-align: left;
-    list-style-type: none;
-    line-height: 2;
-    font-size: 26px;
-  }
+.subscriptionContainer {
+  display: flex;
+  flex-direction: row; /* Change flex-direction to row */
+  align-items: center; /* Optional: Center the content horizontally */
+  justify-content: center; /* Optional: Center the content vertically */
+}
 
-  .subscriptionInfo {
-    padding: 20px;
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .optionsContainer {
-    flex: 2;
-    justify-content: center;
-  }
-  
-  .optionsContainer button {
-    padding: 8px 16px;
-    margin: 0 5px;
-    font-size: 16px;
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease-in-out;
-    color: white;
-  }
-  
-  .optionsContainer button.active {
-    background-color: #ccc;
-  }
+.subscriptionFeatures {
+  margin: 10px;
+  text-align: left;
+  list-style-type: none;
+  line-height: 2;
+  font-size: 26px;
+}
 
-  .optionsContainer button:hover {
-    background-color: #006400;
-  }
-  form button {
-    display: block;
-    width: 100%;
-    border: none;
-    padding: 14px 28px;
-    font-size: 16px;
-    cursor: pointer;
-    text-align: center;
-    background-color: #000066;
-    color: white;
-  }
-  form button:hover {
-    background-color: #ddd;
-    color: black;
-  }
+.subscriptionInfo {
+  display: flex; /* Add display: flex */
+  flex-direction: column;
+  align-items: center; /* Optional: Center the content horizontally */
+  text-align: center;
+  margin: 50px;
+}
+
+.subscriptionInfo > * {
+  margin-bottom: 10px; /* Optional: Add spacing between elements */
+}
+
+.optionsContainer {
+  flex: 2;
+  justify-content: center;
+}
+
+.optionsContainer button {
+  padding: 8px 16px;
+  margin: 0 5px;
+  font-size: 16px;
+  background-color: transparent;
   
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+  color: white;
+}
+
+.optionsContainer button.active {
+  background-color: #ccc;
+}
+
+.optionsContainer button:hover {
+  background-color: #006400;
+}
+
+form button {
+  display: block;
+  border-radius: 10px;
+  box-shadow: #5E5DF0 0 10px 20px -10px;
+  width: 100%;
+  border: none;
+  padding: 14px 28px;
+  font-size: 16px;
+  cursor: pointer;
+  text-align: center;
+  background-color: #5E5DF0;
+  color: white;
+}
+
+form button:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+.cancel-container{
+  padding: 20px;
+  background-color: #333333;
+  border-radius: 20px;
+}
+
+.cancel-option{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cancel-option-right > button {
+  background: #5E5DF0;
+  border-radius: 999px;
+  box-shadow: #5E5DF0 0 10px 20px -10px;
+  box-sizing: border-box;
+  color: #FFFFFF;
+  cursor: pointer;
+  font-family: Inter,Helvetica,"Apple Color Emoji","Segoe UI Emoji",NotoColorEmoji,"Noto Color Emoji","Segoe UI Symbol","Android Emoji",EmojiSymbols,-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue","Noto Sans",sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+  opacity: 1;
+  outline: 0 solid transparent;
+  padding: 8px 18px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  width: fit-content;
+  word-break: break-word;
+  border: 0;
+}
+
+button:hover {
+  color: black;
+  background-color: white;
+}
+

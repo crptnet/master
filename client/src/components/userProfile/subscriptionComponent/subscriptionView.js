@@ -5,7 +5,10 @@ import { serverLink } from '../../..';
 
 const _SubscriptionView = () => {
     const [plan, setPlan] = useState(null)
+    const [status, setStatus] = useState(null)
     const [expDate, setExpDate] = useState(null)
+    
+
     useEffect(() => {
         const FetchSubData = async () => {
             const response = await axios(`${serverLink}api/user-subscription`, {
@@ -14,8 +17,7 @@ const _SubscriptionView = () => {
                   Authorization : `Bearer ${localStorage.getItem('token')}`
                 }
               })
-              console.log(response.data)
-
+              setStatus(response.data.status)
               setPlan(response.data.plan)
               setExpDate(response.data.current_period_end)
         }
@@ -30,9 +32,8 @@ const _SubscriptionView = () => {
     };
 
     function getRelativeTime(unixTime) {
-      const currentDate = new Date();
-      const targetDate = new Date(unixTime);
-    
+      const currentDate = new Date()
+      const targetDate = new Date(unixTime)
       // Calculate the time difference in milliseconds
       const timeDiff = targetDate.getTime() - currentDate.getTime();
     
@@ -51,15 +52,19 @@ const _SubscriptionView = () => {
     }
 
     const subscribeStatus = () => {
-        if(plan === 'trial' || plan === 'cancelled'){
+        if(plan === 'trial' || status === 'cancelled'){
           const sadEmojis = [
             '😔', '😢', '😭', '😞', '😩', '😫', '😥', '😓', '😿', '😖', '😣', '😟', '🥺', '😰', '😔', '😪', '😞', '😢', '😭'
           ];
-          return <div>Expires in {getRelativeTime(expDate)} {sadEmojis[Math.floor(Math.random() * sadEmojis.length)]          }</div>
+          if(status === 'cancelled'){
+            return <div>Expires in {getRelativeTime(expDate * 1000)} {sadEmojis[Math.floor(Math.random() * sadEmojis.length)]}<b/><p>Cancelled</p></div>
+
+          }
+          return <div>Expires in {getRelativeTime(expDate * 1000)} {sadEmojis[Math.floor(Math.random() * sadEmojis.length)]}</div>
         }
 
         if(plan === 'basic' || plan === 'premium'){
-          return <div>Next payment on {(new Data(unixTime)).toLocaleDateString()}</div>
+          return <div>Next payment {(new Date(expDate * 1000)).toLocaleDateString()}</div>
         }
 
         return UnixTimeConverter(expDate)
