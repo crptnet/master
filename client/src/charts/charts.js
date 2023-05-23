@@ -4,7 +4,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { io } from 'socket.io-client';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import GetListOfCoins from '../listOfCoinsAPI';
-//import GetDataCoin from '../getDataCoin';
 import symbols from '../positions/coinList';
 import { modelRoot, serverLink } from '../index';
 import './charts.css';
@@ -596,7 +595,6 @@ const Charts = () => {
         };
         useEffect(()=>{
           const handleSort = async () => {
-            console.log("TRY TO SORT", sortOrder)
             sortedData = {};
             const link = `http://3.8.190.201/api/coins?limit=${coinsPerPage}&offset=${coinsPerPage * (currentPage - 1)}&orderby=${sortOrder}`;
             const response = await fetch(link, {
@@ -728,7 +726,6 @@ const Charts = () => {
                             key={uuidv4()}
                             className="listElemOverlay"
                             onClick={() => {
-                              console.log(filteredData)
                               createCoin(elem.symbol, elem.price, elem.change, elem.volume, elem.marketCap);
                               handleCloseOverlay();
                             }}
