@@ -1,0 +1,151 @@
+@import '@radix-ui/colors/blackA.css';
+@import '@radix-ui/colors/mauve.css';
+@import '@radix-ui/colors/red.css';
+@import '@radix-ui/colors/violet.css';
+
+.api-key-creation-container{
+    display: flex;
+    margin: auto;
+    align-items: center;
+    justify-content: space-between;
+    width: 80vh;
+}
+
+.api-key-creation-button {
+
+
+}
+
+
+.api-key-creation-button > button:disabled {
+  pointer-events: none;
+}
+
+.api-key-creation-button > button:hover {
+  box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
+  transform: translateY(-2px);
+}
+
+.api-key-creation-button > button:active {
+  box-shadow: none;
+  transform: translateY(0);
+}
+
+/* reset */
+button {
+  all: unset;
+}
+
+.AlertDialogOverlay {
+  background-color: var(--blackA9);
+  position: fixed;
+  inset: 0;
+  animation: overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.AlertDialogContent {
+  background-color: rgb(54, 50, 50);
+  border-radius: 6px;
+  box-shadow: hsl(206 22% 7% / 35%) 0px 10px 38px -10px, hsl(206 22% 7% / 20%) 0px 10px 20px -15px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90vw;
+  max-width: 500px;
+  max-height: 85vh;
+  padding: 25px;
+  animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.AlertDialogContent:focus {
+  outline: none;
+}
+
+.AlertDialogTitle {
+  margin: 0;
+  color: #b3b3b6;
+  font-weight: bold;
+  font-size: 17px;
+}
+
+.AlertDialogDescription {
+  margin-bottom: 20px;
+  color: var(--mauve11);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.guide-lines{
+    color: #bebcbc;
+    text-decoration: none;
+}
+
+.x-button{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px;
+}
+
+.x-button img{
+    height: 3vh;
+}
+.Button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  padding: 0 15px;
+  font-size: 15px;
+  line-height: 1;
+  font-weight: 500;
+  height: 35px;
+}
+.Button.violet {
+  background-color: #1a0d8ab0;
+  color: white;
+  font-weight: bold
+}
+.Button.violet:hover {
+  background-color: #0819b6;
+}
+.Button.red {
+  background-color: var(--red4);
+  color: var(--red11);
+}
+.Button.red:hover {
+  background-color: var(--red5);
+}
+.Button.red:focus {
+  box-shadow: 0 0 0 2px var(--red7);
+}
+.Button.mauve {
+  background-color: var(--mauve4);
+  color: var(--mauve11);
+}
+.Button.mauve:hover {
+  background-color: var(--mauve5);
+}
+.Button.mauve:focus {
+  box-shadow: 0 0 0 2px var(--mauve7);
+}
+
+@keyframes overlayShow {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes contentShow {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}

@@ -1,19 +1,32 @@
 const mongoose = require('mongoose');
 
+const keyPairSchema = new mongoose.Schema({
+  publicKey : {
+    type : String,
+  },
+  privateKey : {
+    type : String,
+  },
+  required : false,
+  markerId : {
+    type : Integer,
+  },
+}
+)
 
-
-//Data schema for User
 const apiKeysSchema = new mongoose.Schema({
     user_id: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
     },
-        
+    keys : {
+      type : [keyPairSchema],
+    }, 
 }, 
 {
   timestamps:true, 
 });
 
-const APIKey = mongoose.model('apiKeys', apiKeysSchema);
+const APIKeys = mongoose.model('apiKeys', apiKeysSchema);
 
-module.exports = APIKey;
+module.exports = APIKeys;
