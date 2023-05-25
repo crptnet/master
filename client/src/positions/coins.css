@@ -110,17 +110,6 @@ th:last-child, td:last-child {
     background-color: #2E3032;
 }
 
-.addToWatch {
-    max-width: 20px;
-    margin: 5px;
-    cursor: pointer;
-}
-
-.addToWatch:hover {
-    filter: brightness(0.5);
-    transition: 0.3s ease-in-out;
-}
-
 /*SORT-BUTTONS*/
 
 tr.blueHigh {
@@ -239,4 +228,94 @@ tr.blueHigh {
     width: calc(100vw - 90px);
     margin-left: 10px;
     text-align: center;
+}
+
+/*/////////////////////////////////////////////*/
+
+.green {
+    color: #5CC082;
+}
+
+.red {
+    color: #DC4C41;
+}
+
+.list {
+    width: calc(100vw - 60px);
+    position: absolute;
+}
+
+.listHeaderList {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+}
+
+.searchSortListOuter {
+    width: calc(100vw - 80px);
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-gap: 10px;
+    justify-items: center;
+    align-items: center;
+}
+
+.inner-list-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.input-search-list {
+    width: calc(100vw - 80px);
+    height: 30px;
+    text-align: center;
+    color: white;
+    background-color: #333333;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.input-search-list:hover {
+    background-color: #474747;
+}
+
+.input-search-list::placeholder {
+    color: white;
+    font-weight: bold;
+}
+
+.listElem {
+    width: calc(100vw - 80px);
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    color: white;
+    background-color: #333333;
+    border: none;
+    border-radius: 5px;
+}
+
+.listElem span{
+    padding: 7px;
+    border: 1px solid #252525;
+}
+
+.listElem:hover {
+    color: white;
+    background-color: #474747;
+}
+
+.addToWatch {
+    max-height: 15px;
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.addToWatch:hover {
+    filter: brightness(0.5);
+    transition: 0.3s ease-in-out;
 }
