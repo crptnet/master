@@ -29,7 +29,7 @@ const updateCoinInfo = (async(io) => {
             
             const symbolIndex = coin.id.indexOf('-');
             const id = coin.id.substring(symbolIndex + 1);
-            coin['icon'] = `http://${process.env.DOMAIN}/coin-icon/${coin.symbol}.png`
+            coin['icon'] = `http://${process.env.DOMAIN}/coin-icon/icon_${coin.symbol}.png`
             await client.hSet('coins', id, JSON.stringify(coin)).catch((err) => {
                 console.log((new Date).toLocaleTimeString(), err.message)
             })
