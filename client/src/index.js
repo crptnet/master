@@ -24,7 +24,6 @@ import GetListOfCoins from './listOfCoinsAPI';
 
 const serverLink = "http://3.8.190.201.nip.io/";
 
-const scrollRoot = ReactDOM.createRoot(document.getElementById('scroll'));
 const sidebarRoot = ReactDOM.createRoot(document.getElementById('sidebar'));
 const modelRoot = ReactDOM.createRoot(document.getElementById('model'));
 const mainRoot = ReactDOM.createRoot(document.getElementById('main'));
@@ -64,7 +63,7 @@ const pathName = window.location.pathname;
       mainRoot.render(<><MainUserData /><SideUserData /> <SubscriptionView/></>);
     }
   } else {
-    scrollRoot.render(<NotFoundPage />);
+    modelRoot.render(<NotFoundPage />);
   }
 
 //const serverLink = "http://localhost:5000/";
