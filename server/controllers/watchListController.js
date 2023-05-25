@@ -16,7 +16,7 @@ const addCoin = asyncHandler(async (req, res) => {
 
     const { symbol } = req.body
 
-    if(user.watchList.find(coin => coin.coin_id == symbol)){
+    if(user.watchList && user.watchList.find(coin => coin.coin_id == symbol)){
       return res.status(403).json({ message : 'User alredy added this coin'})
     }
 
@@ -24,7 +24,7 @@ const addCoin = asyncHandler(async (req, res) => {
       user_id: userId,
       coin_id: symbol
     };
-  
+    user.watchList = []
     user.watchList.push(newCoin);
     const updatedUser = await user.save();
   
@@ -46,7 +46,7 @@ const removeCoin = asyncHandler(async (req, res) => {
   
     const { symbol } = req.body;
     console.log(symbol)
-    if(!user.watchList.find(coin => coin.coin_id === symbol)){
+    if(!user.watchList || !user.watchList.find(coin => coin.coin_id === symbol)){
         res.status(400).send('Invalid coin info');
         throw new Error('Invalid coin info');      
     }
