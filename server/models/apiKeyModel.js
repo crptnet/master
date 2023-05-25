@@ -7,9 +7,8 @@ const keyPairSchema = new mongoose.Schema({
   privateKey : {
     type : String,
   },
-  required : false,
   markerId : {
-    type : Integer,
+    type : Number,
   },
 }
 )

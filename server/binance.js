@@ -29,9 +29,9 @@ const headers = {
 axios.get(url, { headers })
   .then(response => {
     // Handle the response data
-    const coins = response.data.balances
-
-    console.log(coins.filter((coin) => coin.free > 0));
+    const coins = response
+    console.log(coins)
+    //console.log(coins.filter((coin) => coin.free > 0));
   })
   .catch(error => {
     // Handle the error

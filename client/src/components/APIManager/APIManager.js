@@ -1,43 +1,61 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './APiManager.css';
 import { serverLink } from '../..';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as Select from '@radix-ui/react-select';
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon, Cross2Icon } from '@radix-ui/react-icons';
+import { ToastProvider, useToast } from '@radix-ui/react-toast';
 
 const selector = () => {
-  // Unused variables, removed to fix the code
+  const [selectedExchange, setSelectedExchange] = useState('');
+  console.log(selectedExchange)
+  
+  const handleExchangeSelect = (value) => {
+    setSelectedExchange(value);
+  };
+
+
+
   return (
-    <Select.Root>
-      <Select.Trigger className="select-trigger" >
-        <Select.Value placeholder="Select Exchange"/>
-        <Select.Icon>
-          <ChevronDownIcon/>
-        </Select.Icon>
-      </Select.Trigger>
+    <Select.Root onValueChange={handleExchangeSelect}>
+    <Select.Trigger className="select-trigger" aria-label="Food">
+      <Select.Value placeholder="Select exchange…"/>
+      <Select.Icon>
+        <ChevronDownIcon />
+      </Select.Icon>
+    </Select.Trigger>
+    <Select.Portal>
+      <Select.Content className="select-content" position="popper">
+        <Select.ScrollUpButton className="SelectScrollButton">
+          <ChevronUpIcon />
+        </Select.ScrollUpButton>
+        <Select.Viewport className="SelectViewport">
+          <Select.Item className="SelectItem" value="Binance">
+            <Select.ItemText>Binance</Select.ItemText>
+            <Select.ItemIndicator className="SelectItemIndicator">
+              <CheckIcon />
+            </Select.ItemIndicator>
+          </Select.Item>
 
-      <Select.Portal>
-        <Select.Content className='exchange-selector-content' position="popper">
-          <Select.ScrollUpButton>
-            <ChevronUpIcon />  
-            </Select.ScrollUpButton>
-              <Select.Viewport className="SelectViewport">
-                <Select.Item className='select-item'>
-                  <Select.ItemText>Binance</Select.ItemText>
-                </Select.Item>
-
-                
-              </Select.Viewport>
-            <Select.ScrollDownButton />
-          <Select.Arrow />
-        </Select.Content>
-      </Select.Portal>
-    </Select.Root>
+        </Select.Viewport>
+        <Select.ScrollDownButton className="SelectScrollButton">
+          <ChevronDownIcon />
+        </Select.ScrollDownButton>
+      </Select.Content>
+    </Select.Portal>
+  </Select.Root>
   );
 };
 
-const dialogView = () => (
-  <Dialog.Root>
+const dialogView = () => {
+  const handleSubmit = () => {
+    if(!selectedExchange){
+      
+    }
+
+  }
+
+  return (<Dialog.Root>
     <Dialog.Trigger asChild>
       <button className="api-key-creation-button violet">Add API key</button>
     </Dialog.Trigger>
@@ -75,7 +93,7 @@ const dialogView = () => (
             <button className="submit red">Close</button>
           </Dialog.Close>
           <Dialog.Close asChild>
-            <button className="submit green">Save</button>
+            <button className="submit green" onSubmit={handleSubmit}>Save</button>
           </Dialog.Close>
         </footer>
         <Dialog.Close asChild>
@@ -85,12 +103,13 @@ const dialogView = () => (
         </Dialog.Close>
       </Dialog.Content>
     </Dialog.Portal>
-  </Dialog.Root>
-);
+  </Dialog.Root>)
+};
 
 const APiManager = ({ onConfirm, onCancel }) => {
   const handleAPIKeyCreation = () => {
-    // Function implementation
+    
+
   };
 
   return (
