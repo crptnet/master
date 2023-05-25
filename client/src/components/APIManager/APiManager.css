@@ -1,151 +1,231 @@
-@import '@radix-ui/colors/blackA.css';
-@import '@radix-ui/colors/mauve.css';
-@import '@radix-ui/colors/red.css';
-@import '@radix-ui/colors/violet.css';
+.manager-container{
+  padding: 2vh;   
+  width: 80vw;
+  background-color: #333333;
+  border-radius: 1vh;
+
+}
 
 .api-key-creation-container{
+    justify-content: center;
+    align-items: center;
     display: flex;
     margin: auto;
     align-items: center;
     justify-content: space-between;
-    width: 80vh;
 }
 
-.api-key-creation-button {
-
+.api-key-creation-button{
+  border: none;
+  background-color: #4682B4;
+  border-radius: 10px;
+  min-width: 5vh;
+  min-height: 5vh;
+  padding: 10px;
+  color: white;
+  font-weight: bold;
+  font-size: 1.25rem;
+  cursor: pointer;
 
 }
 
-
-.api-key-creation-button > button:disabled {
-  pointer-events: none;
+.api-key-creation-text{
+  font-size : 1.25rem;
 }
 
-.api-key-creation-button > button:hover {
-  box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
-  transform: translateY(-2px);
+.api-key-creation-button:hover{
+  background-color: white;
 }
 
-.api-key-creation-button > button:active {
-  box-shadow: none;
-  transform: translateY(0);
-}
-
-/* reset */
-button {
-  all: unset;
-}
-
-.AlertDialogOverlay {
+.DialogOverlay {
   background-color: var(--blackA9);
+  backdrop-filter: blur(1px);
   position: fixed;
   inset: 0;
   animation: overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.AlertDialogContent {
-  background-color: rgb(54, 50, 50);
-  border-radius: 6px;
-  box-shadow: hsl(206 22% 7% / 35%) 0px 10px 38px -10px, hsl(206 22% 7% / 20%) 0px 10px 20px -15px;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 90vw;
-  max-width: 500px;
-  max-height: 85vh;
-  padding: 25px;
-  animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-.AlertDialogContent:focus {
-  outline: none;
+.exchange-selector-container{
+  padding: 20px;
 }
 
-.AlertDialogTitle {
-  margin: 0;
-  color: #b3b3b6;
-  font-weight: bold;
-  font-size: 17px;
-}
-
-.AlertDialogDescription {
-  margin-bottom: 20px;
-  color: var(--mauve11);
-  font-size: 15px;
-  line-height: 1.5;
-}
-
-.guide-lines{
-    color: #bebcbc;
-    text-decoration: none;
-}
-
-.x-button{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 10px;
-}
-
-.x-button img{
-    height: 3vh;
-}
-.Button {
+.SelectTrigger {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border-radius: 4px;
   padding: 0 15px;
-  font-size: 15px;
+  font-size: 13px;
   line-height: 1;
-  font-weight: 500;
+  height: 35px;
+  gap: 5px;
+  background-color: white;
+  color: var(--violet11);
+  box-shadow: 0 2px 10px var(--blackA7);
+}
+
+.SelectTrigger:hover {
+  background-color: var(--mauve3);
+}
+.SelectTrigger:focus {
+  box-shadow: 0 0 0 2px black;
+}
+
+.DialogContent {
+  width: 90vw;
+  max-width: 450px;
+  max-height: 85vh;
+  background-color: #333333;
+  border-radius: 10px;
+  box-shadow: hsl(206 22% 7% / 35%) 0px 10px 38px -10px, hsl(206 22% 7% / 20%) 0px 10px 20px -15px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+
+}
+.dialog-description, .field-set{
+  padding: 20px;
+}
+
+
+.dialog-description-container{
+  font-size: 16px;
+
+}
+
+.field-set {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 15px;
+  border: none;
+}
+
+.Label {
+  font-size: 15px;
+  color: var(--violet11);
+  width: 90px;
+  text-align: right;
+}
+
+.Input {
+  width: 80%;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  padding: 0 10px;
+  font-size: 15px;
+  box-shadow: 0 0 0 1px var(--violet7);
   height: 35px;
 }
-.Button.violet {
-  background-color: #1a0d8ab0;
-  color: white;
-  font-weight: bold
-}
-.Button.violet:hover {
-  background-color: #0819b6;
-}
-.Button.red {
-  background-color: var(--red4);
-  color: var(--red11);
-}
-.Button.red:hover {
-  background-color: var(--red5);
-}
-.Button.red:focus {
-  box-shadow: 0 0 0 2px var(--red7);
-}
-.Button.mauve {
-  background-color: var(--mauve4);
-  color: var(--mauve11);
-}
-.Button.mauve:hover {
-  background-color: var(--mauve5);
-}
-.Button.mauve:focus {
-  box-shadow: 0 0 0 2px var(--mauve7);
+.Input:focus {
+  box-shadow: 0 0 0 2px var(--violet8);
 }
 
-@keyframes overlayShow {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+.dialog-description a{
+  color: gray;
+  text-decoration: none;
+} 
+
+.dialog-title{
+  border-radius: 10px 10px 0px 0px;
+  background-color: #413d3d;
+  padding: 20px;
 }
 
-@keyframes contentShow {
-  from {
-    opacity: 0;
-    transform: translate(-50%, -48%) scale(0.96);
-  }
-  to {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
+.submit-buttons{
+  display: flex;
+  justify-content: flex-end; 
+  background-color: #413d3d; 
+  border-radius : 0px 0px 8px 8px;
+}
+.submit{
+  min-width: 8vw;
+  min-height: 3vh;
+  margin: 20px;
+  border-radius: 8px;
+  border: none;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.green{
+  background-color: rgb(144, 231, 175);
+  color: rgb(24, 121, 78);
+}
+.green:hover{
+  background-color: rgb(204, 235, 215);
+  color: rgb(24, 121, 78);
+  font-weight: bold;
+}
+
+.IconButton {
+  background-color: #413d3d;
+  font-family: inherit;
+  border-radius: 100%;
+  height: 25px;
+  width: 25px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--violet11);
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: none;
+}
+.IconButton:hover {
+  background-color: white;
+}
+.IconButton:focus {
+  box-shadow: 0 0 0 2px var(--violet7);
+}
+
+#input-api-key{
+  color: gray;
+  font-size: 14px;
+
+}
+
+.exchange-selector-content{
+
+  overflow: hidden;
+  background-color: white;
+  border-radius: 6px;
+  box-shadow: 0px 10px 38px -10px rgba(22, 23, 24, 0.35), 0px 10px 20px -15px rgba(22, 23, 24, 0.2);
+  
+}
+
+.select-trigger{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 4px;
+  padding: 0 15px;
+  font-size: 13px;
+  line-height: 1;
+  height: 35px;
+  width: 100%;
+  gap: 5px;
+  background-color: white;
+  color: rgb(53, 50, 50);
+}
+.select-item{
+  font-size: 13px;
+  line-height: 1;
+  color: var(--violet11);
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  height: 25px;
+  padding: 0 35px 0 25px;
+  position: relative;
+  user-select: none;
+  width: auto;
+}
+
+.exchange-selector-content{
+  width: var(--radix-select-trigger-width);
 }

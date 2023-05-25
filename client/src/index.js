@@ -41,6 +41,7 @@ const pathName = window.location.pathname;
     mainRoot.render(<ResetPasswordPage location={window.location} />);
   } else if (pathName.includes('/settings/api-keys')) {
     mainRoot.render(<APiManager/>);
+    sidebarRoot.render(<SideBar active={11} />);
   } else if (pathName.includes('/settings/subscription')) {
     mainRoot.render(<SubscriptionPage />);
     sidebarRoot.render(<SideBar active={11} />);
