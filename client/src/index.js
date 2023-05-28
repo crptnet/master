@@ -13,7 +13,7 @@ import NotRegistered from './settings/notRegistered';
 import MainUserData from './settings/mainUserData';
 import SideUserData from './settings/sideUserData';
 import Convert from './convert/convert';
-import BTCPrice from './positions/binanceCoins';
+import BinanceBTC from './positions/binanceCoins';
 import StarredList from './watchlist/starredList';
 import Terminal from './terminal/terminal';
 import Charts from './charts/charts';
@@ -26,7 +26,6 @@ import APiManager from './components/APIManager/APIManager';
 
 //const serverLink = "http://3.8.190.201.nip.io/";
 
-const scrollRoot = ReactDOM.createRoot(document.getElementById('scroll'));
 const sidebarRoot = ReactDOM.createRoot(document.getElementById('sidebar'));
 const modelRoot = ReactDOM.createRoot(document.getElementById('model'));
 const mainRoot = ReactDOM.createRoot(document.getElementById('main'));
@@ -53,11 +52,11 @@ const pathName = window.location.pathname;
     mainRoot.render(<Charts />);
     sidebarRoot.render(<SideBar active={2} />);
   } else if (pathName.includes('/list')) {
-    mainRoot.render(<BTCPrice />);
+    mainRoot.render(<BinanceBTC />);
     sidebarRoot.render(<SideBar active={3} />);
   } else if (pathName.includes('/starred')) {
     mainRoot.render(<StarredList />);
-    sidebarRoot.render(<SideBar active={3} />);
+    sidebarRoot.render(<SideBar active={4} />);
   } else if (pathName.includes('/convert')) {
     mainRoot.render(<Convert />);
     sidebarRoot.render(<SideBar active={8} />);
@@ -69,7 +68,7 @@ const pathName = window.location.pathname;
       mainRoot.render(<><MainUserData /><SideUserData /> <SubscriptionView/></>);
     }
   } else {
-    scrollRoot.render(<NotFoundPage />);
+    modelRoot.render(<NotFoundPage />);
   }
 
 const serverLink = "http://localhost:5000/";

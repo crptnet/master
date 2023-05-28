@@ -177,7 +177,7 @@
     display: flex;
     position: fixed;
     top: 0;
-    margin: 0px 7.5px 5px 7.5px;
+    margin: 0px 2.5px 5px 2.5px;
     border-radius: 2px;
     background-color: #333333;
     z-index: 1000;
@@ -239,6 +239,11 @@
     font-size: 0.7rem;
     font-weight: bold;
     cursor: pointer;
+}
+
+.openListFromSymb:hover, .deleteBookmarkBtn:hover {
+    color: #d1d4dc;
+    background-color: transparent;
 }
 
 /*ADD BOOKMARK*/

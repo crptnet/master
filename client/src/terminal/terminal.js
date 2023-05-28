@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom/client';
 import './terminal.css';
-import Bookmarks from '../charts/bookmarks';
+import Bookmarks from './components/bookmarks';
 import Title from './components/title';
 import Charts from './components/chart';
 import Markets from './components/markets';
