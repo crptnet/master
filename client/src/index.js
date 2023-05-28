@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
 import ReactDOM from 'react-dom/client';
 import './index.css';
+import './global.css'
 import './settings/settings.css';
 import SideBar from './sidebar/sideBar';
 import Main from './main/main';

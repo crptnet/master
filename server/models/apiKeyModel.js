@@ -7,11 +7,19 @@ const keyPairSchema = new mongoose.Schema({
   privateKey : {
     type : String,
   },
-  markerId : {
+  publicIv : {
+    type : String,
+  },
+  privateIv : {
+    type : String,
+  },
+  marketId : {
     type : Number,
   },
-}
-)
+},
+{
+  timestamps : true,
+});
 
 const apiKeysSchema = new mongoose.Schema({
     user_id: {

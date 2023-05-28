@@ -3,18 +3,14 @@ import './APiManager.css';
 import { serverLink } from '../..';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as Select from '@radix-ui/react-select';
-import { CheckIcon, ChevronDownIcon, ChevronUpIcon, Cross2Icon } from '@radix-ui/react-icons';
-import { ToastProvider, useToast } from '@radix-ui/react-toast';
+import { CheckIcon, ChevronDownIcon, ChevronUpIcon, Cross2Icon, FontSizeIcon } from '@radix-ui/react-icons';
+import * as Toast from '@radix-ui/react-toast';
+import axios from 'axios'
 
-const selector = () => {
-  const [selectedExchange, setSelectedExchange] = useState('');
-  console.log(selectedExchange)
-  
+const Selector = ({ onExchangeSelect }) => {
   const handleExchangeSelect = (value) => {
-    setSelectedExchange(value);
+    onExchangeSelect(value);
   };
-
-
 
   return (
     <Select.Root onValueChange={handleExchangeSelect}>
@@ -47,15 +43,42 @@ const selector = () => {
   );
 };
 
-const dialogView = () => {
-  const handleSubmit = () => {
-    if(!selectedExchange){
-      
+const DialogView = ({ selectedExchange, onSubmit, handleToast }) => {
+  const [open, setOpen] = React.useState(false);
+  const handleSubmit = async (event) => {
+    event.preventDefault()
+    const publicKey = document.getElementById('input-public-key').value;
+    const privateKey = document.getElementById('input-private-key').value;
+
+    try {
+      const res = await axios(`${serverLink}api/api-account`, {
+        method : 'POST',
+        headers : {
+          Authorization : `Bearer ${localStorage.getItem('token')}`
+        },
+        data : {
+          publicKey : publicKey,
+          privateKey : privateKey,
+          market : selectedExchange
+        }
+      });
+
+      setOpen(false)
+      handleToast({ status : 'open', message : 'API key pair added successfully!', toastType : 'success'})
+      // Handle the response or perform any necessary actions
+
+      // Optionally, show a success toast message
+      // showToast('API keys saved successfully', 'success');
+    } catch (error) {
+      console.error('Error saving API keys:', error);
+      handleToast({ status : 'open', message : error.response.data.message, toastType : 'error'})
+      // Handle the error case or show an error toast message
+      // showToast('Failed to save API keys', 'error');
     }
+  };
 
-  }
 
-  return (<Dialog.Root>
+  return (<Dialog.Root open={open} onOpenChange={setOpen}>
     <Dialog.Trigger asChild>
       <button className="api-key-creation-button violet">Add API key</button>
     </Dialog.Trigger>
@@ -71,7 +94,8 @@ const dialogView = () => {
           </Dialog.Description>
         </div>
         <div className='exchange-selector-container'>
-          {selector()}
+          <label id='selector-lable' for="Selector">Exchange</label>
+          <Selector onExchangeSelect={onSubmit} />
         </div>
 
         <div className="field-set-container">
@@ -79,13 +103,13 @@ const dialogView = () => {
             <label className="Label" htmlFor="key">
               Public key
             </label>
-            <input className="Input" id="input-api-key" placeholder="public key..." />
+            <input className="Input" id="input-public-key" placeholder="public key..." />
           </fieldset>
           <fieldset className='field-set'>
             <label className="Label" htmlFor="key">
               Private key
             </label>
-            <input className="Input" id="input-api-key" placeholder="private key..." />
+            <input className="Input" id="input-private-key" placeholder="private key..." />
           </fieldset>
         </div>
         <footer className='submit-buttons'>
@@ -93,7 +117,9 @@ const dialogView = () => {
             <button className="submit red">Close</button>
           </Dialog.Close>
           <Dialog.Close asChild>
-            <button className="submit green" onSubmit={handleSubmit}>Save</button>
+            <div>
+              <button className="submit green" type="submit" onClick={handleSubmit}>Save</button>
+            </div>
           </Dialog.Close>
         </footer>
         <Dialog.Close asChild>
@@ -107,23 +133,72 @@ const dialogView = () => {
 };
 
 const APiManager = ({ onConfirm, onCancel }) => {
-  const handleAPIKeyCreation = () => {
-    
+  const [selectedExchange, setSelectedExchange] = useState('');
+  const [open, setOpen] = React.useState(false);
+  const eventDateRef = React.useRef(new Date());
+  const timerRef = React.useRef(0);
+  const [message, setMessage] = useState(null)
+  const [toastType, setToastType] = useState('error')
 
+  const handleToast = (props) => {
+      setOpen(props.status)
+      setMessage(props.message)
+      setToastType(props.toastType)
+  }
+
+  const handleToastMessage = (message) => {
+    setMessage(message)
+  }
+
+  const handleExchangeSelect = (value) => {
+    setSelectedExchange(value);
   };
-
   return (
-    <div className='manager-container'>
-      <div className='api-key-creation-container'>
-        <div className='api-key-creation-text'>
-          Would you like to add one?
-        </div>
-        <div className='api-key-creation'>
-          {dialogView()}
+    <Toast.Provider swipeDirection="right" asChild>
+      <div className='manager-container'>
+        <div className='api-key-creation-container'>
+          <div className='api-key-creation-text'>
+            Would you like to add one?
+          </div>
+          <div className='api-key-creation'>
+            <DialogView selectedExchange={selectedExchange} onSubmit={handleExchangeSelect} handleToast={handleToast} handleToastMessage = {handleToastMessage}  />
+          </div>
         </div>
       </div>
-
-    </div>
+      {toastType == 'error' ? 
+          <Toast.Root className="ToastRoot" open={open} onOpenChange={setOpen}>
+            <div className="toast error">
+              <div className="toast-icon error">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="red">
+                  <path d="M0 0h24v24H0z" fill="none" />
+                  <path d="M12 2a10 10 0 0 0-9.95 9H2v2h.05A10 10 0 0 0 12 22a10 10 0 0 0 9.95-9h.05v-2h-.05A10 10 0 0 0 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
+                </svg>
+              </div>
+              <div className="toast-content">
+                <p>Error</p>
+                <Toast.Title className="ToastTitle" as="p">{message}</Toast.Title>
+              </div>
+            </div>
+          </Toast.Root>
+        :
+        (<Toast.Root className="ToastRoot" open={open} onOpenChange={setOpen}>
+            <div className="toast success">
+              <div className="toast-icon success">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="green">
+                  <path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
+                </svg>
+              </div>
+              <div className="toast-content">
+                <p>Success</p>
+                <Toast.Title className="ToastTitle" as="p">{message}</Toast.Title>
+                {/* <p class="toast-message">Success! Your action was completed.</p> */}
+              </div>
+            </div>
+        </Toast.Root>
+        )
+      }
+      <Toast.Viewport className="ToastViewport" />
+    </Toast.Provider>
   );
 };
 
