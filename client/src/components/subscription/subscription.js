@@ -102,7 +102,7 @@ const DialogReSubscriptionView = ({ handleDialogShow, handleDialogChange, type, 
 }
 
 const SubscriptionDisplay = () => {
-  const [plan, setPlan] = useState(null)
+  const [plan, setPlan] = useState('trial')
   const [status, setStatus] = useState(null)
   const [expDate, setExpDate] = useState(null)
   const [option, setOption] = useState(1)
@@ -124,16 +124,27 @@ const SubscriptionDisplay = () => {
           setExpDate(response.data.current_period_end)
     }
     FetchSubData()
-  }, [])
+  }, [showDialog])
 
-  const handleConfirmationSubmit = (e) => {
+  const handleConfirmationSubmit = async () => {
     const response = axios(`${serverLink}api/subscription-delete`, {
       method : 'DELETE',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${localStorage.getItem('token')}`,
       },
+    }).then((response) => {
+      setShowDialog(false)
+      setToastOpen(true)
+      setToastType('success')
+      setToastMessage('Successfully canceled subscription')
+      return response
+    }).catch((response) => {
+      setToastOpen(true)
+      setToastType('error')
+      setToastMessage(response.message)
     })
+
   }
 
   const createCheckOut = async () => {
@@ -206,7 +217,7 @@ const SubscriptionDisplay = () => {
   return (
       <div className='container subscriptions'>
         {
-          showDialog && <DialogReSubscriptionView handleDialogShow={setShowDialog} handleDialogChange={handleDialogChange} type={dialogType} onClick={dialogType == 'resubsctiption' ? handleResubscribeSubmit : dialogType == 'resubsctiption' ? handleConfirmationSubmit : handleResubscribeSubmit}/>
+          showDialog && <DialogReSubscriptionView handleDialogShow={setShowDialog} handleDialogChange={handleDialogChange} type={dialogType} onClick={dialogType == 'resubsctiption' ? handleResubscribeSubmit : dialogType == 'resubsctiption' ? handleConfirmationSubmit : dialogType == 'cancel' ? handleConfirmationSubmit : handleResubscribeSubmit}/>
         }
         {toastOpen && (
           <ToastComponent

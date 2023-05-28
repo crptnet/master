@@ -33,16 +33,13 @@ const createPaymentSession = asyncHandler(async (req, res) => {
       ],
     customer: customer.billingId,
     mode: 'subscription',
-    success_url: `http://${DOMAIN}/settings`,
-    cancel_url: `http://${DOMAIN}/settings`,
+    success_url: `http://${DOMAIN}.nip.io/settings`,
+    cancel_url: `http://${DOMAIN}.nip.io/settings`,
   });
   res.status(200).json({ uri : session.url });
 })
 
-//local secret
-const endpointSecret = process.env.WEBHOOK_STRIPE;
-
-
+const endpointSecret = 'whsec_96512283aec0430a68da5387729af55a96881e23b579b477fc2d9759d9f456bb';
 const stripeWebhook = asyncHandler(async (req, res) => {
     const payload = req.body;
     const sig = req.headers['stripe-signature'];
@@ -60,17 +57,17 @@ const stripeWebhook = asyncHandler(async (req, res) => {
 
     switch (event.type) {
       case 'checkout.session.completed':
+        break;
+      case 'customer.subscription.created' : 
         const checkoutSessionCompleted = event.data.object;
-        const subscription = await stripe.subscriptions.retrieve( checkoutSessionCompleted.subscription )
-        const priceId = subscription.plan.id
         const customerId = checkoutSessionCompleted.customer
         const customer = await userSubscriptions.findOne({ billingId : customerId }) 
         if(customer.subscriptionId && customer.active !== 'cancelled'){
           await stripe.subscriptions.del(customer.subscriptionId)
         }
 
-        await userSubscriptions.findOneAndUpdate({ billingId : customerId }, { subscriptionId : subscription.id, endDate : subscription.current_period_end, Plan : (await stripe.prices.retrieve(priceId)).metadata.plan, active : 'active' })
-        break;
+        await userSubscriptions.findOneAndUpdate({ billingId : customerId }, { subscriptionId : checkoutSessionCompleted.id, endDate : checkoutSessionCompleted.current_period_end, Plan : checkoutSessionCompleted.plan.metadata.plan, active : 'active' })
+      break
     }
   
     res.status(200).send();
@@ -79,6 +76,9 @@ const stripeWebhook = asyncHandler(async (req, res) => {
 
 const getSubscription = asyncHandler(async (req, res) => {
   const customer = await userSubscriptions.findById(req.customer)
+  if(req.subscription.current_period_end < (new Date).now){
+    await customer.updateOne({}, {active : 'expired'})
+  }
   const priceId = req.subscription.plan.id
   //return res.send(req.subscription)
   res.send({

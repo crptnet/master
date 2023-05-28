@@ -2,6 +2,7 @@ const expressAsyncHandler = require("express-async-handler");
 const APIKeys = require("../models/apiKeyModel");
 const axios = require('axios');
 const crypto = require('crypto');
+const binanceApi = require('node-binance-api')
 const markets = ['Binance'];
 
 const createAPIKeyPair = expressAsyncHandler(async(req, res) => {
@@ -13,7 +14,7 @@ const createAPIKeyPair = expressAsyncHandler(async(req, res) => {
   
   const userId = req.user.id;
   let apiKey = await APIKeys.findOne({ user_id: userId });
-  const account = await getBinanceAccount(publicKey, privateKey);
+  const account = getBinanceAccount(publicKey, privateKey);
   if (!account || account.status !== 200) {
     return res.status(400).json({ message: account.response.data.msg, code: account.response.data.code });
   }
@@ -73,26 +74,19 @@ const pushNewKeys = async (userId, publicKey, privateKey, marketId) => {
 };
 
 async function getBinanceAccount(apiKey, apiSecret) {
-  // Binance API endpoint for account information
   const endpoint = 'https://api.binance.com/api/v3/account';
-
   const timestamp = Date.now();
   const queryString = `timestamp=${timestamp}`;
-
-  // Generate the signature using HMAC-SHA256
   const signature = crypto.createHmac('sha256', apiSecret).update(queryString).digest('hex');
-
   const url = `${endpoint}?${queryString}&signature=${signature}`;
-
-  // Set up the request headers with the API key
   const headers = {
     'X-MBX-APIKEY': apiKey
   };
   
-  var res = axios(url, { 
+  var res = await axios(url, { 
     method: 'GET',
     headers,
-  }).then((response) => response).catch((error) => {
+  }).then((response) => { return response}).catch((error) => {
     error.status = error.response.status;
     return error;
   });
@@ -108,6 +102,30 @@ const getUserKeys = async (req, res) => {
   })).sort((a, b) => (a.updatedAt - b.updatedAt));
 
   return res.json({ data: keys });
+}
+
+const getWallet = async (req, res) => {
+  const { keyPairId } = req.body 
+  const keyPair = (await APIKeys.findOne({ user_id: req.user.id })).keys.find((keyPair) => keyPair._id == keyPairId)
+  const publicKey = decrypt(keyPair.publicKey, keyPair.publicIv)
+  const privateKey = decrypt(keyPair.privateKey, keyPair.privateIv)
+  const binanceAcount = new binanceApi().options({
+    APIKEY: publicKey,
+    APISECRET: privateKey,
+    'family': 4,
+  });
+
+  await binanceAcount.useServerTime();
+  binanceAcount.balance((error, balances) => {
+      if ( error ){
+        res.status(500).send(error)
+        return console.error(error);
+      } 
+      res.status(200).send({ data : Object.entries(balances)
+        .filter(([key, value]) => parseFloat(value.available) + parseFloat(value.onOrder) > 0)
+        .map(([key, value]) => ({ asset: key, ...value }))})
+  });
+
 }
 
 const checkDuplicateKeyPair = async (keys, publicKey, privateKey) => {
@@ -152,4 +170,5 @@ function decrypt(encryptedText, iv) {
 module.exports = {
   createAPIKeyPair,
   getUserKeys,
+  getWallet,
 };
