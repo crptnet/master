@@ -40,7 +40,7 @@ const createPaymentSession = asyncHandler(async (req, res) => {
 })
 
 //local secret
-const endpointSecret = "whsec_96512283aec0430a68da5387729af55a96881e23b579b477fc2d9759d9f456bb";
+const endpointSecret = process.env.WEBHOOK_STRIPE;
 
 
 const stripeWebhook = asyncHandler(async (req, res) => {

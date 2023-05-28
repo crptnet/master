@@ -110,7 +110,7 @@ const SubscriptionDisplay = () => {
   const [dialogType, setDialogType] = useState('resubsctiption')
   const [toastType, setToastType] = useState(null)
   const [toastOpen, setToastOpen] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('')
+  const [toastMessage, setToastMessage] = useState('')
   useEffect(() => {
     const FetchSubData = async () => {
         const response = await axios(`${serverLink}api/user-subscription`, {
@@ -146,6 +146,14 @@ const SubscriptionDisplay = () => {
     });
     
     const session = await response.json();
+    if(response.status !== 200){ 
+      console.log(response.status)
+      setToastType('error')
+      setToastOpen(true)
+      setShowDialog(false)
+      setToastMessage(session.message) 
+      return null
+    }
     return session
   }
 
@@ -156,21 +164,16 @@ const SubscriptionDisplay = () => {
   }
 
 
-  const handleResubscribeSubmit = () => {
-    const session = createCheckOut()
-    
-    session.then((session) => {
-        setShowDialog(false) 
-        setToastOpen(true)
-        if(session.status != 200){ 
-          setToastType('error');
-          setErrorMessage(session.message) 
-          return
-        }
-        window.location.href = session.uri
-      }).catch((err) => {
-      console.log(err)
-    })
+  const handleResubscribeSubmit = async () => {
+    const session = await createCheckOut()
+    if(!session){
+      return
+    }
+    setShowDialog(false) 
+    setToastOpen(true)
+    setToastType('success')
+    setToastMessage('Successfully created Checkout')
+    window.location.href = session.uri
   }
 
   const handleSubmit = async (event, subscription) => {
@@ -200,8 +203,6 @@ const SubscriptionDisplay = () => {
   }
 
   const handleToastStateChange = (value) => setToastOpen(value)
-
-  console.log(toastType)
   return (
       <div className='container subscriptions'>
         {
@@ -211,7 +212,7 @@ const SubscriptionDisplay = () => {
           <ToastComponent
             type={toastType}
             toastOpen={toastOpen}
-            message={errorMessage}
+            message={toastMessage}
             setOpen={handleToastStateChange}
           />
         )}

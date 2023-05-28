@@ -414,6 +414,7 @@
 
 .toast-content {
   margin-left: 10px;
+  text-align: left;
 }
 
 .toast-message {
