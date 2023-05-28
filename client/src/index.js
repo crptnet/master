@@ -24,7 +24,8 @@ import SubscriptionView from './components/userProfile/subscriptionComponent/sub
 import GetListOfCoins from './listOfCoinsAPI';
 import APiManager from './components/APIManager/APIManager';
 
-//const serverLink = "http://3.8.190.201.nip.io/";
+//const serverLink = "http://localhost:5000/";
+const serverLink = "http://3.8.190.201.nip.io/";
 
 const sidebarRoot = ReactDOM.createRoot(document.getElementById('sidebar'));
 const modelRoot = ReactDOM.createRoot(document.getElementById('model'));
@@ -71,7 +72,6 @@ const pathName = window.location.pathname;
     modelRoot.render(<NotFoundPage />);
   }
 
-const serverLink = "http://localhost:5000/";
 export {serverLink};
 
 export {sidebarRoot,mainRoot,modelRoot};
