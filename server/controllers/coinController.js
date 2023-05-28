@@ -1,8 +1,16 @@
 const asyncHandler = require('express-async-handler')
 const client = require('../config/connectRedis')
 const { query } = require('express')
+const validateToken = require("../middleware/validateToken");
+const User = require('../models/userModel'); 
+const { forEach } = require('mongoose/lib/helpers/specialProperties');
 
-const getCoinList = asyncHandler(async (req, res) => {
+const getCoinList = asyncHandler(async (req, res, next) => {
+    if(req.headers.authorization && !req.user){
+      next()
+      return 
+    }
+
     var { offset, limit, orderby, symbol, query } = req.query
     !offset ? offset = 0 : null
     !limit ? limit = 2500 : null 
@@ -75,6 +83,21 @@ const getCoinList = asyncHandler(async (req, res) => {
       
         return 0; // names are equal
     }) : null
+
+    data = data.map((coin) => ({ ...coin, ...{ isWatched : false }})) 
+    
+    if(req.user){
+      const userWatchList = (await User.findById(req.user.id)).watchList
+      if(userWatchList){
+        userWatchList.forEach((watchedCoin) => {
+          const foundCoin = data.find((coin) => coin.symbol === watchedCoin.coin_id);
+          if (foundCoin) {
+            foundCoin.isWatched = true;
+          }
+        })
+      }
+    }
+
     const lowerCaseQuery = query.toLowerCase();
     data = data.filter((coin) => {
         const lowerCaseSymbol = coin.symbol.toLowerCase();
@@ -89,10 +112,8 @@ const getCoinList = asyncHandler(async (req, res) => {
     data = data.slice(offset)
     data = data.slice(0, limit)    
 
-
     res.status(200).json(data)
 })
-
 
 module.exports = {
     getCoinList    

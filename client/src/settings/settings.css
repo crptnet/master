@@ -171,6 +171,7 @@ body {
 
 .sideLeft, .sideRight {
     display: flex;
+
 }
 
 .sideTitle, .sideStatus {
@@ -184,6 +185,7 @@ body {
 }
 
 .sideStatus {
+    padding: 10px;
     min-width: 100px;
     float: right;
 }

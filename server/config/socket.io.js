@@ -1,3 +1,5 @@
+const client = require("./connectRedis");
+
 const onConnection = (io) => {
     io.of('/coins').on("connection", (socket) => {
       console.log(`connected with id: ${socket.id}`);
@@ -7,11 +9,10 @@ const onConnection = (io) => {
           socket.emit('error', { message: 'Invalid data format' });
           return;
         }
-  
-        console.log(new Date().toLocaleTimeString(), ': Received socket ID:', socket.id, 'data', data);
+        
+        //console.log(new Date().toLocaleTimeString(), ': Received socket ID:', socket.id, 'data', data);
         try {
           data.forEach((key) => {
-            console.log(key);
             if (key['symbol'] === undefined) {
               // Invalid object format
               socket.emit('error', { message: `Invalid object format ${JSON.stringify(key)}` });

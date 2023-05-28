@@ -54,7 +54,7 @@ const updateCoinPrices = (async (io) => {
             if(!await client.hExists('coins', key)){
                 //console.log(`Coin ${key} does not exist in DB`)
             }
-            else if(Math.abs((JSON.parse((await client.hGet('coins', key)))).quotes.USD.price - coin[key]) > 1){
+            else if(Math.abs((JSON.parse((await client.hGet('coins', key)))).quotes.USD.price - coin[key]) > 0.5){
                 const coin_value = JSON.parse((await client.hGet('coins', key)))
                 coin_value.quotes.USD.price = coin[key]
                 io.of('/coins').to(coin_value.symbol).emit('data:price_update', { [coin_value.symbol] : coin[key] })

@@ -312,7 +312,7 @@ const SideDiv = (props) => {
               {title == 'Email Authentication' && (
                 <button className='sideBtnData' onClick={() => PopUpCheckEmail(email)}>{btn}</button>
               )}
-              {title != 'Email Authentication' && title != 'Reset Email' && title != 'Reset Password' && title != 'Google' && (<button className='sideBtnData'>{btn}</button>)}
+              {title != 'Email Authentication' && title != 'Reset Email' && title != 'Reset Password' && title != 'Google' && (<button className='sideBtnData' onClick={() => {window.location.href = '/settings/api-keys'}}>{btn}</button>)}
         </div>
     </div>
   );
@@ -329,11 +329,6 @@ const SideButtons = () => {
         setEmail(data.email);
         setUsername(data.username);
         setActive(data.active);
-        setGoogleActive(data.googleActive);
-        console.log('My data!!!');
-        console.log(email);
-        console.log(username);
-        console.log(active);
       }
     };
     fetchData();
