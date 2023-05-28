@@ -12,7 +12,7 @@ import NotRegistered from './settings/notRegistered';
 import MainUserData from './settings/mainUserData';
 import SideUserData from './settings/sideUserData';
 import Convert from './convert/convert';
-import BTCPrice from './positions/binanceCoins';
+import BinanceBTC from './positions/binanceCoins';
 import StarredList from './watchlist/starredList';
 import Terminal from './terminal/terminal';
 import Charts from './charts/charts';
@@ -47,11 +47,11 @@ const pathName = window.location.pathname;
     mainRoot.render(<Charts />);
     sidebarRoot.render(<SideBar active={2} />);
   } else if (pathName.includes('/list')) {
-    mainRoot.render(<BTCPrice />);
+    mainRoot.render(<BinanceBTC />);
     sidebarRoot.render(<SideBar active={3} />);
   } else if (pathName.includes('/starred')) {
     mainRoot.render(<StarredList />);
-    sidebarRoot.render(<SideBar active={3} />);
+    sidebarRoot.render(<SideBar active={4} />);
   } else if (pathName.includes('/convert')) {
     mainRoot.render(<Convert />);
     sidebarRoot.render(<SideBar active={8} />);

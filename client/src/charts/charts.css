@@ -241,6 +241,11 @@
     cursor: pointer;
 }
 
+.openListFromSymb:hover, .deleteBookmarkBtn:hover {
+    color: #d1d4dc;
+    background-color: transparent;
+}
+
 /*ADD BOOKMARK*/
 
 .addBookmarkBtnChart {
