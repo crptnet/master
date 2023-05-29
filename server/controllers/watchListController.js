@@ -24,7 +24,9 @@ const addCoin = asyncHandler(async (req, res) => {
       user_id: userId,
       coin_id: symbol
     };
-    user.watchList = []
+    if(!user.watchList){
+      user.watchList = []
+    }
     user.watchList.push(newCoin);
     const updatedUser = await user.save();
   

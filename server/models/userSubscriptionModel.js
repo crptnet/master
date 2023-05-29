@@ -15,7 +15,7 @@ const userSubscriptionModel = new mongoose.Schema({
     },
     Plan : {
         type : String,
-        enum : ['trial', 'basic', 'premium', 'cancelled'],
+        enum : ['trial', 'basic', 'premium', 'cancelled', 'expired'],
         default : 'trial'
     },
     active : {
