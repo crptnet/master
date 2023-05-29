@@ -1,0 +1,28 @@
+.listContainerList {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.addNewToWatchList {
+    min-height: 45px;
+    margin: 10px;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #333333;
+    color: #d1d4dc;
+    border: 1px solid #131722;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    transition: 0.3s all ease-in-out;
+    cursor: pointer;
+}
+
+.addNewToWatchList:hover {
+    background-color: #d1d4dc;
+    color: #131722;
+    box-shadow: 0px 5px 5px 5px #131722;
+}

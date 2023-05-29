@@ -309,13 +309,21 @@ tr.blueHigh {
     background-color: #474747;
 }
 
-.addToWatch {
+.addToWatch-add, .addToWatch-remove:hover, .addToWatch-add:hover, .addToWatch-remove {
     max-height: 15px;
     margin-right: 5px;
+    transition: 0.3s ease-in-out;
     cursor: pointer;
 }
 
-.addToWatch:hover {
+.addToWatch-add,
+.addToWatch-remove:hover 
+{
+    filter: brightness(1);
+}
+
+.addToWatch-add:hover,
+.addToWatch-remove
+{
     filter: brightness(0.5);
-    transition: 0.3s ease-in-out;
 }

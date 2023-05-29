@@ -27,6 +27,7 @@ const BinanceBTC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [coinsPerPage, setCoinsPerPage] = useState(50);
   const [filteredData, setFilteredData] = useState([]);
+  const [watchList, setWatchList] = useState([]);
 
 const socketRef = useRef(null);
 
@@ -110,9 +111,34 @@ useEffect(() => {
   };
 }, [filteredData.length, SubscribeToWebSocket]);
 
+const getWatchList = async () => {
+  try {
+    const headersList = {
+      "Accept": "*/*",
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${localStorage.getItem('token')}`,
+    };
 
+    if (localStorage.getItem('token')) {
+      const response = await fetch(`${serverLink}api/watchList/`, {
+        method: 'GET',
+        headers: headersList
+      });
+      const watchListData = await response.json();
+      const res = watchListData.map(elem => elem.coin_id);
+      console.log("WATCHLIST",res)        
+      setWatchList(res);
+    } else {
+      console.error("User is not registered");
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
 
-
+useEffect(() => {
+  getWatchList();
+}, []);
 
 
 
@@ -216,7 +242,7 @@ const Pagination = () => {
                 headers: headersList
               });
               const userData = await response.json();
-              console.log(response.status)
+              getWatchList();
               return userData;
             } else {
               console.error("User is not registered");
@@ -282,7 +308,14 @@ const Pagination = () => {
                           key={uuidv4()}
                           className="listElem"
                         >
-                          <span style={{display:'flex',justifyContent:'center', alignItems:'center'}}><img src="./icons/watchlist_dark.png" className="addToWatch" onClick={()=>changeWatchlist("add",elem.symbol)}/>{elem.rank}</span>
+                          <span style={{display:'flex',justifyContent:'center', alignItems:'center'}}>
+                            {watchList.includes(elem.symbol) ? (
+                              <img src="./icons/watchlist_dark.png" className="addToWatch-remove" onClick={() => changeWatchlist("remove", elem.symbol)} />
+                            ) : (
+                              <img src="./icons/watchlist_dark.png" className="addToWatch-add" onClick={() => changeWatchlist("add", elem.symbol)} />
+                            )}
+                            {elem.rank}
+                          </span>
                           <span>{elem.symbol}</span>
                           <span>${elem.price > 1 ? parseFloat(elem.price).toFixed(2) : parseFloat(elem.price).toFixed(8)}</span>
                           <span className={elem.oneHour < 0 ? "red" : "green"}> {elem.oneHour}%</span>
@@ -312,7 +345,7 @@ const Pagination = () => {
                 </div>
               </div>
             )
-        }, [filteredData, coinsPerPage, currentPage])
+        }, [filteredData, coinsPerPage, currentPage, watchList])
         return (<></>)
       }
   return (

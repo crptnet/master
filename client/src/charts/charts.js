@@ -495,37 +495,10 @@ const Charts = () => {
       setBookmarkList(bookmarkList.filter(elem => elem.key != item.key));
     }
 
-
-
-
-
-
-
-
-
-
-
     const Bookmarks = (props) => {
       const length = props.props;
-
       const [BookListLayout, setBookListLayout] = useState(<></>);
-      useEffect(() => {
-        localStorage.setItem("bookmarkList", JSON.stringify(bookmarkList));
-        const bookmarksEl = document.querySelector('.bookmarksChart');
-        const addBtnEl = document.querySelector('.addBookmarkBtnChart');
-        let totalWidth = 0;
-        if (bookmarksEl && addBtnEl) {
-          for (let i = 0; i < bookmarksEl.children.length; i++) {
-            let rect = bookmarksEl.children[i].getBoundingClientRect();
-            totalWidth += rect.width;
-          }
-          if (totalWidth + 120 >= window.innerWidth) {
-            addBtnEl.classList.add('addBookmarkBtnChart-fixed');
-          } else {
-            addBtnEl.classList.remove('addBookmarkBtnChart-fixed');
-          }
-        }
-      }, [bookmarkList]);
+
       useEffect(() => {
 
         const layout = bookmarkList.map((item, index) => (
@@ -596,7 +569,7 @@ const Charts = () => {
         useEffect(()=>{
           const handleSort = async () => {
             sortedData = {};
-            const link = `http://3.8.190.201/api/coins?limit=${coinsPerPage}&offset=${coinsPerPage * (currentPage - 1)}&orderby=${sortOrder}`;
+            const link = `${serverLink}api/coins?limit=${coinsPerPage}&offset=${coinsPerPage * (currentPage - 1)}&orderby=${sortOrder}`;
             const response = await fetch(link, {
               method: 'GET',
               mode: 'cors',
@@ -762,7 +735,7 @@ const Charts = () => {
         }, [showOverlay, filteredData, coinsPerPage, currentPage])
 
         return (
-          <button key={uuidv4()} onClick={handleOpenOverlay} className='addBookmarkBtnChart'><span>+</span></button>
+          <button key={uuidv4()} onClick={handleOpenOverlay} className={'addBookmarkBtnChart'}><span>+</span></button>
         );
       }
 
