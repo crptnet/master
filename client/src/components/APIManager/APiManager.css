@@ -413,11 +413,11 @@
   text-align: center;
 }
 
-.toast.error {
+.toast.error-toast {
   background-color: #ffebeb;
 }
 
-.error{
+.error-toast{
   background-color: red;
   font-size: 1rem;
 }

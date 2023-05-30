@@ -167,7 +167,7 @@ const APiManager = ({ onConfirm, onCancel }) => {
       </div>
       {toastType == 'error' ? 
           <Toast.Root className="ToastRoot" open={open} onOpenChange={setOpen}>
-            <div className="toast error">
+            <div className="toast error-toast">
               <div className="toast-icon error">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="red">
                   <path d="M0 0h24v24H0z" fill="none" />
