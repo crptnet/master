@@ -114,13 +114,18 @@
     margin: 5px;
 }
 
+.layout-container button:hover {
+    background-color: transparent;
+    filter: brightness(0.5);
+    transition: all 0.3s ease-in-out;
+}
+
 .charttype-title {
     font-size: 0.7rem;
 }
 
 .layout-icon {
     width: 20px;
-    margin: 2px;
 }
 
 /*LAYOUT CONFIGURATIONS*/
@@ -173,11 +178,11 @@
 /*BOOKMARKS*/
 
 .bookmark-container {
-    width: calc(100vw - 70px);
+    width: calc(100vw - 75px);
     display: flex;
     position: fixed;
     top: 0;
-    margin: 0px 2.5px 5px 2.5px;
+    margin: 0px 5px 5px 5px;
     border-radius: 2px;
     background-color: #333333;
     z-index: 1000;

@@ -443,33 +443,33 @@ const Charts = () => {
         const layoutProps = { length: length, type: type };
         localStorage.setItem("layout", JSON.stringify(layoutProps));
         setLayoutProps(JSON.parse(localStorage.getItem("layout")));
-
+        console.log(layoutProps,"LAYOUT")
       }
 
       return (
         <div className='layout-container'>
           <button onMouseEnter={handleButtonHover} className="layout-btn">
-            <img src='./icons/avatar.png' className='layout-icon' />
+            <img src={`./icons/charts-${layoutProps.length}-${layoutProps.type}.png`} className='layout-icon' />
           </button>
           {isOpen && (
             <div className="layout-inner" onMouseLeave={handleDivMouseLeave}>
               <div className="charttype-container">
                 <p className='charttype-title'>1 Chart</p>
-                <button onClick={() => { handleChartLayoutType(1, 1) }}><img src='./icons/avatar.png' className='layout-icon' /></button>
+                <button onClick={() => { handleChartLayoutType(1, 1) }}><img src='./icons/charts-1-1.png' className='layout-icon' /></button>
               </div>
               <div className="charttype-container">
                 <p className='charttype-title'>2 Charts</p>
-                <button onClick={() => { handleChartLayoutType(2, 1) }}><img src='./icons/avatar.png' className='layout-icon' /></button>
-                <button onClick={() => { handleChartLayoutType(2, 2) }}><img src='./icons/avatar.png' className='layout-icon' /></button>
+                <button onClick={() => { handleChartLayoutType(2, 1) }}><img src='./icons/charts-2-1.png' className='layout-icon' /></button>
+                <button onClick={() => { handleChartLayoutType(2, 2) }}><img src='./icons/charts-2-2.png' className='layout-icon' /></button>
               </div>
               <div className="charttype-container">
                 <p className='charttype-title'>3 Charts</p>
-                <button onClick={() => { handleChartLayoutType(3, 1) }}><img src='./icons/avatar.png' className='layout-icon' /></button>
-                <button onClick={() => { handleChartLayoutType(3, 2) }}><img src='./icons/avatar.png' className='layout-icon' /></button>
+                <button onClick={() => { handleChartLayoutType(3, 1) }}><img src='./icons/charts-3-1.png' className='layout-icon' /></button>
+                <button onClick={() => { handleChartLayoutType(3, 2) }}><img src='./icons/charts-3-2.png' className='layout-icon' /></button>
               </div>
               <div className="charttype-container">
                 <p className='charttype-title'>4 Charts</p>
-                <button onClick={() => { handleChartLayoutType(4, 1) }}><img src='./icons/avatar.png' className='layout-icon' /></button>
+                <button onClick={() => { handleChartLayoutType(4, 1) }}><img src='./icons/charts-4-1.png' className='layout-icon' /></button>
               </div>
             </div>
           )}

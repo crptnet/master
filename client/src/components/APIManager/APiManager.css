@@ -127,16 +127,6 @@
   font-weight: bold;
 }
 
-.green{
-  background-color: rgb(144, 231, 175);
-  color: rgb(24, 121, 78);
-}
-.green:hover{
-  background-color: rgb(204, 235, 215);
-  color: rgb(24, 121, 78);
-  font-weight: bold;
-}
-
 .IconButton {
   background-color: #413d3d;
   font-family: inherit;
