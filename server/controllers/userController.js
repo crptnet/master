@@ -301,7 +301,7 @@ const resendActiveStatus = asyncHandler( async(req, res) =>{
     from: process.env.EMAIL,
     to: User.email,
     subject: 'Verify your email address',
-    html: `<p>Please click <a href="http:///localhost:3000/activate?key=${User.password}&id=${User.id}">here</a> to verify your email address.</p>`
+    html: `<p>Please click <a href="http://${process.env.SERVER_DOMAIN}/activate?key=${User.password}&id=${User.id}">here</a> to verify your email address.</p>`
   };
 
   transporter.sendMail(emailMessage, (error, info) => {
@@ -314,7 +314,6 @@ const resendActiveStatus = asyncHandler( async(req, res) =>{
 
   res.status(201).json({ 'email' : User.email, 'id' : User.id})
   
-
 })
 
 
@@ -423,7 +422,7 @@ const changePasswordRequest = asyncHandler(async (req, res) =>{
       from: process.env.EMAIL,
       to: email,
       subject: 'Reset password',
-      html: `<p>Please click <a href="http://localhost:3000/password-reset?token=${token}">here</a> to reset your password.</p>`
+      html: `<p>Please click <a href="http://${process.env.SERVER_DOMAIN}/password-reset?token=${token}">here</a> to reset your password.</p>`
     };
 
     var resStatus = 200
