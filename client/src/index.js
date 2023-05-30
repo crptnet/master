@@ -25,7 +25,7 @@ import GetListOfCoins from './listOfCoinsAPI';
 import APiManager from './components/APIManager/APIManager';
 
 //const serverLink = "http://localhost:5000/";
-const serverLink = process.env.REACT_APP_LOCAL_DOMAIN || "http://3.8.190.201.nip.io/";
+const serverLink = "http://3.8.190.201.nip.io/";
 
 const sidebarRoot = ReactDOM.createRoot(document.getElementById('sidebar'));
 const modelRoot = ReactDOM.createRoot(document.getElementById('model'));
