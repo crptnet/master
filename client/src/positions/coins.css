@@ -232,14 +232,6 @@ tr.blueHigh {
 
 /*/////////////////////////////////////////////*/
 
-.green {
-    color: #5CC082;
-}
-
-.red {
-    color: #DC4C41;
-}
-
 .list {
     width: calc(100vw - 60px);
     position: absolute;
