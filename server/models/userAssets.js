@@ -1,33 +1,43 @@
 const mongoose = require('mongoose');
 
-const asset = new mongoose.Schema({
-    asset : {
-        type : String,
-    },
-    available : {
-        type : Number,
-    },
-    onOrder : {
-        type : Number,
-    }
-},
-{
-  timestamps : true,
+const assetSchema = new mongoose.Schema({
+  asset: {
+    type: String,
+    required: true,
+  },
+  available: {
+    type: String,
+    required: true,
+  },
+  onOrder: {
+    type: String,
+    required: true,
+  },
 });
 
-const apiKeysSchema = new mongoose.Schema({
-    user_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
+const userAssetsSchema = new mongoose.Schema({
+  user_id: {
+    type: String,
+    required: true,
+  },
+  keyPair_id: {
+    type: String,
+    required: true,
+  },
+  assets: [{
+    date: {
+      type: [assetSchema],
+      required: true,
     },
-    assets : {
-      type : [asset],
-    }, 
-}, 
-{
-  timestamps:true, 
+    timestamp: {
+      type: Date,
+      default: Date.now,
+    },
+  }],
+}, {
+  timestamps: true,
 });
 
-const userAssets = mongoose.model('apiKeys', apiKeysSchema);
+const UserAssets = mongoose.model('UserAssets', userAssetsSchema);
 
-module.exports = userAssets;
+module.exports = UserAssets;

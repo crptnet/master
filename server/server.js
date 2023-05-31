@@ -6,16 +6,17 @@ const connectToDb = require('./config/connectDB');
 const errorHandler = require('./middleware/errorHandler');
 const path = require('path');
 const { UpdataInfoRun } = require('./controllers/coinSocketController');
-const asyncHandler = require('express-async-handler');
-const stripe = require('stripe')('sk_test_51N8SZTJja6fn3xLG3zzJrxGFLl44Zm6QhrwGDhlaUtPJe4Rm0u6ImoO3xOyHOrH32bZD3bOMuYwqDV1zsIpHsNju00FyWylTu5');
+const { resetAtMidnight } = require('./controllers/userAPIKeysController');
+const onConnection = require('./config/socket.io');
+
+
+const httpServer = require('http').createServer(app);
 
 const corsOptions = {
   origin: ['http://localhost:3000', 'http://3.8.190.201.nip.io', 'http://3.8.190.201'],
   credentials: false,
   optionSuccessStatus: 200,
 };
-
-const httpServer = require('http').createServer(app);
 const io = require('socket.io')(httpServer, {
   cors: {
     origin: ['http://localhost:3000', 'http://3.8.190.201.nip.io', 'http://3.8.190.201'],
@@ -23,17 +24,16 @@ const io = require('socket.io')(httpServer, {
   },
 });
 
-const onConnection = require('./config/socket.io');
+
 
 onConnection(io);
-
+resetAtMidnight();
 app.use(errorHandler);
 app.use(cors(corsOptions));
 
 connectToDb();
 UpdataInfoRun(io);
 
-const PORT = 5000 || process.env.PORT;
 
 app.use((req, res, next) => {
   if (req.originalUrl == '/api/stripe_webhook') {
@@ -53,6 +53,9 @@ app.use('/coin-icon', express.static(path.join(__dirname, 'coin_icon')));
 app.use('/*', (req, res) => {
   res.status(404).end();
 });
+
+
+const PORT = 5000 || process.env.PORT;
 
 httpServer.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
