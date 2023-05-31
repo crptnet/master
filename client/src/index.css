@@ -1,15 +1,25 @@
+/* ONLY FOR GLOBAL CSS */
+
 * {
   margin: 0;
   padding: 0;
   box-shadow: none;
 }
+
 body {
   background-color: #252525;
   color: #d1d4dc;
   font-family: roboto, poppins, sans-serif;
 }
 
-/*<--SIDEBAR-->*/
+.container {
+  background-color: #333333;
+  border-radius: 15px;
+  padding: 1rem;
+  margin: 1rem;
+}
+
+/*SIDEBAR*/
 
 .fullSideBar {
   width: 60px;
@@ -18,10 +28,12 @@ body {
   background-color: #333333;
   text-align: center;
 }
+
 .logo img {
   width: 50px;
   margin: 5px;
 }
+
 .sideBarWithoutLogo {
   width: 60px;
   height: calc(100vh - 70px);
@@ -30,6 +42,7 @@ body {
   justify-content: space-around;
   align-items: center;
 }
+
 .sideBtn {
   width: 50px;
   padding: 5px;
@@ -41,17 +54,20 @@ body {
   text-decoration: none;
   cursor: pointer;
 }
+
 .sideBtn:hover {
   background-color: #4682B4;
 }
+
 .activeSideBtn{
   background-color: #4682B4;
 }
+
 .sideBtn img {
   width: 30px;
 }
 
-/*<--MAIN-->*/
+/*MAIN*/
 
 #main {
   min-width: calc(100vw - 60px);
@@ -75,7 +91,20 @@ main {
   font-weight: bold;
 }
 
+/*INPUTS*/
+
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
 /*SCROLLBAR*/
+
 ::-webkit-scrollbar {
   margin: 0;
   width: 2.5px;
@@ -85,4 +114,25 @@ main {
   margin: 0;
   width: 1px;
   background-color: #d1d4dc;
+}
+
+/*COLORS*/
+
+.blue {
+  color: #4682B4;
+}
+
+.green {
+  color: #5CC082;
+}
+
+.red {
+  color: #DC4C41;
+}
+
+/*SIDES*/
+
+.right {
+  display: flex;
+  margin-right: 20px;
 }

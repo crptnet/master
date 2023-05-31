@@ -1,8 +1,16 @@
+/*TO DO LIST*/
+/*
+1.Overlay for convert
+2.Icons for coins
+3.Fix terminal bookmarks
+4.Websocket price update
+5.Settings googleRegistered bug fix
+*/
+
 import React, { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import './global.css'
 import './settings/settings.css';
 import SideBar from './sidebar/sideBar';
 import Main from './main/main';

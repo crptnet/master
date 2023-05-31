@@ -1,5 +1,5 @@
 import React from 'react';
-import './positions.css';
+import './sidebar.css';
 import {sidebtns} from './sidebtns';
 import { serverLink } from '..';
 
