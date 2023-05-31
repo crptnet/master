@@ -22,10 +22,11 @@ import NotFoundPage from './components/notFound/notFound';
 import SubscriptionView from './components/userProfile/subscriptionComponent/subscriptionView';
 
 import GetListOfCoins from './listOfCoinsAPI';
-import APiManager from './components/APIManager/APIManager';
+import APiManager from './components/APIManager/KeyPairCreation/APIManager';
+import KeysTable from './components/APIManager/KeysTable/KeysTable'
 
-//const serverLink = "http://localhost:5000/";
-const serverLink = "http://3.8.190.201.nip.io/";
+const serverLink = "http://localhost:5000/";
+//const serverLink = "http://3.8.190.201.nip.io/";
 
 const sidebarRoot = ReactDOM.createRoot(document.getElementById('sidebar'));
 const modelRoot = ReactDOM.createRoot(document.getElementById('model'));
@@ -41,7 +42,10 @@ const pathName = window.location.pathname;
   } else if (pathName.includes('/password-reset')) {
     mainRoot.render(<ResetPasswordPage location={window.location} />);
   } else if (pathName.includes('/settings/api-keys')) {
-    mainRoot.render(<APiManager/>);
+    mainRoot.render(<div>
+      <APiManager/> 
+      <KeysTable/>
+      </div>);
     sidebarRoot.render(<SideBar active={11} />);
   } else if (pathName.includes('/settings/subscription')) {
     mainRoot.render(<SubscriptionPage />);

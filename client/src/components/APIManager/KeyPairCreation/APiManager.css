@@ -418,6 +418,7 @@
 }
 
 .error-toast{
+  color: red;
   background-color: red;
   font-size: 1rem;
 }

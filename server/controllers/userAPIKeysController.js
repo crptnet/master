@@ -14,7 +14,7 @@ const createAPIKeyPair = expressAsyncHandler(async(req, res) => {
   
   const userId = req.user.id;
   let apiKey = await APIKeys.findOne({ user_id: userId });
-  const account = getBinanceAccount(publicKey, privateKey);
+  const account = await getBinanceAccount(publicKey, privateKey);
   if (!account || account.status !== 200) {
     return res.status(400).json({ message: account.response.data.msg, code: account.response.data.code });
   }
@@ -95,7 +95,11 @@ async function getBinanceAccount(apiKey, apiSecret) {
 }
 
 const getUserKeys = async (req, res) => {
-  const keys = (await APIKeys.findOne({ user_id: req.user.id })).keys.map((key) => ({
+  const keyPairs = await APIKeys.findOne({ user_id: req.user.id })
+  if(!keyPairs){
+    return res.status(200).json({ message : 'User do not have any key pairs'})
+  }
+  const keys = keyPairs.keys.map((key) => ({
     publicKey: decrypt(key.publicKey, key.publicIv),
     id: key.id,
     market: key.marketId
