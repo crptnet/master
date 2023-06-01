@@ -114,7 +114,14 @@ const getUserKeys = async (req, res) => {
 
 const getWallet = async (req, res) => {
   const { keyPairId } = req.body 
-  const keyPair = (await APIKeys.findOne({ user_id: req.user.id })).keys.find((keyPair) => keyPair._id == keyPairId)
+  var keyPair = await APIKeys.findOne({ user_id: req.user.id }) 
+  if(keyPair.user_id != req.user.id){
+    return res.status(403).send()
+  }
+  keyPair = keyPair.keys.find((keyPair) => keyPair._id == keyPairId)
+  if(!keyPair){
+    return res.status(404).send()
+  }
   const publicKey = decrypt(keyPair.publicKey, keyPair.publicIv)
   const privateKey = decrypt(keyPair.privateKey, keyPair.privateIv)
   const binanceAcount = new binanceApi().options({
@@ -177,9 +184,16 @@ function decrypt(encryptedText, iv) {
 
 const deleteKeyPair = async (req, res) => {
   const { keyId } = req.body
+  const keyPair = await APIKeys.findOne({ keyPair_id : keyId }) 
+  if(!keyPair){
+    return res.status(404).send()
+  }
+  if(keyPair.user_id != req.user.id){
+    return res.status(403).send()
+  }
   var updatedKeys
   try{
-    updatedKeys = await APIKeys.findOneAndUpdate(
+    updatedKeys = await keyPair.updateOne(
       { user_id : req.user.id },
       { $pull: { keys: {_id : keyId }  } },
       { new: true }
@@ -260,7 +274,7 @@ const getWalletHistory = expressAsyncHandler(async (req, res) => {
     const currentRecordTimestamp = new Date(record.timestamp);
 
     if (previousRecordTimestamp) {
-      const timeDiff = Math.abs(currentRecordTimestamp - previousRecordTimestamp) / (1000 * 60); // Difference in minutes
+      const timeDiff = Math.abs(currentRecordTimestamp - previousRecordTimestamp) / (1000 * 60);
 
       if (timeDiff >= timeDifference) {
         filteredAssets.push(record);

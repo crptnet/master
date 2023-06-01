@@ -7,15 +7,20 @@ const validateToken = asyncHandler(async (req, res, next) => {
   let authHeader = req.headers.Authorization || req.headers.authorization;
   if (authHeader && authHeader.startsWith("Bearer")) {
     token = authHeader.split(" ")[1];
-    
+    var verifyErr
     jwt.verify(token, process.env.ACCESS_TOKEN_SECERT, async (err, decoded) => {
       if (err) {
         res.status(401);
-        throw new Error(err);
+        verifyErr = new Error(err);
+        return
       }
       
       req.user = decoded.user;
-    });
+    })
+    if(verifyErr){
+      throw verifyErr
+    }
+
     if(!(await user.findById(req.user.id))){
       res.status(404)
       throw new Error("User not found");  
