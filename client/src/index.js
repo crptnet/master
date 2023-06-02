@@ -5,6 +5,8 @@
 3.Fix terminal bookmarks
 4.Websocket price update
 5.Settings googleRegistered bug fix
+
+OPTIONAL. Output terminal data using Binance Websocket
 */
 
 import React, { useState, useEffect } from 'react';
