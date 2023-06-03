@@ -20,11 +20,6 @@ const Charts = () => {
       return [];
     }
   });
-
-function SubscribeToWebSocket() {
-    
-  const listToSub = listOfSymb.length==0 ? JSON.parse(localStorage.getItem("bookmarkList")).map(elem => ({ symbol: elem.symbol })) : listOfSymb;
-
   const socket = io('http://3.8.190.201/coins', {
     withCredentials: true,
     extraHeaders: {
@@ -32,14 +27,16 @@ function SubscribeToWebSocket() {
       "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS"
     }
   });
-  socket.disconnect();
-  socket.connect();
-  if(prevListOfSymb.length>0) {
-    console.log('Unsubscribed from previous data', prevListOfSymb.map(elem => ({ symbol: elem.symbol })));
-    socket.emit('unsubscribe', prevListOfSymb.map(elem => ({ symbol: elem.symbol })));
-  }
-  setPrevListOfSymb(listOfSymb);
-  console.log(listToSub);
+function SubscribeToWebSocket() {
+    
+  const listToSub = listOfSymb.length==0 ? JSON.parse(localStorage.getItem("bookmarkList")).map(elem => ({ symbol: elem.symbol })) : listOfSymb;
+
+  // if(prevListOfSymb.length>0) {
+  //   console.log('Unsubscribed from previous data', prevListOfSymb.map(elem => ({ symbol: elem.symbol })));
+  //   socket.emit('unsubscribe', prevListOfSymb.map(elem => ({ symbol: elem.symbol })));
+  // }
+  // setPrevListOfSymb(listOfSymb);
+  // console.log(listToSub);
 
   socket.on('connect', () => {
     console.log('Connected to socket');
@@ -72,6 +69,9 @@ function SubscribeToWebSocket() {
     console.log(err);
   });
 
+  socket.on('unsubscribed', (data) => {
+    console.log(data);
+  });
 }
 
 
@@ -92,6 +92,7 @@ function SubscribeToWebSocket() {
   useEffect(()=>{
     if(listOfSymb.length>0) {
       console.log(listOfSymb)
+      socket.emit('unsubscribe', listToSub);
       SubscribeToWebSocket()
     }
   },[listOfSymb])
@@ -633,6 +634,7 @@ useEffect(() => {
           handleSort();
         },[sortOrder])
         
+        //FIX BUG WITH RENDERING AT THE BEGINNING
         useEffect(() => { handleSearch() }, [coinsPerPage, currentPage, searchTerm])
 
         const handleSearch = async () => {
