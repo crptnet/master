@@ -6,7 +6,6 @@ let tvScriptLoadingPromise;
 
 const Chart = () => {
     const onLoadScriptRef = useRef();
-
     useEffect( () => {
         onLoadScriptRef.current = createWidget;
 

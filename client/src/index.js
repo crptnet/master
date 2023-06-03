@@ -1,12 +1,12 @@
 /*TO DO LIST*/
-/*
-1.Overlay for convert
-2.Icons for coins
-3.Fix terminal bookmarks
-4.Websocket price update
-5.Settings googleRegistered bug fix
-
-OPTIONAL. Output terminal data using Binance Websocket
+/*                                                            STATUS
+1.Overlay for convert                                         DONE
+2.Icons for coins                                             NEEDED DOCS FROM BACK
+3.Fix terminal bookmarks (page update)                        TO DO (FIX DELAYED DUE TO THE FILES CONFLICT IN DETECTING CHANGES IN LOCAL STORAGE)
+4.Websocket price update                                      TO DO
+5.Settings googleRegistered bug fix                           TO DO (NEEDS DB AND SERVER WORKING)                        
+6.Fix charts refreshments when data is updated (charts page)  IN PROCESS (IMPLEMENT USESTATE ARRAY BOOKLIST AND LIST OF SYMBOLS)
+7.Output terminal data using Binance Websocket                TO DO
 */
 
 import React, { useState, useEffect } from 'react';

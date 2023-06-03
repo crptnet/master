@@ -10,6 +10,8 @@ import './charts.css';
 import ReactPaginate from 'react-paginate';
 
 const Charts = () => {
+  const [listOfSymb, setListOfSymb] = useState([]);
+  const [prevListOfSymb, setPrevListOfSymb] = useState([]);
   const [bookmarkList, setBookmarkList] = useState(() => {
     const savedDivList = localStorage.getItem("bookmarkList");
     if (savedDivList) {
@@ -19,6 +21,10 @@ const Charts = () => {
     }
   });
 
+function SubscribeToWebSocket() {
+    
+  const listToSub = listOfSymb.length==0 ? JSON.parse(localStorage.getItem("bookmarkList")).map(elem => ({ symbol: elem.symbol })) : listOfSymb;
+
   const socket = io('http://3.8.190.201/coins', {
     withCredentials: true,
     extraHeaders: {
@@ -26,38 +32,69 @@ const Charts = () => {
       "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS"
     }
   });
+  socket.disconnect();
+  socket.connect();
+  if(prevListOfSymb.length>0) {
+    console.log('Unsubscribed from previous data', prevListOfSymb.map(elem => ({ symbol: elem.symbol })));
+    socket.emit('unsubscribe', prevListOfSymb.map(elem => ({ symbol: elem.symbol })));
+  }
+  setPrevListOfSymb(listOfSymb);
+  console.log(listToSub);
 
-  function SubscribeToWebSocket() {
-    const listToSub = (JSON.parse(localStorage.getItem("bookmarkList"))).map(elem => ({ symbol: elem.symbol }));
+  socket.on('connect', () => {
+    console.log('Connected to socket');
+    socket.emit('subscribe', listToSub); // Example subscription event
+  });
 
-    socket.on('connect', () => {
-      console.log('Connected to socket');
-      // Subscribe to events or send data to the server
-      socket.emit('subscribe', listToSub); // Example subscription event
-    });
+  socket.on('subscribed', (data) => {
+    console.log(data);
+  });
 
-    socket.on('subscribed', (data) => {
-    });
-
-    socket.on('data:update', (data) => {
-      const listToUpdate = (JSON.parse(localStorage.getItem("bookmarkList")))
-      const index = listToUpdate.findIndex(elem => elem.symbol == data.symbol)
+  socket.on('data:update', (data) => {
+    const listToUpdate = bookmarkList.length==0 ? JSON.parse(localStorage.getItem("bookmarkList")) : bookmarkList;
+    const index = listToUpdate.findIndex(elem => elem.symbol == data.symbol);
+    console.log(data.symbol, listToUpdate)
+    if(index>0 && index<listToUpdate.length) {
       listToUpdate[index].price = data.quotes.USD.price;
       listToUpdate[index].change = data.quotes.USD.percent_change_24h;
       listToUpdate[index].volume = data.quotes.USD.volume_24h;
       listToUpdate[index].marketCap = data.quotes.USD.market_cap;
-      console.log("UPDATED")
-      setBookmarkList(listToUpdate)
-    })
+      console.log("UPDATED", listToUpdate[index]);
+      setBookmarkList(listToUpdate);
+    }
+  });
 
-    // socket.on('data:price_update', (data) => {
-    //     console.log(data)
-    // })
+  socket.on('data:price_update', (data) => {
+    console.log(data);
+  });
 
-    socket.on('error', (err) => {
-      console.log(err)
-    })
-  }
+  socket.on('error', (err) => {
+    console.log(err);
+  });
+
+}
+
+
+
+
+  function ChartInner() {
+    useEffect(()=>{
+      if(bookmarkList.length>0) {
+        const symbs = bookmarkList.map(elem=>elem.symbol);
+        console.log(symbs,listOfSymb)
+        if(symbs!=listOfSymb){
+          setListOfSymb(symbs.map(elem => ({ symbol: `${elem}` })));
+          console.log("WILL CHANGE SYMBS")
+        }
+      }
+    },[bookmarkList])
+
+  useEffect(()=>{
+    if(listOfSymb.length>0) {
+      console.log(listOfSymb)
+      SubscribeToWebSocket()
+    }
+  },[listOfSymb])
 
   function OverlayWithSymb(props) {
     const { bookmarkList, itemKey, isChart } = props.props;
@@ -287,33 +324,41 @@ const Charts = () => {
     }
   }
 
-  SubscribeToWebSocket();
 
-  function ChartInner() {
+
+
+
+
+
+
+
     let tvScriptLoadingPromise;
-    const [bookmarkListLayout, setBookmarkListLayout] = useState(<></>);
-    const [layoutProps, setLayoutProps] = useState(() => {
-      const savedChartToDisplay = localStorage.getItem("layout");
-      if (savedChartToDisplay) {
-        return JSON.parse(localStorage.getItem("layout"));
-      } else {
-        return { length: 4, type: 1 };
-      }
-    })
+    const [bookmarkListLayout, setBookmarkListLayout] = useState(null);
+const [layoutProps, setLayoutProps] = useState(() => {
+  const savedChartToDisplay = localStorage.getItem("layout");
+  if (savedChartToDisplay) {
+    return JSON.parse(localStorage.getItem("layout"));
+  } else {
+    return { length: 4, type: 1 };
+  }
+});
 
-    useEffect(() => { localStorage.setItem("bookmarkList", JSON.stringify(bookmarkList)) }, [bookmarkList])
+useEffect(() => {
+  localStorage.setItem("bookmarkList", JSON.stringify(bookmarkList));
+}, [bookmarkList]);
 
-    useEffect(() => {
-      const handleDragEnd = (result) => {
-        if (!result.destination) return;
+useEffect(() => {
+  const handleDragEnd = (result) => {
+    if (!result.destination) return;
 
-        const items = Array.from(bookmarkList);
-        const [reorderedItem] = items.splice(result.source.index, 1);
-        items.splice(result.destination.index, 0, reorderedItem);
+    const items = Array.from(bookmarkList);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
 
-        setBookmarkList(items);
-      };
-      const layout = (<DragDropContext onDragEnd={handleDragEnd}>
+    setBookmarkList(items);
+  };
+
+        const layout = (<DragDropContext onDragEnd={handleDragEnd}>
         <Droppable droppableId="chart-symb-list">
           {(provided) => (
             <div ref={provided.innerRef} {...provided.droppableProps} style={{
@@ -367,8 +412,9 @@ const Charts = () => {
           )}
         </Droppable>
       </DragDropContext>);
-      setBookmarkListLayout(layout)
-    }, [bookmarkList, layoutProps])
+
+  setBookmarkListLayout(layout);
+}, [bookmarkList, layoutProps]);
 
 
 
