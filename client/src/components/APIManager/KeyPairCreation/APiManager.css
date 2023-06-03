@@ -93,11 +93,7 @@
   border-radius: 8px;
   padding: 0 10px;
   font-size: 15px;
-  box-shadow: 0 0 0 1px var(--violet7);
   height: 35px;
-}
-.Input:focus {
-  box-shadow: 0 0 0 2px var(--violet8);
 }
 
 .dialog-description a{
@@ -136,7 +132,6 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: var(--violet11);
   position: absolute;
   top: 10px;
   right: 10px;
@@ -144,9 +139,6 @@
 }
 .IconButton:hover {
   background-color: white;
-}
-.IconButton:focus {
-  box-shadow: 0 0 0 2px var(--violet7);
 }
 
 #input-api-key{
@@ -181,7 +173,6 @@
 .select-item{
   font-size: 13px;
   line-height: 1;
-  color: var(--violet11);
   border-radius: 3px;
   display: flex;
   align-items: center;
@@ -237,7 +228,6 @@
 .SelectItem {
   font-size: 13px;
   line-height: 1;
-  color: var(--violet11);
   border-radius: 3px;
   display: flex;
   align-items: center;
@@ -247,25 +237,20 @@
   user-select: none;
 }
 .SelectItem[data-disabled] {
-  color: var(--mauve8);
   pointer-events: none;
 }
 .SelectItem[data-highlighted] {
   outline: none;
-  background-color: var(--violet9);
-  color: var(--violet1);
 }
 
 .SelectLabel {
   padding: 0 25px;
   font-size: 12px;
   line-height: 25px;
-  color: var(--mauve11);
 }
 
 .SelectSeparator {
   height: 1px;
-  background-color: var(--violet6);
   margin: 5px;
 }
 
@@ -284,7 +269,6 @@
   justify-content: center;
   height: 25px;
   background-color: white;
-  color: var(--violet11);
   cursor: default;
 }
 

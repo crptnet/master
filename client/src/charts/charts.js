@@ -8,7 +8,7 @@ import symbols from '../positions/coinList';
 import { modelRoot, serverLink } from '../index';
 import './charts.css';
 import ReactPaginate from 'react-paginate';
-
+const socket = io('http://3.8.190.201/coins');
 const Charts = () => {
   const [listOfSymb, setListOfSymb] = useState([]);
   const [prevListOfSymb, setPrevListOfSymb] = useState([]);
@@ -20,33 +20,21 @@ const Charts = () => {
       return [];
     }
   });
-
-function SubscribeToWebSocket() {
-    
+  function SubscribeToWebSocket() {
   const listToSub = listOfSymb.length==0 ? JSON.parse(localStorage.getItem("bookmarkList")).map(elem => ({ symbol: elem.symbol })) : listOfSymb;
-
-  const socket = io('http://3.8.190.201/coins', {
-    withCredentials: true,
-    extraHeaders: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS"
-    }
-  });
-  socket.disconnect();
-  socket.connect();
   if(prevListOfSymb.length>0) {
     console.log('Unsubscribed from previous data', prevListOfSymb.map(elem => ({ symbol: elem.symbol })));
     socket.emit('unsubscribe', prevListOfSymb.map(elem => ({ symbol: elem.symbol })));
   }
   setPrevListOfSymb(listOfSymb);
   console.log(listToSub);
-
-  socket.on('connect', () => {
-    console.log('Connected to socket');
-    socket.emit('subscribe', listToSub); // Example subscription event
-  });
+  socket.emit('subscribe', listToSub);
 
   socket.on('subscribed', (data) => {
+    console.log(data);
+  });
+
+  socket.on('unsubscribed', (data) => {
     console.log(data);
   });
 
@@ -74,27 +62,27 @@ function SubscribeToWebSocket() {
 
 }
 
+useEffect(() => {SubscribeToWebSocket()}, [listOfSymb])
 
 
-
-  function ChartInner() {
-    useEffect(()=>{
-      if(bookmarkList.length>0) {
-        const symbs = bookmarkList.map(elem=>elem.symbol);
-        console.log(symbs,listOfSymb)
-        if(symbs!=listOfSymb){
-          setListOfSymb(symbs.map(elem => ({ symbol: `${elem}` })));
-          console.log("WILL CHANGE SYMBS")
-        }
-      }
-    },[bookmarkList])
-
+function ChartInner() {
   useEffect(()=>{
-    if(listOfSymb.length>0) {
-      console.log(listOfSymb)
-      SubscribeToWebSocket()
+    if(bookmarkList.length>0) {
+      const symbs = bookmarkList.map(elem=>elem.symbol);
+      console.log(symbs,listOfSymb)
+      if(symbs!=listOfSymb){
+        setListOfSymb(symbs.map(elem => ({ symbol: `${elem}` })));
+        console.log("WILL CHANGE SYMBS")
+      }
     }
-  },[listOfSymb])
+  },[bookmarkList])
+
+  // useEffect(()=>{
+  //   if(listOfSymb.length>0) {
+  //     console.log(listOfSymb)
+  //     //SubscribeToWebSocket()
+  //   }
+  // },[listOfSymb])
 
   function OverlayWithSymb(props) {
     const { bookmarkList, itemKey, isChart } = props.props;

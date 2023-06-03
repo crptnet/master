@@ -223,7 +223,8 @@ const getUser = asyncHandler(async (req, res) => {
       watchList : User.watchList,
       profilePicture : profilePicture,
       googleActive : User.googleActive,
-      isPasswordChangeable : User.password ? true : false
+      isPasswordChangeable : User.password ? true : false,
+      topt_status : User.topt_status ? User.topt_status : false  
     }
     );
   });

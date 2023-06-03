@@ -69,8 +69,6 @@ const pushNewKeys = async (userId, publicKey, privateKey, marketId) => {
       } } }, // Push new keys to the keys array
       { new: true } // Return the updated document
     );
-
-    console.log('Updated API keys:', updatedKeys);
   } catch (error) {
     console.error('Error pushing new keys:', error);
     return error;
@@ -114,7 +112,11 @@ const getUserKeys = async (req, res) => {
 
 const getWallet = async (req, res) => {
   const { keyPairId } = req.body 
-  var keyPair = await APIKeys.findOne({ user_id: req.user.id }) 
+  var keyPair = await APIKeys.findOne({ user_id: req.user.id })
+  if(!keyPair){
+    return res.status(404).send()
+  }
+  
   if(keyPair.user_id != req.user.id){
     return res.status(403).send()
   }
@@ -257,7 +259,6 @@ const getWalletHistory = expressAsyncHandler(async (req, res) => {
   const { keyPairId } = req.body;
   const { timeDifference } = req.query
   const assets = await UserAssets.findOne({ keyPair_id: keyPairId });
-
   if (!assets) {
     return res.status(400).send({ message: 'Assets not found' });
   }
@@ -283,8 +284,6 @@ const getWalletHistory = expressAsyncHandler(async (req, res) => {
 
     previousRecordTimestamp = currentRecordTimestamp;
   }
-
-  console.log(filteredAssets)
 
   if(!filteredAssets.length && assets.assets[0]){
     filteredAssets.push(assets.assets[0])
