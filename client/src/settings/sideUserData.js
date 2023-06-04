@@ -329,10 +329,11 @@ const SideButtons = () => {
         setEmail(data.email);
         setUsername(data.username);
         setActive(data.active);
+        setGoogleActive(data.googleActive);
       }
     };
     fetchData();
-  }, [username, email, active]);
+  }, [username, email, active, googleActive]);
 
   return SideUserBtns.map((element) => {
     if(googleActive==false||(element.title != 'Reset Email'&&element.title!='Reset Password'&&element.title!='Google'&&element.title!='Email Authentication'))
