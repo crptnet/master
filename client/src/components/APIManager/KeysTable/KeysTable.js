@@ -22,6 +22,12 @@ function shortenValue(value, maxLength) {
 }
 
 const KeysTable = () => {
+  useEffect(() => {
+    return () => {
+      console.log('rerender')
+    }
+  })
+
   const [rows, setRows] = useState([]);
   const [dialogOpen, setDialogOpen] = useState(false)
 
@@ -33,7 +39,6 @@ const KeysTable = () => {
       },
     })
       .then((response) => {
-        console.log('Init data', response.data.data);
         setRows(response.data.data);
       })
       .catch((err) => console.error(err));
@@ -45,9 +50,6 @@ const KeysTable = () => {
     borderRadius: 2,
     maxHeight: 500,
   };
-
-
-  console.log('rows', rows);
 
   return (
     <div className='KeysTable'>

@@ -5,10 +5,8 @@ const user = require('../models/userModel')
 const validateToken = asyncHandler(async (req, res, next) => {
   let token;
   let authHeader = req.headers.Authorization || req.headers.authorization;
-  console.log(authHeader)
   if (authHeader && authHeader.startsWith("Bearer")) {
     token = authHeader.split(" ")[1];
-    console.log(token)
     var verifyErr
     jwt.verify(token, process.env.ACCESS_TOKEN_SECERT, async (err, decoded) => {
       if (err) {
@@ -18,7 +16,6 @@ const validateToken = asyncHandler(async (req, res, next) => {
       }
       
       req.user = decoded.user;
-      console.log(req.user)
     })
     if(verifyErr){
       throw verifyErr
@@ -37,7 +34,6 @@ const validateToken = asyncHandler(async (req, res, next) => {
   }
   else{
     res.status(401);
-    console.log('rerasdasd')
     throw new Error("Token is missing");
   }
 });

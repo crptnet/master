@@ -7,6 +7,7 @@ import { CheckIcon, ChevronDownIcon, ChevronUpIcon, Cross2Icon, FontSizeIcon } f
 import * as Toast from '@radix-ui/react-toast';
 import axios from 'axios'
 import TwoFADialog from '../../2FADialog/2FADialog';
+import { FetchUserData } from '../../Fetchs/FetchUserData';
 
 //ONLY GOD KNOWS HOW THIS WORKS SO DO NOT TOUCH
 
@@ -143,6 +144,10 @@ const APiManager = ({ onConfirm, onCancel }) => {
   const [message, setMessage] = useState(null)
   const [toastType, setToastType] = useState('error')
 
+  useEffect(() =>{
+    FetchUserData()
+  }, [])
+  
   const handleToast = (props) => {
       setOpen(props.status)
       setMessage(props.message)
@@ -157,7 +162,7 @@ const APiManager = ({ onConfirm, onCancel }) => {
     setSelectedExchange(value);
   };
   return (
-  <Toast.Provider swipeDirection="right" asChild>
+    <Toast.Provider swipeDirection="right" asChild>
       {
         !localStorage.getItem('toptToken') ? <TwoFADialog openVal={true} /> : null   
       }

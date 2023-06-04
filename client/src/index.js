@@ -53,7 +53,7 @@ const pathName = window.location.pathname;
   } else if (pathName.includes('/settings/api-keys')) {
     mainRoot.render(<div>
       <APiManager/> 
-      <KeysTable/>
+      {/* <KeysTable/> */}
       </div>);
     sidebarRoot.render(<SideBar active={11} />);
   } else if (pathName.includes('/settings/subscription')) {

@@ -10,6 +10,7 @@ const FetchUserData = () => {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
     }).then((res) => {
+        console.log(res)
         localStorage.setItem('uid', res.data.id)
         localStorage.setItem('topt', res.data.topt_status)
         return res.data
