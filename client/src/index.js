@@ -4,7 +4,7 @@
 2.Icons for coins                                             DONE
 3.Fix terminal bookmarks (page update)                        DONE
 4.Websocket price update                                      DONE
-5.Settings googleRegistered bug fix                           TO DO (NEEDS DB AND SERVER WORKING)                        
+5.Settings googleRegistered bug fix                           DONE                       
 6.Fix charts refreshments when data is updated (charts page)  IN PROCESS (IMPLEMENT USESTATE ARRAY BOOKLIST AND LIST OF SYMBOLS)
 7.Output terminal data using Binance Websocket                TO DO
 */
