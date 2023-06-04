@@ -10,25 +10,8 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import TwoFADialog from '../../2FADialog/2FADialog';
+import { darkTheme } from '../../../theme';
 
-const darkTheme = createTheme({
-  palette: {
-    primary: {
-      main: '#e0e0e0', // Customize the primary color
-      paper : '#4682B4'
-    },
-    background: {
-      default: '#333333',
-      paper : '#333333',
-    },
-    text : {
-      primary : '#d1d4dc'
-    }
-  },
-  typography : {
-    fontFamily : 'roboto, poppins, sans-serif'
-  }
-});
 
 function shortenValue(value, maxLength) {
   if (value.length <= maxLength) {
@@ -93,7 +76,7 @@ const KeysTable = () => {
                   </TableCell>
                   <TableCell align="left">{shortenValue(row.publicKey,20)}</TableCell>
                   <TableCell align="left">{row.market}</TableCell>
-                  <TableCell align="right" style={{paddingRight : '2rem'}}><button onClick={() => setDialogOpen(true)} style={{background : 'none', border : 'none'}}><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="gray" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path><line x1="10" x2="10" y1="11" y2="17"></line><line x1="14" x2="14" y1="11" y2="17"></line></svg></button></TableCell>
+                  <TableCell align="right" style={{paddingRight : '2rem'}}><button onClick={() => setDialogOpen(true)} style={{background : 'none', border : 'none'}}><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="gray" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-trash-2"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path><line x1="10" x2="10" y1="11" y2="17"></line><line x1="14" x2="14" y1="11" y2="17"></line></svg></button></TableCell>
                 </TableRow>
               ))}
             </TableBody>

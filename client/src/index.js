@@ -35,7 +35,7 @@ import GetListOfCoins from './listOfCoinsAPI';
 import APiManager from './components/APIManager/KeyPairCreation/APIManager';
 import KeysTable from './components/APIManager/KeysTable/KeysTable'
 
-const serverLink = process.env.REACT_APP_SERVER_DOMAIN || "http://localhost:5000/";
+const serverLink = "http://localhost:5000/";
 
 const sidebarRoot = ReactDOM.createRoot(document.getElementById('sidebar'));
 const modelRoot = ReactDOM.createRoot(document.getElementById('model'));

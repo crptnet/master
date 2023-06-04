@@ -8,6 +8,8 @@ import * as Toast from '@radix-ui/react-toast';
 import axios from 'axios'
 import TwoFADialog from '../../2FADialog/2FADialog';
 
+//ONLY GOD KNOWS HOW THIS WORKS SO DO NOT TOUCH
+
 const Selector = ({ onExchangeSelect }) => {
   const handleExchangeSelect = (value) => {
     onExchangeSelect(value);
@@ -157,7 +159,7 @@ const APiManager = ({ onConfirm, onCancel }) => {
   return (
   <Toast.Provider swipeDirection="right" asChild>
       {
-        !localStorage.getItem('toptToken') ? <TwoFADialog open={true} /> : null   
+        !localStorage.getItem('toptToken') ? <TwoFADialog openVal={true} /> : null   
       }
       <div className='manager-container'>
         <div className='api-key-creation-container'>
