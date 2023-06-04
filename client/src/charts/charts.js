@@ -20,72 +20,96 @@ const Charts = () => {
       return [];
     }
   });
-  function SubscribeToWebSocket() {
-  const listToSub = listOfSymb.length==0 ? JSON.parse(localStorage.getItem("bookmarkList")).map(elem => ({ symbol: elem.symbol })) : listOfSymb;
-  if(prevListOfSymb.length>0) {
+ function SubscribeToWebSocket() {
+  const listToSub = listOfSymb.length == 0 ? JSON.parse(localStorage.getItem("bookmarkList")).map(elem => ({ symbol: elem.symbol })) : listOfSymb;
+  
+  if (prevListOfSymb.length > 0) {
     console.log('Unsubscribed from previous data', prevListOfSymb.map(elem => ({ symbol: elem.symbol })));
     socket.emit('unsubscribe', prevListOfSymb.map(elem => ({ symbol: elem.symbol })));
   }
+  
   setPrevListOfSymb(listOfSymb);
-  console.log(listToSub);
   socket.emit('subscribe', listToSub);
-
-  socket.on('subscribed', (data) => {
-    console.log(data);
-  });
-
-  socket.on('unsubscribed', (data) => {
-    console.log(data);
-  });
-
+  socket.on('subscribed', (data) => console.log(data));
+  socket.on('unsubscribed', (data) => console.log(data));
   socket.on('data:update', (data) => {
-    const listToUpdate = bookmarkList.length==0 ? JSON.parse(localStorage.getItem("bookmarkList")) : bookmarkList;
-    const index = listToUpdate.findIndex(elem => elem.symbol == data.symbol);
-    console.log(data.symbol, listToUpdate)
-    if(index>0 && index<listToUpdate.length) {
-      listToUpdate[index].price = data.quotes.USD.price;
-      listToUpdate[index].change = data.quotes.USD.percent_change_24h;
-      listToUpdate[index].volume = data.quotes.USD.volume_24h;
-      listToUpdate[index].marketCap = data.quotes.USD.market_cap;
-      console.log("UPDATED", listToUpdate[index]);
+    console.log(data);
+    const listToUpdate = bookmarkList.length == 0 ? JSON.parse(localStorage.getItem("bookmarkList")) : [...bookmarkList];
+    const index = listToUpdate.findIndex(elem => elem.symbol === data.symbol);
+    if (index > -1) {
+      listToUpdate[index] = {
+        ...listToUpdate[index],
+        price: parseFloat(data.quotes.USD.price),
+        change: parseFloat(data.quotes.USD.percent_change_24h),
+        volume: parseFloat(data.quotes.USD.volume_24h),
+        marketCap: parseFloat(data.quotes.USD.market_cap)
+      };
       setBookmarkList(listToUpdate);
     }
   });
 
   socket.on('data:price_update', (data) => {
     console.log(data);
+    const listToUpdate = bookmarkList.length == 0 ? JSON.parse(localStorage.getItem("bookmarkList")) : [...bookmarkList];
+    data = Object.entries(data)[0];
+    const index = listToUpdate.findIndex(elem => elem.symbol === data[0]);
+    if (index > -1) {
+      listToUpdate[index] = {
+        ...listToUpdate[index],
+        price: parseFloat(data[1])
+      };
+      console.log(data, bookmarkList);
+      setBookmarkList(listToUpdate);
+    }
   });
 
   socket.on('error', (err) => {
     console.log(err);
   });
-
-  socket.on('unsubscribed', (data) => {
-    console.log(data);
-  });
 }
 
-useEffect(() => {SubscribeToWebSocket()}, [listOfSymb])
+useEffect(() => { 
+  if(listOfSymb.length>0) {
+    SubscribeToWebSocket();
+  }
+}, [listOfSymb])
+
+useEffect(()=>{
+  if(bookmarkList.length>0) {
+    const symbs = bookmarkList.map(elem=>({symbol:elem.symbol}));
+
+    symbs.sort((a, b) => {
+      const symbolA = a.symbol;
+      const symbolB = b.symbol;
+
+      if (symbolA < symbolB) {
+        return -1;
+      }
+      if (symbolA > symbolB) {
+        return 1;
+      }
+      return 0;
+    });
+
+    let isSame = symbs.length==listOfSymb.length;
+    if(isSame) {
+      for(let i = 0; i < symbs.length; i++) {
+        if(symbs[i].symbol!=listOfSymb[i].symbol) {
+          isSame = false;
+          break;
+        }
+      }
+    }
+    console.log(symbs,listOfSymb,isSame)
+    if(!isSame){
+      setListOfSymb(symbs);
+      console.log("WILL CHANGE SYMBS")
+    }
+  }
+},[bookmarkList])
 
 
 function ChartInner() {
-  useEffect(()=>{
-    if(bookmarkList.length>0) {
-      const symbs = bookmarkList.map(elem=>elem.symbol);
-      console.log(symbs,listOfSymb)
-      if(symbs!=listOfSymb){
-        setListOfSymb(symbs.map(elem => ({ symbol: `${elem}` })));
-        console.log("WILL CHANGE SYMBS")
-      }
-    }
-  },[bookmarkList])
-
-  // useEffect(()=>{
-  //   if(listOfSymb.length>0) {
-  //     console.log(listOfSymb)
-  //     //SubscribeToWebSocket()
-  //   }
-  // },[listOfSymb])
 
   function OverlayWithSymb(props) {
     const { bookmarkList, itemKey, isChart } = props.props;
@@ -111,7 +135,7 @@ function ChartInner() {
 
     const handleResetSort = async () => {
       const symbs = await GetListOfCoins(coinsPerPage, coinsPerPage * (currentPage - 1));
-      const symbData = symbs.map(elem => ({ key: uuidv4(), symbol: elem.symbol, price: elem.quotes.USD.price, change: elem.quotes.USD.percent_change_7d, volume: elem.quotes.USD.volume_24h, marketCap: elem.quotes.USD.market_cap}));
+      const symbData = symbs.map(elem => ({ key: uuidv4(), icon: elem.icon, symbol: elem.symbol, price: elem.quotes.USD.price, change: elem.quotes.USD.percent_change_7d, volume: elem.quotes.USD.volume_24h, marketCap: elem.quotes.USD.market_cap}));
       setData([...symbData]);
       setSortOrder("rank_asc");
     };
@@ -130,7 +154,7 @@ function ChartInner() {
         });
         const symbs = await response.json();
         
-        const symbNames = symbs.map(elem => ({ key: uuidv4(), symbol: elem.symbol, price: elem.quotes.USD.price, change: elem.quotes.USD.percent_change_7d, volume: elem.quotes.USD.volume_24h, marketCap: elem.quotes.USD.market_cap}));
+        const symbNames = symbs.map(elem => ({ key: uuidv4(), icon: elem.icon, symbol: elem.symbol, price: elem.quotes.USD.price, change: elem.quotes.USD.percent_change_7d, volume: elem.quotes.USD.volume_24h, marketCap: elem.quotes.USD.market_cap}));
         setData([...symbNames]);
         setFilteredData([...symbNames]);
       };
@@ -152,7 +176,7 @@ function ChartInner() {
       const listOfSearch = await response.json();
       let symbNames = [];
       for (let i = coinsPerPage * (currentPage - 1); i < coinsPerPage + coinsPerPage * (currentPage - 1) && i < listOfSearch.length; i++) {
-        symbNames.push({ key: uuidv4(), symbol: listOfSearch[i].symbol, price: listOfSearch[i].quotes.USD.price, change: listOfSearch[i].quotes.USD.percent_change_7d, volume: listOfSearch[i].quotes.USD.volume_24h, marketCap: listOfSearch[i].quotes.USD.market_cap});
+        symbNames.push({ key: uuidv4(), icon: listOfSearch[i].icon, symbol: listOfSearch[i].symbol, price: listOfSearch[i].quotes.USD.price, change: listOfSearch[i].quotes.USD.percent_change_7d, volume: listOfSearch[i].quotes.USD.volume_24h, marketCap: listOfSearch[i].quotes.USD.market_cap});
       }
       setData([...symbNames]);
       setFilteredData([...symbNames]);
@@ -197,6 +221,7 @@ function ChartInner() {
           });
           const newCoinData = await response.json();
           console.log(newCoinData)
+          chartOverlay[index].icon = newCoinData[0].icon;
           chartOverlay[index].symbol = newCoinData[0].symbol;
           chartOverlay[index].price = newCoinData[0].quotes.USD.price;
           chartOverlay[index].change = newCoinData[0].quotes.USD.percent_change_24h;
@@ -335,6 +360,7 @@ const [layoutProps, setLayoutProps] = useState(() => {
 });
 
 useEffect(() => {
+  console.log("UPDATED MY LIST")
   localStorage.setItem("bookmarkList", JSON.stringify(bookmarkList));
 }, [bookmarkList]);
 
@@ -368,7 +394,7 @@ useEffect(() => {
                     >
                       <div className="overChartConsole">
                         <div className='overChartConsoleWithoutExit'>
-                          <div className="charts-title-coin-logo"><img src='./icons/avatar.png' style={{ width: '30px' }} /></div>
+                          <div className="charts-title-coin-logo"><img src={item.icon} style={{ width: '30px' }} /></div>
                           <div className="charts-title-coin-title">
                             <div className="charts-title-coin-title-market">Binance</div>
                             <div className="charts-title-coin-title-pair">{item.symbol}/USDT<OverlayWithSymb props={{ bookmarkList: bookmarkList, itemKey: item.key, isChart: true }} /></div>
@@ -403,11 +429,8 @@ useEffect(() => {
           )}
         </Droppable>
       </DragDropContext>);
-
   setBookmarkListLayout(layout);
 }, [bookmarkList, layoutProps]);
-
-
 
     const Chart = (props) => {
       const containerId = `tradingview_${uuidv4()}`;
@@ -524,7 +547,7 @@ useEffect(() => {
         },
       });
       const symbs = await response.json();
-      const symbNames = { key: uuidv4(), symbol: symbs[0].symbol, price: symbs[0].quotes.USD.price, change: symbs[0].quotes.USD.percent_change_7d, volume: symbs[0].quotes.USD.volume_24h, marketCap: symbs[0].quotes.USD.market_cap};
+      const symbNames = { key: uuidv4(), icon: symbs[0].icon, symbol: symbs[0].symbol, price: symbs[0].quotes.USD.price, change: symbs[0].quotes.USD.percent_change_7d, volume: symbs[0].quotes.USD.volume_24h, marketCap: symbs[0].quotes.USD.market_cap};
       setBookmarkList([...bookmarkList, symbNames]);
     }
 
@@ -532,7 +555,7 @@ useEffect(() => {
       setBookmarkList(bookmarkList.filter(elem => elem.key != item.key));
     }
 
-    const Bookmarks = (props) => {
+    const Bookmarks = React.memo((props) => {
       const length = props.props;
       const [BookListLayout, setBookListLayout] = useState(<></>);
 
@@ -599,7 +622,7 @@ useEffect(() => {
 
         const handleResetSort = async () => {
           const symbs = await GetListOfCoins(coinsPerPage, coinsPerPage * (currentPage - 1));
-          const symbData = symbs.map(elem => ({ key: uuidv4(), symbol: elem.symbol, price: elem.quotes.USD.price, change: elem.quotes.USD.percent_change_7d, volume: elem.quotes.USD.volume_24h, marketCap: elem.quotes.USD.market_cap}));
+          const symbData = symbs.map(elem => ({ key: uuidv4(), icon: elem.icon, symbol: elem.symbol, price: elem.quotes.USD.price, change: elem.quotes.USD.percent_change_7d, volume: elem.quotes.USD.volume_24h, marketCap: elem.quotes.USD.market_cap}));
           setData([...symbData]);
           setSortOrder("rank_asc");
         };
@@ -617,7 +640,7 @@ useEffect(() => {
             });
             const symbs = await response.json();
             
-            const symbNames = symbs.map(elem => ({ key: uuidv4(), symbol: elem.symbol, price: elem.quotes.USD.price, change: elem.quotes.USD.percent_change_7d, volume: elem.quotes.USD.volume_24h, marketCap: elem.quotes.USD.market_cap}));
+            const symbNames = symbs.map(elem => ({ key: uuidv4(), icon: elem.icon, symbol: elem.symbol, price: elem.quotes.USD.price, change: elem.quotes.USD.percent_change_7d, volume: elem.quotes.USD.volume_24h, marketCap: elem.quotes.USD.market_cap}));
             setData([...symbNames]);
             setFilteredData([...symbNames]);
           };
@@ -640,15 +663,15 @@ useEffect(() => {
           const listOfSearch = await response.json();
           let symbNames = [];
           for (let i = coinsPerPage * (currentPage - 1); i < coinsPerPage + coinsPerPage * (currentPage - 1) && i < listOfSearch.length; i++) {
-            symbNames.push({ key: uuidv4(), symbol: listOfSearch[i].symbol, price: listOfSearch[i].quotes.USD.price, change: listOfSearch[i].quotes.USD.percent_change_7d, volume: listOfSearch[i].quotes.USD.volume_24h, marketCap: listOfSearch[i].quotes.USD.market_cap});
+            symbNames.push({ key: uuidv4(), icon: listOfSearch[i].icon, symbol: listOfSearch[i].symbol, price: listOfSearch[i].quotes.USD.price, change: listOfSearch[i].quotes.USD.percent_change_7d, volume: listOfSearch[i].quotes.USD.volume_24h, marketCap: listOfSearch[i].quotes.USD.market_cap});
           }
           setData([...symbNames]);
           setFilteredData([...symbNames]);
         }
 
-        const createCoin = (newCoin, newPrice, newChange, newVolume, newMarketCap) => {
+        const createCoin = (newIcon, newCoin, newPrice, newChange, newVolume, newMarketCap) => {
           if (Array.isArray(bookmarkList)) {
-            setBookmarkList([...bookmarkList, { key: uuidv4(), symbol: newCoin, price: newPrice, change: newChange, volume: newVolume, marketCap: newMarketCap }]);
+            setBookmarkList([...bookmarkList, { key: uuidv4(), icon: newIcon, symbol: newCoin, price: newPrice, change: newChange, volume: newVolume, marketCap: newMarketCap }]);
           } else {
             console.log('ChartSymbList is not defined or is not an array');
           }
@@ -737,7 +760,7 @@ useEffect(() => {
                             key={uuidv4()}
                             className="listElemOverlay"
                             onClick={() => {
-                              createCoin(elem.symbol, elem.price, elem.change, elem.volume, elem.marketCap);
+                              createCoin(elem.icon, elem.symbol, elem.price, elem.change, elem.volume, elem.marketCap);
                               handleCloseOverlay();
                             }}
                           >
@@ -794,7 +817,7 @@ useEffect(() => {
           <Overlay props={{ bookmarkList: bookmarkList }} />
         </div>
       );
-    }
+    });
 
 
     return (

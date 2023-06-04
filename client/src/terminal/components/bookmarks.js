@@ -17,14 +17,19 @@ const Bookmarks = (props) => {
       return [];
     }
   });
+  const [prevBookmarkList, setPrevBookmarkList] = useState([]);
   const [BookListLayout, setBookListLayout] = useState(<></>);
   const [initialValue, setInitialValue] = useState(true);
+  useEffect(()=>{setPrevBookmarkList(bookmarkList)},[])
   useEffect(() => {
       if (initialValue) {
           setInitialValue(false);
           return;
       }
-      window.location.reload(true);
+      if(bookmarkList[0]?.symbol!=prevBookmarkList[0]?.symbol) {
+        window.location.reload(true);
+      }
+      setPrevBookmarkList(bookmarkList);
   }, [bookmarkList]);
   useEffect(() => {
     localStorage.setItem("bookmarkList", JSON.stringify(bookmarkList));
@@ -375,7 +380,6 @@ const Bookmarks = (props) => {
                 chartOverlay[index].symbol = newCoin;
                 chartOverlay[index].price = newPrice;
                 setBookmarkList(chartOverlay);
-                window.location.reload(true);
             } else {
                 console.log('Element is not found');
             }
