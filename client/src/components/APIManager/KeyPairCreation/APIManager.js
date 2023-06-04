@@ -6,6 +6,7 @@ import * as Select from '@radix-ui/react-select';
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon, Cross2Icon, FontSizeIcon } from '@radix-ui/react-icons';
 import * as Toast from '@radix-ui/react-toast';
 import axios from 'axios'
+import TwoFADialog from '../../2FADialog/2FADialog';
 
 const Selector = ({ onExchangeSelect }) => {
   const handleExchangeSelect = (value) => {
@@ -154,7 +155,10 @@ const APiManager = ({ onConfirm, onCancel }) => {
     setSelectedExchange(value);
   };
   return (
-    <Toast.Provider swipeDirection="right" asChild>
+  <Toast.Provider swipeDirection="right" asChild>
+      {
+        !localStorage.getItem('toptToken') ? <TwoFADialog open={true} /> : null   
+      }
       <div className='manager-container'>
         <div className='api-key-creation-container'>
           <div className='api-key-creation-text'>

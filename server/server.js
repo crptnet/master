@@ -48,6 +48,7 @@ app.use('/api', require('./routes/coinsRouter'));
 app.use('/api', require('./routes/userRouter'));
 app.use('/api', require('./routes/watchListRouter'));
 app.use('/api', require('./routes/APIKeysRouter'))
+app.use('/api', require('./routes/2faRouter'))
 app.use('/upload', express.static(path.join(__dirname, 'uploads')));
 app.use('/coin-icon', express.static(path.join(__dirname, 'coin_icon')));
 app.use('/*', (req, res) => {

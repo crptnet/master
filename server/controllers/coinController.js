@@ -1,9 +1,6 @@
 const asyncHandler = require('express-async-handler')
 const client = require('../config/connectRedis')
-const { query } = require('express')
-const validateToken = require("../middleware/validateToken");
 const User = require('../models/userModel'); 
-const { forEach } = require('mongoose/lib/helpers/specialProperties');
 
 const getCoinList = asyncHandler(async (req, res, next) => {
     if(req.headers.authorization && !req.user){

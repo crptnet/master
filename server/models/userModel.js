@@ -57,7 +57,15 @@ const userSchema = new mongoose.Schema({
     type : [coinSchema],
     required : false,
     default : null,
-  }
+  },
+  topt_status : {
+    type : Boolean,
+    required : false,
+  },
+  topt_secret : {
+    type : String,
+    require : false,
+  },
 }, 
 {
   timestamps:true, 
