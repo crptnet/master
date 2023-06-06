@@ -186,30 +186,34 @@ function decrypt(encryptedText, iv) {
 
 const deleteKeyPair = async (req, res) => {
   const { keyId } = req.body
-  const keyPair = await APIKeys.findOne({ keyPair_id : keyId }) 
-  if(!keyPair){
-    return res.status(404).send()
+  const userKeyPairs = await APIKeys.findOne({ user_id : req.user.id }) 
+  //console.log(userKeyPairs)
+  if(!userKeyPairs){
+    return res.status(404).send({ message : 'User not found', ok : false, status : 'failed'   })
   }
-  if(keyPair.user_id != req.user.id){
-    return res.status(403).send()
+  if(!(userKeyPairs.keys).find((key) => key.id == keyId)){
+    return res.status(403).send({ message : 'Key not found', ok : false, status : 'failed'   })
   }
   var updatedKeys
   try{
-    updatedKeys = await keyPair.updateOne(
-      { user_id : req.user.id },
+    updatedKeys = await userKeyPairs.updateOne(
       { $pull: { keys: {_id : keyId }  } },
       { new: true }
     );
   }
   catch(err){
-    res.status(400).send({ message : err })
+    res.status(400).send({ message : err, ok : false, status : 'failed' })
   }
 
-  return res.status(200).send(updatedKeys.keys.map((key) => ({
-    publicKey: decrypt(key.publicKey, key.publicIv),
-    id: key.id,
-    market: key.marketId
-  })).sort((a, b) => (a.updatedAt - b.updatedAt)))
+  console.log(updatedKeys)
+
+  res.status(200).send({ status : 'success', ok : true, message : 'success'})
+  
+  // return res.status(200).send((userKeyPairs.keys).map((key) => ({
+  //   publicKey: decrypt(key.publicKey, key.publicIv),
+  //   id: key.id,
+  //   market: key.marketId
+  // })).sort((a, b) => (a.updatedAt - b.updatedAt)))
 }
 
 const screenUserWallet = async () => {

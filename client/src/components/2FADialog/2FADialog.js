@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
@@ -12,26 +12,14 @@ import { ThemeProvider } from '@emotion/react';
 import { darkTheme } from '../../theme'
 import { ShowToast } from '../Toast/Toast';
 import OtpInput from 'react-otp-input';
-
-const CheckUserToken = () => {
-  
-
-}
-
-const TwoFADialog = ({ triggerElement, content, title, openVal, onSubmit, onCancel }) => {
+  const TwoFADialog = ({ triggerElement, content, title, openVal, onSubmit, onCancel }) => {
   const [QRCode, SetQRCode] = useState(null);
   const [curStep, SetCurStep] = useState(0) 
   const [open, setOpen] = useState(openVal)
   const [code, setCode] = useState(null)
   const [toastOpen, setToastOpen] = useState(false)
   const [toastMessage, setToastMessage] = useState('')
-  const topt = localStorage.getItem('topt') == 'true' ? true : false
-
-  useEffect(() => {
-    return () => {
-      console.log('rerender')
-    }
-  })
+  const totp = useRef(localStorage.getItem('totp') == 'true' ? true : false)
   const inputStyles = {
     width: '100%',
     height: '3rem',
@@ -62,7 +50,6 @@ const TwoFADialog = ({ triggerElement, content, title, openVal, onSubmit, onCanc
       },
     }).then(async (res) => {
       const data = await res.json();
-      console.log(data.uri)
       SetQRCode(data.uri);
     }).catch((err) => {
       console.error(err);
@@ -70,14 +57,19 @@ const TwoFADialog = ({ triggerElement, content, title, openVal, onSubmit, onCanc
   };
 
   useEffect(() => {
-    console.log(topt)
-    if(!topt)
-      fetchQRCode();
-    if(topt){
-      console.log('set cur step to 1')
+    if(totp.current){
       SetCurStep(1)
     }
-    FetchUserData();
+    FetchUserData(true, true).then(() => {
+      console.log(localStorage.getItem('totp') == 'true' ? true : false)
+      totp.current = localStorage.getItem('totp') == 'true' ? true : false
+      console.log('totp', totp, 'local', localStorage.getItem('totp') == 'true' ? true : false)
+      if(!totp)
+        fetchQRCode();
+      if(totp){
+        SetCurStep(1)
+      }
+    })
   }, []);
   
   const handleCodeSubmit = async () => {
@@ -100,7 +92,7 @@ const TwoFADialog = ({ triggerElement, content, title, openVal, onSubmit, onCanc
         return json
       }
       return await res.json()
-    }).then((res) => {console.log(res); if(res.status != 'failed'){ res.ok = true; localStorage.setItem('toptToken', res?.token)}return res;})
+    }).then((res) => {console.log(res); if(res.status != 'failed'){ res.ok = true; localStorage.setItem('totpToken', res?.token)}return res;})
   }
 
   return (
@@ -109,15 +101,12 @@ const TwoFADialog = ({ triggerElement, content, title, openVal, onSubmit, onCanc
       toastOpen && <ShowToast open={toastOpen} setOpen={setToastOpen} message={toastMessage} type={'error'}/>
     }
   <Dialog.Root open={open} modal={true}>
-      <Dialog.Trigger asChild>
-        {triggerElement}
-      </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="DialogOverlay" />
         <Dialog.Content className="DialogContent">
           <header className="dialog-title">
             {
-              !topt ? 
+              !totp.current ? 
               <>
               <Stack direction="row" sx={{ width: '100%' }} spacing={4}>
                 <Stepper activeStep={curStep} alternativeLabel sx={{ width: '100%' }}>
@@ -137,7 +126,7 @@ const TwoFADialog = ({ triggerElement, content, title, openVal, onSubmit, onCanc
           }
           </header>
             {
-              curStep == 0?  
+              curStep == 0 ?  
                 <Box className="dialog-description-container">
                   <Dialog.Description className="dialog-description" asChild>
                     <ol>
@@ -198,7 +187,7 @@ const TwoFADialog = ({ triggerElement, content, title, openVal, onSubmit, onCanc
           <footer className="submit-buttons">
               <Box>
                 {
-                  curStep == 1 && !topt ? 
+                  curStep == 1 && !totp.current ? 
                   <button className="submit" type="submit" onClick={() => {setToastOpen(false); SetCurStep(curStep - 1)}}>Previous</button>
                   :
                   <></>
@@ -220,7 +209,7 @@ const TwoFADialog = ({ triggerElement, content, title, openVal, onSubmit, onCanc
                       setToastOpen(true)
                       return
                     }
-                    if(topt){
+                    if(totp.current){
                       setToastOpen(false); 
                       setOpen(false)
                       return
@@ -238,8 +227,6 @@ const TwoFADialog = ({ triggerElement, content, title, openVal, onSubmit, onCanc
                   null
                 }
               </Box>
-            <Dialog.Close asChild>
-            </Dialog.Close>
           </footer>
         </Dialog.Content>
       </Dialog.Portal>

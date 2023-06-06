@@ -8,6 +8,9 @@ import * as Toast from '@radix-ui/react-toast';
 import axios from 'axios'
 import TwoFADialog from '../../2FADialog/2FADialog';
 import { FetchUserData } from '../../Fetchs/FetchUserData';
+import KeysTable from '../KeysTable/KeysTable';
+import { ThemeProvider } from '@emotion/react';
+import { darkTheme } from '../../../theme';
 
 //ONLY GOD KNOWS HOW THIS WORKS SO DO NOT TOUCH
 
@@ -58,7 +61,8 @@ const DialogView = ({ selectedExchange, onSubmit, handleToast }) => {
       const res = await axios(`${serverLink}api/api-account`, {
         method : 'POST',
         headers : {
-          Authorization : `Bearer ${localStorage.getItem('token')}`
+          Authorization : `Bearer ${localStorage.getItem('token')}`,
+          Totp : `Bearer ${localStorage.getItem('totpToken')}`
         },
         data : {
           publicKey : publicKey,
@@ -69,9 +73,8 @@ const DialogView = ({ selectedExchange, onSubmit, handleToast }) => {
 
       setOpen(false)
       handleToast({ status : 'open', message : 'API key pair added successfully!', toastType : 'success'})
-      // Handle the response or perform any necessary actions
-
-      // Optionally, show a success toast message
+      window.location.reload()
+      
       // showToast('API keys saved successfully', 'success');
     } catch (error) {
       console.error('Error saving API keys:', error);
@@ -162,9 +165,10 @@ const APiManager = ({ onConfirm, onCancel }) => {
     setSelectedExchange(value);
   };
   return (
+    <ThemeProvider theme={darkTheme}>
     <Toast.Provider swipeDirection="right" asChild>
       {
-        !localStorage.getItem('toptToken') ? <TwoFADialog openVal={true} /> : null   
+        !localStorage.getItem('totpToken') ? <TwoFADialog openVal={true} /> : null   
       }
       <div className='manager-container'>
         <div className='api-key-creation-container'>
@@ -208,8 +212,10 @@ const APiManager = ({ onConfirm, onCancel }) => {
         </Toast.Root>
         )
       }
+      <KeysTable/>
       <Toast.Viewport className="ToastViewport" />
     </Toast.Provider>
+    </ThemeProvider>
   );
 };
 
