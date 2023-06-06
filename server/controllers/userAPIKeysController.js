@@ -204,9 +204,7 @@ const deleteKeyPair = async (req, res) => {
   catch(err){
     res.status(400).send({ message : err, ok : false, status : 'failed' })
   }
-
-  console.log(updatedKeys)
-
+  await UserAssets.deleteOne({ keyPair_id : keyId })
   res.status(200).send({ status : 'success', ok : true, message : 'success'})
   
   // return res.status(200).send((userKeyPairs.keys).map((key) => ({
@@ -261,40 +259,17 @@ const screenUserWallet = async () => {
 
 const getWalletHistory = expressAsyncHandler(async (req, res) => {
   const { keyPairId } = req.body;
-  const { timeDifference } = req.query
   const assets = await UserAssets.findOne({ keyPair_id: keyPairId });
   if (!assets) {
-    return res.status(400).send({ message: 'Assets not found' });
+    return res.status(400).send({ message: 'Assets not found', ok : false, status : 'failed' });
   }
 
   if (assets.user_id !== req.user.id) {
-    return res.status(403).send({ message: 'Wrong user found' });
-  }
-
-  // Filter assets based on time difference
-  const filteredAssets = [];
-  let previousRecordTimestamp = null;
-
-  for (const record of assets.assets) {
-    const currentRecordTimestamp = new Date(record.timestamp);
-
-    if (previousRecordTimestamp) {
-      const timeDiff = Math.abs(currentRecordTimestamp - previousRecordTimestamp) / (1000 * 60);
-
-      if (timeDiff >= timeDifference) {
-        filteredAssets.push(record);
-      }
-    }
-
-    previousRecordTimestamp = currentRecordTimestamp;
-  }
-
-  if(!filteredAssets.length && assets.assets[0]){
-    filteredAssets.push(assets.assets[0])
+    return res.status(403).send({ message: 'Wrong user found', ok : false, status : 'failed' });
   }
   
 
-  res.status(200).send({ assets: filteredAssets });
+  res.status(200).send({ ok : true, status : 'success', data: assets });
 });
 
 
@@ -304,8 +279,8 @@ function resetAtMidnight() {
   var night = new Date(
       now.getFullYear(),
       now.getMonth(),
-      now.getDate() + 1, // the next day, ...
-      0, 0, 0 // ...at 00:00:00 hours
+      now.getDate() + 1,
+      0, 0, 0
   );
   var msToMidnight = night.getTime() - now.getTime();
 
