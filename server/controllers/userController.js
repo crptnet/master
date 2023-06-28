@@ -217,6 +217,7 @@ const getUser = asyncHandler(async (req, res) => {
     const profilePicture = !User.profilePicture.includes("googleusercontent.com")  ? (`http://${process.env.SERVER_DOMAIN}/upload/${(User.profilePicture !== 'null') ? (User.profilePicture).substring((User.profilePicture).indexOf('profilePicture')) : 'def.jpg'}`) : User.profilePicture
     res.status(200).json(
     {
+      id : User.id,
       username : User.username,
       email : User.email,
       active : User.active,

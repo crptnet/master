@@ -6,11 +6,12 @@ const JWT = require('jsonwebtoken')
 
 const addTwoFactorAuthentication = expressAsyncHandler( async (req, res) => {
     const user = await User.findById(req.user.id)
+    console.log(user.id)
     if(!user){
         return res.status(404).send()
     }
 
-    if(user.topt_status){
+    if(user?.topt_status){
         return res.status(403).json({ message : 'User already created 2FA'})
     }
 
@@ -20,7 +21,6 @@ const addTwoFactorAuthentication = expressAsyncHandler( async (req, res) => {
     
     user.topt_secret = topt_secret.base32
     await user.save()
-    console.log(topt_secret)
     return qrcode.toDataURL(topt_secret.otpauth_url, (err, data) => {
         if(err) throw new Error(err)
         res.status(200).send({ uri : data })
@@ -29,6 +29,9 @@ const addTwoFactorAuthentication = expressAsyncHandler( async (req, res) => {
 
 const verifyToptCode = expressAsyncHandler(async (req, res) => {
     const { token } = req.body
+    if(!token){
+        return res.status(400).send({ status : 'failed', message : 'Code is not provided', ok : false })
+    }
     const user = await User.findById(req.user.id)
 
     const verify_res = speakeasy.totp.verify({
@@ -39,7 +42,7 @@ const verifyToptCode = expressAsyncHandler(async (req, res) => {
     })
 
     if(!verify_res){
-        return res.status(401).send()
+        return res.status(401).send({ status : 'failed', message : 'Code is wrong, try again', ok : false})
     }
 
     if(!user.topt_status){

@@ -2,9 +2,9 @@ const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
 const user = require('../models/userModel')
 
-const validateToptToken = asyncHandler(async (req, res, next) => {
+const validatetotpToken = asyncHandler(async (req, res, next) => {
   let token;
-  let authHeader = req.headers.Topt || req.headers.topt;
+  let authHeader = req.headers.Totp || req.headers.totp;
   if (authHeader && authHeader.startsWith("Bearer")) {
     token = authHeader.split(" ")[1];
     var verifyErr
@@ -16,10 +16,11 @@ const validateToptToken = asyncHandler(async (req, res, next) => {
         return
       }
       decodedToken = decoded
+      req.totp = decoded
     })
     
     if(verifyErr){
-        res.send({ message : 'topt not verified'})
+        res.send({ message : 'totp not verified'})
         throw verifyErr
     }
     
@@ -40,9 +41,9 @@ const validateToptToken = asyncHandler(async (req, res, next) => {
     next();
   }
   else{
-    res.status(401).send({ message : 'Token not provided'});
-    throw new Error("Token not provied");
+    res.status(401).send({ message : '2FA token not provied'});
+    throw new Error("2FA token not provied");
   }
 });
 
-module.exports = validateToptToken
+module.exports = validatetotpToken

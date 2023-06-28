@@ -8,7 +8,7 @@ import symbols from '../positions/coinList';
 import { modelRoot, serverLink } from '../index';
 import './charts.css';
 import ReactPaginate from 'react-paginate';
-const socket = io('http://3.8.190.201/coins');
+const socket = io('http://localhost:5000/coins');
 const Charts = () => {
   const [listOfSymb, setListOfSymb] = useState([]);
   const [prevListOfSymb, setPrevListOfSymb] = useState([]);

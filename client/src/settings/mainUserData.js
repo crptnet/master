@@ -104,6 +104,7 @@ function MainUserData() {
 
   function logOut() {
     localStorage.removeItem('token');
+    localStorage.removeItem('toptToken');
     modelRoot.render(
       <>
         <div className="circcontainer">

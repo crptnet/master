@@ -37,7 +37,7 @@ import GetListOfCoins from './listOfCoinsAPI';
 import APiManager from './components/APIManager/KeyPairCreation/APIManager';
 import KeysTable from './components/APIManager/KeysTable/KeysTable'
 
-const serverLink = process.env.REACT_APP_SERVER_DOMAIN || "http://localhost:5000/";
+const serverLink = process.env.REACT_APP_DOMAIN;
 
 const sidebarRoot = ReactDOM.createRoot(document.getElementById('sidebar'));
 const modelRoot = ReactDOM.createRoot(document.getElementById('model'));
@@ -55,7 +55,7 @@ const pathName = window.location.pathname;
   } else if (pathName.includes('/settings/api-keys')) {
     mainRoot.render(<div>
       <APiManager/> 
-      <KeysTable/>
+      {/* <KeysTable/> */}
       </div>);
     sidebarRoot.render(<SideBar active={11} />);
   } else if (pathName.includes('/settings/subscription')) {

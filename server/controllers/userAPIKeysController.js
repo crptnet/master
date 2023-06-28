@@ -186,30 +186,32 @@ function decrypt(encryptedText, iv) {
 
 const deleteKeyPair = async (req, res) => {
   const { keyId } = req.body
-  const keyPair = await APIKeys.findOne({ keyPair_id : keyId }) 
-  if(!keyPair){
-    return res.status(404).send()
+  const userKeyPairs = await APIKeys.findOne({ user_id : req.user.id }) 
+  //console.log(userKeyPairs)
+  if(!userKeyPairs){
+    return res.status(404).send({ message : 'User not found', ok : false, status : 'failed'   })
   }
-  if(keyPair.user_id != req.user.id){
-    return res.status(403).send()
+  if(!(userKeyPairs.keys).find((key) => key.id == keyId)){
+    return res.status(403).send({ message : 'Key not found', ok : false, status : 'failed'   })
   }
   var updatedKeys
   try{
-    updatedKeys = await keyPair.updateOne(
-      { user_id : req.user.id },
+    updatedKeys = await userKeyPairs.updateOne(
       { $pull: { keys: {_id : keyId }  } },
       { new: true }
     );
   }
   catch(err){
-    res.status(400).send({ message : err })
+    res.status(400).send({ message : err, ok : false, status : 'failed' })
   }
-
-  return res.status(200).send(updatedKeys.keys.map((key) => ({
-    publicKey: decrypt(key.publicKey, key.publicIv),
-    id: key.id,
-    market: key.marketId
-  })).sort((a, b) => (a.updatedAt - b.updatedAt)))
+  await UserAssets.deleteOne({ keyPair_id : keyId })
+  res.status(200).send({ status : 'success', ok : true, message : 'success'})
+  
+  // return res.status(200).send((userKeyPairs.keys).map((key) => ({
+  //   publicKey: decrypt(key.publicKey, key.publicIv),
+  //   id: key.id,
+  //   market: key.marketId
+  // })).sort((a, b) => (a.updatedAt - b.updatedAt)))
 }
 
 const screenUserWallet = async () => {
@@ -257,40 +259,17 @@ const screenUserWallet = async () => {
 
 const getWalletHistory = expressAsyncHandler(async (req, res) => {
   const { keyPairId } = req.body;
-  const { timeDifference } = req.query
   const assets = await UserAssets.findOne({ keyPair_id: keyPairId });
   if (!assets) {
-    return res.status(400).send({ message: 'Assets not found' });
+    return res.status(400).send({ message: 'Assets not found', ok : false, status : 'failed' });
   }
 
   if (assets.user_id !== req.user.id) {
-    return res.status(403).send({ message: 'Wrong user found' });
-  }
-
-  // Filter assets based on time difference
-  const filteredAssets = [];
-  let previousRecordTimestamp = null;
-
-  for (const record of assets.assets) {
-    const currentRecordTimestamp = new Date(record.timestamp);
-
-    if (previousRecordTimestamp) {
-      const timeDiff = Math.abs(currentRecordTimestamp - previousRecordTimestamp) / (1000 * 60);
-
-      if (timeDiff >= timeDifference) {
-        filteredAssets.push(record);
-      }
-    }
-
-    previousRecordTimestamp = currentRecordTimestamp;
-  }
-
-  if(!filteredAssets.length && assets.assets[0]){
-    filteredAssets.push(assets.assets[0])
+    return res.status(403).send({ message: 'Wrong user found', ok : false, status : 'failed' });
   }
   
 
-  res.status(200).send({ assets: filteredAssets });
+  res.status(200).send({ ok : true, status : 'success', data: assets });
 });
 
 
@@ -300,8 +279,8 @@ function resetAtMidnight() {
   var night = new Date(
       now.getFullYear(),
       now.getMonth(),
-      now.getDate() + 1, // the next day, ...
-      0, 0, 0 // ...at 00:00:00 hours
+      now.getDate() + 1,
+      0, 0, 0
   );
   var msToMidnight = night.getTime() - now.getTime();
 
