@@ -7,6 +7,7 @@
 5.Settings googleRegistered bug fix                           DONE                       
 6.Fix charts refreshments when data is updated (charts page)  IN PROCESS (IMPLEMENT USESTATE ARRAY BOOKLIST AND LIST OF SYMBOLS)
 7.Output terminal data using Binance Websocket                TO DO
+8.Wallet                                                      IN PROCESS
 */
 
 import React, { useState, useEffect } from 'react';
@@ -27,6 +28,7 @@ import BinanceBTC from './positions/binanceCoins';
 import StarredList from './watchlist/starredList';
 import Terminal from './terminal/terminal';
 import Charts from './charts/charts';
+import Wallet from './wallet/wallet';
 import SubscriptionPage from './components/subscription/subscription';
 import NotFoundPage from './components/notFound/notFound';
 import SubscriptionView from './components/userProfile/subscriptionComponent/subscriptionView';
@@ -71,6 +73,9 @@ const pathName = window.location.pathname;
   } else if (pathName.includes('/starred')) {
     mainRoot.render(<StarredList />);
     sidebarRoot.render(<SideBar active={4} />);
+  } else if (pathName.includes('/wallet')) {
+    mainRoot.render(<Wallet />);
+    sidebarRoot.render(<SideBar active={7} />);
   } else if (pathName.includes('/convert')) {
     mainRoot.render(<Convert />);
     sidebarRoot.render(<SideBar active={8} />);

@@ -288,6 +288,11 @@ function PopUpCheckEmail (email) {
   );
 }
 
+function APIKeysMenu() {
+
+}
+
+
 const SideDiv = (props) => {
   const {id, img, title, status, btn, email} = props;
   return(
@@ -312,7 +317,10 @@ const SideDiv = (props) => {
               {title == 'Email Authentication' && (
                 <button className='sideBtnData' onClick={() => PopUpCheckEmail(email)}>{btn}</button>
               )}
-              {title != 'Email Authentication' && title != 'Reset Email' && title != 'Reset Password' && title != 'Google' && (<button className='sideBtnData' onClick={() => {window.location.href = '/settings/api-keys'}}>{btn}</button>)}
+              {title == 'API management' && (
+                <button className='sideBtnData' onClick={() => APIKeysMenu()}>{btn}</button>
+              )}
+              {title != 'API management' && title != 'Email Authentication' && title != 'Reset Email' && title != 'Reset Password' && title != 'Google' && (<button className='sideBtnData' onClick={() => {window.location.href = '/settings/api-keys'}}>{btn}</button>)}
         </div>
     </div>
   );

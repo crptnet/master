@@ -1,0 +1,223 @@
+.walletContainerOuter {
+    width: calc(100vw - 65px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.changeMonthWallet {
+    width: 50px;
+    position: absolute;
+    right: 0;
+}
+
+.walletContainer {
+    width: calc(100vw - 65px);
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.totalContainerWallet {
+    width: 75vw;
+    text-align: center;
+    background-color: #333333;
+    border-radius: 10px;
+}
+
+.totalContainerWalletInner {
+    width: calc(75vw - 10px);
+    margin: 5px;
+    background-color: #252525;
+    border: 2px;
+    border-radius: 10px;
+}
+
+.chartTopContainerWallet {
+    width: 25vw;
+}
+
+.chartContainerWallet {
+    background-color: #333333;
+    border: 5px solid #333333;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 10px 5px 10px 10px;
+}
+
+#acquisitions {
+    color: #d1d4dc;
+}
+
+.detailedDataContainerWallet {
+    width: 50vw;
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: #333333;
+    border-radius: 10px;
+}
+
+.tradesContainerWallet, .balanceContainerWallet {
+    height: calc(12.5vw - 25px);
+    text-align: center;
+    background-color: #252525;
+    padding: 5px;
+    border-radius: 10px;
+}
+
+.tradesContainerWallet {
+    margin: 0 5px 5px 5px;
+    overflow-y: scroll;
+}
+
+.balanceContainerWallet {
+    margin: 5px;
+    overflow-y: scroll;
+}
+
+.tradesContainerWallet > div, .balanceContainerWallet > div {
+    text-align: center;
+}
+
+.tradesHeaderContainerWallet {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    position: sticky;
+    top: 0;
+    background-color: #333333;
+    border-radius: 10px;
+    box-shadow: 0 0 4px #252525,
+            0 4px 4px #252525,
+            0 -4px 4px #252525,
+            4px 0 4px #252525,
+            -4px 0 4px #252525;
+    font-weight: bold;
+    padding: 10px;
+    z-index: 1;
+}
+
+.coinsHeaderContainerWallet {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    position: sticky;
+    top: 5px;
+    background-color: #333333;
+    border-radius: 10px;
+    box-shadow: 0 0 4px #252525,
+        0 4px 4px #252525,
+        0 -4px 4px #252525,
+        4px 0 4px #252525,
+        -4px 0 4px #252525;
+    font-weight: bold;
+    padding: 10px;
+    z-index: 1;
+}
+
+.tradeContainerWallet {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    background-color: #333333;
+    margin: 5px 0 5px 0;
+    padding: 5px;
+    border-radius: 10px;
+}
+
+.chooseBalancePeriod {
+    position: relative;
+    margin: 5px;
+    padding: 5px;
+    border-radius: 10px;
+    background-color: #333333;
+    cursor: pointer;
+}
+
+.innerBalancePeriod {
+    width: calc(50vw - 60px);
+    display: none;
+}
+
+.chooseBalancePeriod:hover+.innerBalancePeriod, .innerBalancePeriod:hover {
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    z-index: 1;
+}
+
+.innerBalancePeriod>button {
+    margin: 10px;
+    padding: 5px;
+    color: #d1d4dc;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.innerBalancePeriod > button:hover {
+    color: #d1d4dc;
+    font-size: 1.1rem;
+    font-weight: bold;
+    background-color: #333333;
+}
+
+.coinContainerWallet {
+    width: calc(75vw - 30px);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    background-color: #333333;
+    margin: 5px 0 5px 0;
+    padding: 5px;
+    border-radius: 10px;
+}
+
+.totalTitleWallet, .balanceTitleWallet, .tradesTitleWallet, .coinsTitleWallet {
+    padding: 10px;
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+
+.totalAmountWallet {
+    padding: 5px;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.ownedCoinsWallet {
+    width: calc(75vw - 10px);
+    max-height: 200px;
+    margin: 5px 10px 10px 10px;
+    background-color: #333333;
+    border: 5px solid #333333;
+    border-radius: 10px;
+    text-align: center;
+    overflow-y: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: 0;
+}
+
+.coinsContainerWalletInner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: calc(75vw - 10px);
+    background-color: #252525;
+    border-radius: 10px;
+}
+
+.tradesContainerWallet::-webkit-scrollbar, .ownedCoinsWallet::-webkit-scrollbar, .balanceContainerWallet::-webkit-scrollbar {
+    display: none;
+}
+
+.monthChangeContainerWallet, .monthExpendsContainerWallet, .monthRaiseContainerWallet {
+    font-size: 1.1rem;
+    padding: 5px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    justify-content: space-between;
+    text-align: left;
+}
