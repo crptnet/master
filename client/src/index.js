@@ -5,9 +5,9 @@
 3.Fix terminal bookmarks (page update)                        DONE
 4.Websocket price update                                      DONE
 5.Settings googleRegistered bug fix                           DONE                       
-6.Fix charts refreshments when data is updated (charts page)  IN PROCESS (IMPLEMENT USESTATE ARRAY BOOKLIST AND LIST OF SYMBOLS)
-7.Output terminal data using Binance Websocket                TO DO
-8.Wallet                                                      IN PROCESS
+6.Fix charts refreshments when data is updated (charts page)  UNREAL WITHOUT LIBRARY
+7.Output terminal data using Binance Websocket                POSTPONED TILL OWN API
+8.Wallet                                                      DONE
 */
 
 import React, { useState, useEffect } from 'react';
@@ -24,6 +24,7 @@ import NotRegistered from './settings/notRegistered';
 import MainUserData from './settings/mainUserData';
 import SideUserData from './settings/sideUserData';
 import Convert from './convert/convert';
+import Faq from './faq/faq';
 import BinanceBTC from './positions/binanceCoins';
 import StarredList from './watchlist/starredList';
 import Terminal from './terminal/terminal';
@@ -79,6 +80,9 @@ const pathName = window.location.pathname;
   } else if (pathName.includes('/convert')) {
     mainRoot.render(<Convert />);
     sidebarRoot.render(<SideBar active={8} />);
+  } else if (pathName.includes('/faq')) {
+    mainRoot.render(<Faq />);
+    sidebarRoot.render(<SideBar active={9} />);
   } else if (pathName.includes('/settings')) {
     sidebarRoot.render(<SideBar active={11} />);
     if (!localStorage.getItem('token')) {
