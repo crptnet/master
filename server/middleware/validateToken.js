@@ -18,7 +18,8 @@ const validateToken = asyncHandler(async (req, res, next) => {
       req.user = decoded.user;
     })
     if(verifyErr){
-      throw verifyErr
+      res.status(400)
+      return res.send({message : verifyErr.message})
     }
 
     if(!(await user.findById(req.user.id))){

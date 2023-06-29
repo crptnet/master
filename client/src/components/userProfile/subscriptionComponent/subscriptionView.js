@@ -16,10 +16,13 @@ const _SubscriptionView = () => {
                 headers : {
                   Authorization : `Bearer ${localStorage.getItem('token')}`
                 }
-              })
-              setStatus(response.data.status)
-              setPlan(response.data.plan)
-              setExpDate(response.data.current_period_end)
+            })
+            setStatus('ended')
+            if(!response.data.period_ended){
+                setStatus(response.data.status)
+            }
+            setPlan(response.data.plan)
+            setExpDate(response.data.current_period_end)
         }
         FetchSubData()
     }, [])
@@ -58,8 +61,11 @@ const _SubscriptionView = () => {
           ];
           if(status === 'cancelled'){
             return <div>Expires in {getRelativeTime(expDate * 1000)} {sadEmojis[Math.floor(Math.random() * sadEmojis.length)]}<b/><p>Cancelled</p></div>
-
           }
+          if(status == 'ended'){
+              return <div>Expired</div>
+          }
+          
           return <div>Expires in {getRelativeTime(expDate * 1000)} {sadEmojis[Math.floor(Math.random() * sadEmojis.length)]}</div>
         }
 

@@ -5,7 +5,7 @@ const crypto = require('crypto');
 const binanceApi = require('node-binance-api')
 const User = require('../models/userModel')
 const markets = ['Binance'];
-const UserAssets = require('../models/userAssets')
+const UserAssets= require('../models/userAssets')
 const util = require('util');
 
 
@@ -131,7 +131,7 @@ const getWallet = async (req, res) => {
     APISECRET: privateKey,
     'family': 4,
   });
-
+  console.log({ user_id : req.user_id, publicKey, privateKey})
   await binanceAcount.useServerTime();
   binanceAcount.balance((error, balances) => {
       if ( error ){
@@ -256,7 +256,6 @@ const screenUserWallet = async () => {
     }
   }
 };
-
 const getWalletHistory = expressAsyncHandler(async (req, res) => {
   const { keyPairId } = req.body;
   const assets = await UserAssets.findOne({ keyPair_id: keyPairId });
@@ -269,10 +268,8 @@ const getWalletHistory = expressAsyncHandler(async (req, res) => {
   }
   
 
-  res.status(200).send({ ok : true, status : 'success', data: assets });
+  res.status(200).send({  ok : true, status : 'success', data: assets, spend : 'undefined' });
 });
-
-
 
 function resetAtMidnight() {
   var now = new Date();
