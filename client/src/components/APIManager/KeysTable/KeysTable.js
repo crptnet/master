@@ -115,7 +115,7 @@ const KeysTable = () => {
                           </header>
                           <Box className="dialog-description-container">
                             <Box className="dialog-description">
-                              Are you sure you want to delete API key pair. If you procced you can lose some all content linked to the key pair.
+                              Are you sure you want to delete API key pair. If you procced you can lose  all content linked to the key pair.
                             </Box>
                           </Box>
                           <footer className="submit-buttons">

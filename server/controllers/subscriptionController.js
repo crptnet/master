@@ -75,25 +75,25 @@ const stripeWebhook = asyncHandler(async (req, res) => {
 })
 
 const getSubscription = asyncHandler(async (req, res) => {
-  const customer = await userSubscriptions.findById(req.customer)
-  if(req.subscription.current_period_end < (new Date).now){
-    await customer.updateOne({}, {active : 'expired'})
-  }
-  const priceId = req.subscription.plan.id
-  //return res.send(req.subscription)
-  res.send({
-    id : req.subscription.id,
-    object : req.subscription.object,
-    plan : customer.Plan,
-    status : customer.active,
-    interval : (await stripe.prices.retrieve(priceId)).recurring.interval,
-    created : req.subscription.created,
-    current_period_end : req.subscription.current_period_end,
-    period_ended : Math.floor(Date.now() / 1000) > customer.endDate ? true : false,
-    canceled_at : req.subscription.canceled_at,
-    cancel_at_period_end : req.subscription.cancel_at_period_end,
-    start_date : req.subscription.start_date,
-  })
+    const customer = await userSubscriptions.findById(req.customer)
+    if(req.subscription.current_period_end < (new Date).now){
+        await customer.updateOne({}, {active : 'expired'})
+    }
+    const priceId = req.subscription.plan.id
+    //return res.send(req.subscription)
+    res.send({
+        id : req.subscription.id,
+        object : req.subscription.object,
+        plan : customer.Plan,
+        status : customer.active,
+        interval : (await stripe.prices.retrieve(priceId)).recurring.interval,
+        created : req.subscription.created,
+        current_period_end : req.subscription.current_period_end,
+        period_ended : Math.floor(Date.now() / 1000) > customer.endDate ? true : false,
+        canceled_at : req.subscription.canceled_at,
+        cancel_at_period_end : req.subscription.cancel_at_period_end,
+        start_date : req.subscription.start_date,
+    })
 })
 
 const canceleSubscription = asyncHandler(async (req, res) => {

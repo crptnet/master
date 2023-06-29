@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { serverLink } from '../..'
-/**
+ /**
  * @param invokeTotp use when component works with TOTP Token 
  * Returns axios response.data in case of success
  * If error returns axios response.response

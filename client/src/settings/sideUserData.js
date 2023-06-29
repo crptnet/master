@@ -6,6 +6,7 @@ import SideUserBtns from './sideUserBtns';
 import MainUserData from './mainUserData';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import Google from './google';
+import {fetchAPIKeys} from "../components/Fetchs/FetchAPIKeys";
 
 function SideUserData () {
 const [openEmailChange, setOpenEmailChange] = useState(false);
@@ -48,7 +49,7 @@ const getData = async () => {
 
 const requestChangeEmail = async () => {
   try {
-    console.log(JSON.stringify({email:newEmail}));
+    // console.log(JSON.stringify({email:newEmail}));
     const headersList = {
       "Authorization": `Bearer ${localStorage.getItem('token')}`,
       "Content-Type": 'application/json'
@@ -60,7 +61,6 @@ const requestChangeEmail = async () => {
         headers: headersList
       });
       const userData = response;
-      console.log("update request:", userData);
       let errorStatus = response.status;
       if(errorStatus != 200)
       {
@@ -77,7 +77,7 @@ const requestChangeEmail = async () => {
       {
         errorPosSide.current = "";
       }
-      console.log("ERROR WITH EMAIL:",errorPosSide.current);
+      // console.log("ERROR WITH EMAIL:",errorPosSide.current);
       setErrorContentSide(errorPosSide.current);
     }
   } catch (error) {
@@ -89,7 +89,7 @@ useEffect(() => {
   const requestChangeCode = async () => {
     if (newCode.length == 6 && sendCode) {
       try {
-        console.log(JSON.stringify({code:newCode}));
+        // console.log(JSON.stringify({code:newCode}));
         const headersList = {
           "Authorization": `Bearer ${localStorage.getItem('token')}`,
           "Content-Type": 'application/json'
@@ -102,7 +102,7 @@ useEffect(() => {
           });
           const userData = response;
           setSendCode(false);
-          console.log("MESSAGE WITH ERROR:",response);
+          // console.log("MESSAGE WITH ERROR:",response);
           let errorStatus = response.status;
           if(errorStatus != 200)
           {
@@ -146,7 +146,7 @@ useEffect(() => {
 
 const requestChangePassword = async () => {
   try {
-    console.log(JSON.stringify({currecntPassword:oldPassword,password:newPassword}));
+    // console.log(JSON.stringify({currecntPassword:oldPassword,password:newPassword}));
     const headersList = {
       "Authorization": `Bearer ${localStorage.getItem('token')}`,
       "Content-Type": 'application/json'
@@ -289,9 +289,8 @@ function PopUpCheckEmail (email) {
 }
 
 function APIKeysMenu() {
-
+    window.location = '/settings/api-keys'
 }
-
 
 const SideDiv = (props) => {
   const {id, img, title, status, btn, email} = props;
@@ -330,6 +329,7 @@ const SideButtons = () => {
   const [email, setEmail] = useState('Not Registered');
   const [username, setUsername] = useState('Not Registered');
   const [active, setActive] = useState('Not Registered');
+  const [APIKeysAdded, setAPIKeysAdded] = useState(0)
   useEffect(() => {
     const fetchData = async () => {
       const data = await getData();
@@ -340,13 +340,16 @@ const SideButtons = () => {
         setGoogleActive(data.googleActive);
       }
     };
+    fetchAPIKeys().then((res) => {
+      setAPIKeysAdded(res.data.length)
+    })
     fetchData();
   }, [username, email, active, googleActive]);
-
+  
   return SideUserBtns.map((element) => {
     if(googleActive==false||(element.title != 'Reset Email'&&element.title!='Reset Password'&&element.title!='Google'&&element.title!='Email Authentication'))
     {
-      return <SideDiv key={element.id} img={element.img} title={element.title} status={element.title=='Email Authentication'?(active?'Bound':'Un Bound'):element.status} btn={element.title=='Email Authentication'?(active?'Un Bind':'Bind'):element.btn} email={email}></SideDiv>;
+      return <SideDiv id={element.id} img={element.img} title={element.title} status={element.title=='Email Authentication'?(active?'Bound':'Un Bound'): element.id == 5 ? `${APIKeysAdded} ${APIKeysAdded == 1 ? 'key' : 'keys'} added` :element.status} btn={element.title=='Email Authentication'?(active?'Un Bind':'Bind'):element.btn} email={email}></SideDiv>;
     }
     return;
   });

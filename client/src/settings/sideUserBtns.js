@@ -35,7 +35,7 @@ const SideUserBtns = [
         id: 5,
         img: './icons/terminal_dark.png',
         title: 'API management', 
-        status: '0 keys added',
+        status: '',
         btn: 'API Key'
     }
 ];

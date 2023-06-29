@@ -9,7 +9,6 @@ const { UpdataInfoRun } = require('./controllers/coinSocketController');
 const { resetAtMidnight } = require('./controllers/userAPIKeysController');
 const onConnection = require('./config/socket.io');
 
-
 const httpServer = require('http').createServer(app);
 
 const corsOptions = {
@@ -33,6 +32,7 @@ app.use(cors(corsOptions));
 
 connectToDb();
 UpdataInfoRun(io);
+
 
 
 app.use((req, res, next) => {

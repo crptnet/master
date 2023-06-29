@@ -3,6 +3,7 @@ const stripe = require('stripe')(process.env.STRIPE_KEY)
 
 const subscriptionValidation = async (req, res, next) => {
     const customer = (await userSubscriptions.findOne({ user_id : req.user.id }))
+    console.log('Got validation')
     if(!customer){
         return res.status(500).json({ message : 'Customer not found'})
     }

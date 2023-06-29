@@ -7,24 +7,29 @@ import NotRegistered from './notRegistered';
 import './settings.css';
 
 const getData = async () => {
-  try {
-    const headersList = {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${localStorage.getItem('token')}`,
-    };
-    if (localStorage.getItem('token')) {
-      const response = await fetch(`${serverLink}api/current`, {
-        method: 'GET',
-        headers: headersList,
-      });
-      const userData = await response.json();
-      return userData;
-    } else {
-      return { email: 'Unauthorized', password: 'Unauthorized' };
+  const headersList = {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${localStorage.getItem('token')}`,
+  };
+  
+  if (localStorage.getItem('token')) {
+    const response = await fetch(`${serverLink}api/current`, {
+      method: 'GET',
+      headers: headersList,
+    });
+    const userData = await response.json();
+    if(response.status != 200){
+      console.error(response)
+      if(userData.message == 'TokenExpiredError: jwt expired'){
+        window.location.reload()
+      }
     }
-  } catch (error) {
-    console.error(error);
+    return userData;
+  } 
+  else {
+    return { email: 'Unauthorized', password: 'Unauthorized' };
   }
+
 };
 
 function MainUserData() {
