@@ -7,7 +7,7 @@ const Btn = (props) => {
   const {id, img, title} = props.btn;
   return(
     <a href={`../${title.toLowerCase()}`} className={`sideBtn ${props.active == true ? 'activeSideBtn' : ''}`}>
-      <h1 className='sidebarBtnTitle'>{title}</h1> 
+      <h1>{title}</h1> 
       <img src={img} />
     </a>
   );
