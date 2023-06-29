@@ -20,6 +20,7 @@ body {
   position: fixed;
   background-color: #333333;
   text-align: center;
+  z-index: 9999;
 }
 .logo img {
   width: 50px;
@@ -34,6 +35,10 @@ body {
   align-items: center;
 }
 .sideBtn {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  align-items: center;
+  place-items: center;
   width: 50px;
   padding: 5px;
   color: #d1d4dc;
@@ -42,13 +47,31 @@ body {
   border-radius: 5px;
   font-size: 0.33rem;
   cursor: pointer;
+  overflow: hidden;
 }
-.sideBtn:hover {
-  background-color: #4682B4;
-}
+
 .activeSideBtn{
   background-color: #4682B4;
 }
 .sideBtn img {
   width: 30px;
+  float: right;
+}
+
+.sideBtn:hover {
+  grid-template-columns: repeat(2, 1fr);
+  width: 90px;
+  transform: translate(30px);
+  transition: all 0.3s ease-in-out;
+}
+
+.sidebarBtnTitle {
+  display: none;
+  opacity: 0;
+}
+
+.sideBtn:hover h1 {
+  transition: opacity 2s ease-in-out;
+  opacity: 1;
+  display: block;
 }

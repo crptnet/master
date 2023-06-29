@@ -29,12 +29,12 @@ export const sidebtns = [
         title: 'Bots'
     }
     ,
-    {
-        id: 6,
-        img: 'https://3.8.190.201.nip.io/upload/history_dark.png',
-        title: 'History'
-    }
-    ,
+    // {
+    //     id: 6,
+    //     img: 'https://3.8.190.201.nip.io/upload/history_dark.png',
+    //     title: 'History'
+    // }
+    // ,
     {
         id: 7,
         img: 'https://3.8.190.201.nip.io/upload/wallet_dark.png',
