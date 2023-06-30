@@ -15,6 +15,7 @@ import { io } from 'socket.io-client';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import './settings/settings.css';
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import SideBar from './sidebar/sideBar';
 import Main from './main/main';
 import ActiveAccountPage from './settings/active';
@@ -36,64 +37,93 @@ import SubscriptionView from './components/userProfile/subscriptionComponent/sub
 
 import GetListOfCoins from './listOfCoinsAPI';
 import APiManager from './components/APIManager/KeyPairCreation/APIManager';
-import KeysTable from './components/APIManager/KeysTable/KeysTable'
+import KeysTable from './components/APIManager/KeysTable/KeysTable';
 
 const serverLink = process.env.REACT_APP_DOMAIN || 'http://localhost:5000/';
+const pathName = window.location.pathname;
 
 const sidebarRoot = ReactDOM.createRoot(document.getElementById('sidebar'));
 const modelRoot = ReactDOM.createRoot(document.getElementById('model'));
 const mainRoot = ReactDOM.createRoot(document.getElementById('main'));
 
-const pathName = window.location.pathname;
-  console.log(pathName);
-  console.log(serverLink)
-  if (pathName.includes('/activate')) {
-    mainRoot.render(<ActiveAccountPage location={window.location} />);
-  } else if (pathName.includes('/reset-email')) {
-    mainRoot.render(<ResetEmailPage location={window.location} />);
-  } else if (pathName.includes('/password-reset')) {
-    mainRoot.render(<ResetPasswordPage location={window.location} />);
-  } else if (pathName.includes('/settings/api-keys')) {
-    mainRoot.render(<div>
-      <APiManager/> 
-      {/* <KeysTable/> */}
-      </div>);
-    sidebarRoot.render(<SideBar active={11} />);
-  } else if (pathName.includes('/settings/subscription')) {
-    mainRoot.render(<SubscriptionPage />);
-    sidebarRoot.render(<SideBar active={11} />);
-  } else if (pathName.includes('/terminal')) {
-    mainRoot.render(<Terminal />);
-    sidebarRoot.render(<SideBar active={1} />);
-  } else if (pathName.includes('/charts')) {
-    mainRoot.render(<Charts />);
-    sidebarRoot.render(<SideBar active={2} />);
-  } else if (pathName.includes('/list')) {
-    mainRoot.render(<BinanceBTC />);
-    sidebarRoot.render(<SideBar active={3} />);
-  } else if (pathName.includes('/starred')) {
-    mainRoot.render(<StarredList />);
-    sidebarRoot.render(<SideBar active={4} />);
-  } else if (pathName.includes('/wallet')) {
-    mainRoot.render(<Wallet />);
-    sidebarRoot.render(<SideBar active={7} />);
-  } else if (pathName.includes('/convert')) {
-    mainRoot.render(<Convert />);
-    sidebarRoot.render(<SideBar active={8} />);
-  } else if (pathName.includes('/faq')) {
-    mainRoot.render(<Faq />);
-    sidebarRoot.render(<SideBar active={9} />);
-  } else if (pathName.includes('/settings')) {
-    sidebarRoot.render(<SideBar active={11} />);
-    if (!localStorage.getItem('token')) {
-      mainRoot.render(<NotRegistered />);
-    } else {
-      mainRoot.render(<><MainUserData /><SideUserData /> <SubscriptionView/></>);
-    }
+const SettingsRoute = () => {
+  const token = localStorage.getItem('token');
+
+  if (token) {
+    return (
+      <>
+        <MainUserData />
+        <SideUserData />
+        <SubscriptionView />
+      </>
+    );
   } else {
-    modelRoot.render(<NotFoundPage />);
+    return <NotRegistered />;
   }
+};
 
-export {serverLink};
+const router = createBrowserRouter([
+  {
+    element:<ActiveAccountPage />,
+    path:"/activate"
+  },
+  {
+    element:<ResetEmailPage />,
+    path:"/reset-email"
+  },
+  {
+    element:<ResetPasswordPage />,
+    path:"/password-reset"
+  },
+  {
+    element:<APiManager />,
+    path:"/settings/api-keys"
+  },
+  {
+    element:<SubscriptionPage />,
+    path:"/settings/subscription"
+  },
+  {
+    element:<Terminal />,
+    path:"/terminal"
+  },
+  {
+    element:<Charts />,
+    path:"/charts"
+  },
+  {
+    element:<BinanceBTC />,
+    path:"/list"
+  },
+  {
+    element:<StarredList />,
+    path:"/starred"
+  },
+  {
+    element:<Wallet />,
+    path:"/wallet"
+  },
+  {
+    element:<Convert />,
+    path:"/convert"
+  },
+  {
+    element:<Faq />,
+    path:"/faq"
+  },
+  { 
+    element:<SettingsRoute />,
+    path: "/settings"
+  },
+  {
+    element:<NotFoundPage />,
+    path:"*"
+  }
+]);
 
-export {sidebarRoot,mainRoot,modelRoot};
+sidebarRoot.render(<SideBar active={pathName} />);
+mainRoot.render(<RouterProvider router={router} />);
+modelRoot.render(null);
+
+export { serverLink };
+export { sidebarRoot, mainRoot, modelRoot };

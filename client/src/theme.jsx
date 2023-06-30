@@ -20,12 +20,11 @@ const darkTheme = createTheme({
     components : {
         MuiStepLabel : {
             styleOverrides : {
-                disabled : {
-                    color : 'white'
-                },
-                root : {
-                    color : 'white'
-                },
+              "root": {
+                "&.Mui-disabled": {
+                  "color": "white"
+                }
+              }
             }
         },
         MuiTableHead : {

@@ -238,12 +238,20 @@ tr.blueHigh {
 }
 
 .listHeaderList {
+    position: fixed;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     font-weight: bold;
-}
+    box-shadow: 0 0 4px #252525,
+            0 4px 4px #252525,
+            0 -4px 4px #252525,
+            4px 0 4px #252525,
+            -4px 0 4px #252525;
+    background-color: #252525;
+    z-index: 1000;
+    }
 
 .searchSortListOuter {
     width: calc(100vw - 80px);
@@ -259,6 +267,7 @@ tr.blueHigh {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    margin-top: 65px;
 }
 
 .input-search-list {
