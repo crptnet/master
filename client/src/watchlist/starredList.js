@@ -11,7 +11,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { io } from 'socket.io-client';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import GetListOfCoins from '../listOfCoinsAPI';
-import { mainRoot, modelRoot, sidebarRoot, serverLink } from '../index';
+import { mainRoot, modelRoot, model2Root, sidebarRoot, serverLink } from '../index';
 import ReactPaginate from 'react-paginate';
 
 const StarredList = () => {
@@ -372,6 +372,41 @@ useEffect(() => {
       modelRoot.render(<Overlay />);
     }
   }, [showOverlay, filteredData, coinsPerPage, currentPage])
+
+  const cancelForwardingSettings = () => {
+    model2Root.render(<></>);
+  }
+
+  const addFirstWatchList = () => {
+    if(localStorage.getItem('token')) {
+      setShowOverlay(true);
+    } else {
+      model2Root.render(
+        <>
+          <div
+            className="forward-settings-container"
+            style={{ display: open ? 'block' : 'none' }}
+          >
+            <div className="delete-content">
+              <img src="./icons/logo.png" alt="crpt.net" />
+              <p className="delete-title">
+                To enable own watchlist you should create an account first.
+              </p>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <a href='../settings' className="forwardConfirmBtn">
+                  Create
+                </a>
+                <button onClick={()=>{cancelForwardingSettings()}} className="deleteCancelBtn">
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
+      );
+    }
+  }
+
   function Overlay() {
     console.log("?")
         useEffect(() => {
@@ -445,7 +480,7 @@ useEffect(() => {
                         </button>
                       ))}
                   </div>
-                  {watchList.length>0 ? <button className="addNewToWatchList" onClick={()=>{setShowOverlay(true)}}>Click to add a new coin to WatchList</button> : <button className="addNewToWatchList" onClick={()=>{setShowOverlay(true)}}>It seems to be empty here. Click to create your WatchList</button>}
+                  {watchList.length>0 ? <button className="addNewToWatchList" onClick={()=>{setShowOverlay(true)}}>Click to add a new coin to WatchList</button> : <button className="addNewToWatchList" onClick={()=>{addFirstWatchList()}}>It seems to be empty here. Click to create your WatchList</button>}
                   
                   {/*SERVER IMPROVEMENTS NEEDED TO BE DONE*/}
                   {/* <div className="pagination">

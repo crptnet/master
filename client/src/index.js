@@ -44,6 +44,7 @@ const pathName = window.location.pathname;
 
 const sidebarRoot = ReactDOM.createRoot(document.getElementById('sidebar'));
 const modelRoot = ReactDOM.createRoot(document.getElementById('model'));
+const model2Root = ReactDOM.createRoot(document.getElementById('model2'));
 const mainRoot = ReactDOM.createRoot(document.getElementById('main'));
 
 const SettingsRoute = () => {
@@ -126,4 +127,4 @@ mainRoot.render(<RouterProvider router={router} />);
 modelRoot.render(null);
 
 export { serverLink };
-export { sidebarRoot, mainRoot, modelRoot };
+export { sidebarRoot, mainRoot, modelRoot, model2Root };

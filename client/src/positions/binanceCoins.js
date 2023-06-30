@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { io } from 'socket.io-client';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import GetListOfCoins from '../listOfCoinsAPI';
-import { mainRoot, modelRoot, sidebarRoot, serverLink } from '../index';
+import { mainRoot, modelRoot, model2Root, sidebarRoot, serverLink } from '../index';
 import ReactPaginate from 'react-paginate';
 
 const BinanceBTC = () => {
@@ -224,31 +224,60 @@ const Pagination = () => {
             </div>
           );
         };
+        const cancelForwardingSettings = () => {
+          model2Root.render(<></>);
+        }
         const changeWatchlist = async (action,symbol) => {
-          const method = action=="add" ? 'POST' : 'DELETE';
-          try {
-            const headersList = {
-              "Accept": "*/*",
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${localStorage.getItem('token')}`,
-            };
-            
-            if(localStorage.getItem('token')) {
-              const item = JSON.stringify({symbol: symbol});
-              console.log(item)
-              const response = await fetch(`${serverLink}api/watchList/${action}`, {
-                method: method,
-                body: item,
-                headers: headersList
-              });
-              const userData = await response.json();
-              getWatchList();
-              return userData;
-            } else {
-              console.error("User is not registered");
+          if(localStorage.getItem('token')) {
+            const method = action=="add" ? 'POST' : 'DELETE';
+            try {
+              const headersList = {
+                "Accept": "*/*",
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${localStorage.getItem('token')}`,
+              };
+              
+              if(localStorage.getItem('token')) {
+                const item = JSON.stringify({symbol: symbol});
+                console.log(item)
+                const response = await fetch(`${serverLink}api/watchList/${action}`, {
+                  method: method,
+                  body: item,
+                  headers: headersList
+                });
+                const userData = await response.json();
+                getWatchList();
+                return userData;
+              } else {
+                console.error("User is not registered");
+              }
+            } catch (error) {
+              console.error(error);
             }
-          } catch (error) {
-            console.error(error);
+          } else {
+            model2Root.render(
+              <>
+                <div
+                  className="forward-settings-container"
+                  style={{ display: open ? 'block' : 'none' }}
+                >
+                  <div className="delete-content">
+                    <img src="./icons/logo.png" alt="crpt.net" />
+                    <p className="delete-title">
+                      To enable own watchlist you should create an account first.
+                    </p>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <a href='../settings' className="forwardConfirmBtn">
+                        Create
+                      </a>
+                      <button onClick={()=>{cancelForwardingSettings()}} className="deleteCancelBtn">
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </>
+            );
           }
         }
 
