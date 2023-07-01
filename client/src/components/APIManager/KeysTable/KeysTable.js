@@ -70,7 +70,7 @@ const KeysTable = () => {
         <TableContainer component={Paper} sx={tableContainerSx}>
           <Table  aria-label="simple table">
             {
-              rows.length == 0 ?
+              rows!=undefined && rows.length == 0 ?
               <caption style={{textAlign : 'center', color : '#d1d4dc', fontWeight : 'bold'}}>
                 It seems that you have not added any key yet. Go on and add one to use full functional of the site
               </caption>
@@ -87,9 +87,7 @@ const KeysTable = () => {
             </TableHead>
             <TableBody>
               {
-              rows.length == 0 ?
-                null
-              :
+              rows!=undefined && rows.length == 0 &&
               rows.map((row, index) => (
                 <TableRow
                   key={index + 1}
