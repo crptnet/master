@@ -12,13 +12,13 @@ const onConnection = require('./config/socket.io');
 const httpServer = require('http').createServer(app);
 
 const corsOptions = {
-  origin: ['http://localhost:3000', 'http://3.8.190.201.nip.io', 'http://3.8.190.201'],
+  origin: ['http://localhost:3000', 'http://4.210.226.112.nip.io/', 'http://4.210.226.112.nip.io/'],
   credentials: false,
   optionSuccessStatus: 200,
 };
 const io = require('socket.io')(httpServer, {
   cors: {
-    origin: ['http://localhost:3000', 'http://3.8.190.201.nip.io', 'http://3.8.190.201'],
+    origin: ['http://localhost:3000', 'http://4.210.226.112.nip.io/', 'http://4.210.226.112.nip.io/']
     credentials: true,
   },
 });
