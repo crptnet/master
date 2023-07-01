@@ -186,8 +186,7 @@ function decrypt(encryptedText, iv) {
 
 const deleteKeyPair = async (req, res) => {
   const { keyId } = req.body
-  const userKeyPairs = await APIKeys.findOne({ user_id : req.user.id }) 
-  //console.log(userKeyPairs)
+  const userKeyPairs = await APIKeys.findOne({ user_id : req.user.id })
   if(!userKeyPairs){
     return res.status(404).send({ message : 'User not found', ok : false, status : 'failed'   })
   }
@@ -214,47 +213,53 @@ const deleteKeyPair = async (req, res) => {
   // })).sort((a, b) => (a.updatedAt - b.updatedAt)))
 }
 
-const screenUserWallet = async () => {
-  const userIds = await User.find({}, '_id');
-  
-  for (const user of userIds) {
-    const keys = (await APIKeys.findOne({ user_id: user._id }))?.keys;
-    if (keys) {
-      for (const keyPair of keys) {
-        const binanceAccount = new binanceApi().options({
-          APIKEY: decrypt(keyPair.publicKey, keyPair.publicIv),
-          APISECRET: decrypt(keyPair.privateKey, keyPair.privateIv),
-          'family': 4,
-        });
-        
-        const balancePromise = util.promisify(binanceAccount.balance.bind(binanceAccount));
-        const balances = await balancePromise();
-        
-        const data = Object.entries(balances)
-          .filter(([key, value]) => parseFloat(value.available) + parseFloat(value.onOrder) > 0)
-          .map(([key, value]) => ({
-            asset: key,
-            available: String(value.available),
-            onOrder: String(value.onOrder)
-          }));
-        
-        const assets = await UserAssets.findOne({ keyPair_id: keyPair._id });
+const screenUserWallet = async (keys) => {
+  console.log(keys)
+  for (const keyPair of keys) {
+    const binanceAccount = new binanceApi().options({
+      APIKEY: decrypt(keyPair.publicKey, keyPair.publicIv),
+      APISECRET: decrypt(keyPair.privateKey, keyPair.privateIv),
+      'family': 4,
+    });
 
-        if (!assets) {
-          const newAsset = new UserAssets({ user_id: user._id, keyPair_id: keyPair._id, assets: [{ date: data }] });
-          await newAsset.save();
-          continue;
-        }
-        
-        try {
-          await assets.updateOne({ $push: { assets: [{ date: data }] } }, { new : true } );
-        } catch (err) {
-          console.log(err);
-        }
-        
-      }
+    const balancePromise = util.promisify(binanceAccount.balance.bind(binanceAccount));
+    const balances = await balancePromise();
+
+    const data = Object.entries(balances)
+        .filter(([key, value]) => parseFloat(value.available) + parseFloat(value.onOrder) > 0)
+        .map(([key, value]) => ({
+          asset: key,
+          available: String(value.available),
+          onOrder: String(value.onOrder)
+        }));
+
+    const assets = await UserAssets.findOne({ keyPair_id: keyPair._id });
+
+    if (!assets) {
+      const newAsset = new UserAssets({ user_id: user._id, keyPair_id: keyPair._id, assets: [{ date: data }] });
+      await newAsset.save();
+      continue;
+    }
+    
+    try {
+      await assets.updateOne({ $push: { assets: [{ date: data }] } }, { new : true } );
+    } 
+    catch (err) {
+      console.log(err);
     }
   }
+  
+}
+
+const screenUserWallets = async () => {
+  const userIds = await User.find({}, '_id');
+  for (const user of userIds) {
+    const keys = (await APIKeys.findOne({ user_id: user._id }))?.keys;
+    if(keys){
+      await screenUserWallet(keys)
+    }
+  }
+  
 };
 const getWalletHistory = expressAsyncHandler(async (req, res) => {
   const { keyPairId } = req.body;
@@ -282,10 +287,12 @@ function resetAtMidnight() {
   var msToMidnight = night.getTime() - now.getTime();
 
   setTimeout(function() {
-      screenUserWallet();              //      <-- This is the function being called at midnight.
-      resetAtMidnight();    //      Then, reset again next midnight.
+      screenUserWallets();
+      resetAtMidnight(); 
   }, msToMidnight);
 }
+
+screenUserWallets()
 
 module.exports = {
   getWalletHistory,
