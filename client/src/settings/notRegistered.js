@@ -12,6 +12,7 @@ const NotRegistered = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showUsernameInput, setShowUsernameInput] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const containerClass = showUsernameInput ? "register" : "login";
 
   const [moveToRecover, setMoveToRecover] = useState('');
@@ -128,6 +129,9 @@ const NotRegistered = () => {
     const userData = JSON.stringify({ username, email, password });
     if (username === '' || email === '' || password === '') {
       errorPos.current='Every field should be filled';
+    }
+    if(!acceptedTerms) {
+      errorPos.current='Accept terms & conditions';
     }
     console.log(userData);
     console.log('error:',errorPos.current);
@@ -268,6 +272,15 @@ const NotRegistered = () => {
     setShowUsernameInput(true);
   }
 
+  const acceptConditions = () => {
+    if(acceptedTerms) {
+      setAcceptedTerms(false);
+    } else {
+      setAcceptedTerms(true);
+    }
+    
+  }
+
     return (
       <div className={containerClass}>
         <img src='./icons/logo.png'/>
@@ -286,6 +299,9 @@ const NotRegistered = () => {
           <p className='passwordLoginTitle'>Password</p>
           <input type='password' name='password' value={password} onChange={handleChange} placeholder='Examp1e' className='passwordLoginInput'/>
         </div>
+        {showUsernameInput && ( 
+          <button className={`acceptContidionsTitle appear-from-bottom ${acceptedTerms ? 'acceptedTerms' : 'notAcceptedTerms'}`} onClick={()=>{acceptConditions()}}>{acceptedTerms&&'Terms & Conditions Accepted'}{!acceptedTerms&&'Accept Terms & Conditions'}</button>
+        )}
         <div className="haveAcc">
           <p className='haveAccTitle'>Forgot your password?</p>
           <button className='haveAccBtn' onClick={()=>setMoveToRecover(true)}>Recover</button>
@@ -308,7 +324,7 @@ const NotRegistered = () => {
             </>
           )
         }
-        <div>
+        <div className='googleSignIn'>
           <GoogleOAuthProvider clientId="22208776050-nv7hj7qppl8h39vpl9gkq31utgj43op8.apps.googleusercontent.com">
             <Google />
           </GoogleOAuthProvider>

@@ -1,0 +1,203 @@
+.helpContainerOuter {
+    width: 75vw;
+    margin: 10px;
+    background-color: #333333;
+    border-radius: 10px;
+}
+
+.helpContainerOuter > div {
+    width: calc(75vw - 20px);
+    margin: 5px;
+    padding: 5px;
+    background-color: #252525;
+    border-radius: 10px;
+}
+
+.helpTitle {
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+.helpSector {
+    display: flex;
+    height: fit-content;
+}
+
+.helpNum {
+    padding: 10px;
+    font-size: 2rem;
+    white-space: nowrap;
+    writing-mode: vertical-lr;
+    width: fit-content;
+    background-color: #4682B4;
+    border-radius: 10px;
+    margin: 5px;
+}
+
+.helpIntroContent {
+    width: calc(75vw - 50px);
+}
+
+.helpSectorTitle {
+    padding: 10px;
+    font-size: 1.3rem;
+}
+
+.featureHeaderContainerLeft, .featureHeaderContainerRight {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.featureHeaderContainerLeft > p{
+    transform: rotate(-15deg);
+}
+
+.featureHeaderContainerRight>p {
+    transform: rotate(15deg);
+}
+
+.featureHeaderContainerLeft>div, .featureHeaderContainerRight>div {
+    margin: 5px;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-radius: 10px;
+    background-color: #333333;
+}
+
+.featureSectionTitle {
+    margin: 5px;
+    padding: 10px;
+    font-size: 1.3rem;
+    border-radius: 10px;
+    background-color: #252525;
+}
+
+.featureSectionContent {
+    margin: 5px;
+    padding: 10px;
+    text-align: justify;
+    line-height: 1.7;
+    border-radius: 10px;
+    background-color: #252525;
+}
+
+.featureIcon {
+    aspect-ratio: 1/1;
+    margin: 25px;
+    padding: 2rem;
+    border-radius: 50%;
+    font-size: 4rem;
+    color: #d1d4dc;
+    background-color: #4682B4;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    animation: featureIconAnimation 6s ease-in-out infinite;
+}
+
+@keyframes featureIconAnimation {
+    0% {
+        transform: translateY(-10px) ;
+    }
+
+    25% {
+        transform: translateY(10px) ;
+    }
+
+    50% {
+        transform: translateY(-10px) ;
+    }
+
+    75% {
+        transform: translateY(10px) ;
+    }
+
+    100% {
+        transform: translateY(-10px) ;
+    }
+}
+
+.authorsContainer {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+}
+
+.authorInfoContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+    align-items: center;
+    margin: 5px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #333333;
+}
+
+.authorIcon {
+    aspect-ratio: 1/1;
+    margin: 5px;
+    padding: 10px;
+    font-size: 10rem;
+    border-radius: 10px;
+    background-color: #4682B4;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    animation: featureIconAnimation 6s ease-in-out infinite;
+}
+
+.authorDescription {
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+    align-items: stretch;
+}
+
+.helpContactsContainer {
+    margin: 5px;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.helpContactsInfoContainer {
+    margin: 5px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    background-color: #333333;
+}
+
+.helpContactsInfoContainer>p {
+    margin: 5px;
+    padding: 10px;
+}
+
+.helpGithubContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+    align-items: center;
+}
+
+.helpContactsInfoContainer>div {
+    display: flex;
+    justify-content: space-between;
+}
+
+.helpContactsInfoContainer>div>a, .githubLink {
+    text-decoration: none; 
+    color: #d1d4dc; 
+    cursor: pointer; 
+    margin: 5px; 
+}
+
+.helpContactsInfoContainer>div>a:hover, .githubLink:hover {
+    color: #4682B4;
+    transition: all 0.3s ease-in-out;
+}

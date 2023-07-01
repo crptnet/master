@@ -18,7 +18,7 @@ const corsOptions = {
 };
 const io = require('socket.io')(httpServer, {
   cors: {
-    origin: ['http://localhost:3000', 'http://4.210.226.112.nip.io/', 'http://4.210.226.112.nip.io/']
+    origin: ['http://localhost:3000', 'http://4.210.226.112.nip.io/', 'http://4.210.226.112.nip.io/'],
     credentials: true,
   },
 });

@@ -7,7 +7,7 @@
     align-items: center;
     margin: 20px;
     background-color: #333333;
-    border-radius: 15px;
+    border-radius: 10px;
     padding-bottom: 10px;
 }
 
@@ -18,7 +18,7 @@
     flex-direction: column;
     justify-content: center;
     background-color: #333333;
-    border-radius: 15px;
+    border-radius: 10px;
 }
 
 /*MAIN-DATA*/
@@ -104,7 +104,7 @@
     color: #d1d4dc;
     background-color: #4682B4;
     border: 2px #4682B4 solid;
-    border-radius: 5px;
+    border-radius: 10px;
     font-weight: bold;
     transition: all 0.3s ease-in-out;
     cursor: pointer;
@@ -122,7 +122,7 @@
     color: #d1d4dc;
     background-color: #DC4C41;
     border: 2px #DC4C41 solid;
-    border-radius: 5px;
+    border-radius: 10px;
     font-weight: bold;
     transition: all 0.3s ease-in-out;
     cursor: pointer;
@@ -169,27 +169,17 @@
     background-color: #4682B4;
     color: #d1d4dc;
     border: none;
-    border-radius: 5px;
+    border-radius: 10px;
     font-size: 1rem;
     cursor: pointer;
 }
 
 .sideBtnInner {
     background-color: #252525;
-    border-radius: 5px;
+    border-radius: 10px;
     font-size: 1rem;
 }
  
-.google-btn {
-    width: 500px;
-    background-color: #4285f4;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-}
-
 /*LOGIN*/
 
 .login {
@@ -201,7 +191,7 @@
     align-items: center;
     margin-left: -60px;
     background-color: #333333;
-    border-radius: 15px;
+    border-radius: 10px;
     transition: all 0.5s linear;
     opacity: 2;
 }
@@ -215,7 +205,7 @@
     align-items: center;
     margin-left: -60px;
     background-color: #333333;
-    border-radius: 15px;
+    border-radius: 10px;
     transition: all 0.5s ease-out;
     opacity: 2;
 }
@@ -253,7 +243,7 @@
     color: #333333;
     font-size: 1.1rem;
     border: none;
-    border-radius: 5px;
+    border-radius: 10px;
     width: 230px;
 }
 
@@ -261,8 +251,43 @@
     color: #333333;
     font-size: 1.1rem;
     border: none;
-    border-radius: 5px;
+    border-radius: 10px;
     margin: 5px;
+}
+
+.acceptContidionsTitle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 240px;
+    height: 30px;
+    margin: 5px;
+    padding: 10px;
+    font-weight: bold;
+    color: #d1d4dc;
+    border: 2px solid #4682B4;
+    border-radius: 10px;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.acceptContidionsTitle:hover {
+    color: #d1d4dc;
+    background-color: #4682B4;
+    border-color: #4682B4;
+    transition: all 0.3s ease-in-out;
+}
+
+.acceptedTerms {
+    border-color: #4682B4;
+    background-color: #4682B4;
+    transition: all 0.3s ease-in-out;
+}
+
+.notAcceptedTerms {
+    border-color: #4682B4;
+    background-color: transparent;
+    transition: all 0.3s ease-in-out;
 }
 
 .haveAcc {
@@ -279,7 +304,7 @@
     background-color: transparent;
     font-weight: bold;
     border: 2px #333333 solid;
-    border-radius: 5px;
+    border-radius: 10px;
     transition: all 0.3s ease-in-out;
     cursor: pointer;
 }
@@ -298,7 +323,7 @@
     color: #d1d4dc;
     background-color: #4682B4;
     border: 2px #333333 solid;
-    border-radius: 5px;
+    border-radius: 10px;
     font-size: 1.5rem;
     font-weight: bold;
     transition: all 0.3s ease-in-out;
@@ -318,7 +343,7 @@
 
 /*DELETE-CONFIRMATION*/
 
-.delete-container {
+.delete-container, .forward-settings-container {
     position: fixed;
     top: 0;
     left: 0;
@@ -327,7 +352,6 @@
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 998;
     display: none;
-
 }
 
 @-webkit-keyframes slideDown {
@@ -383,7 +407,7 @@
     position: absolute;
     background-color: #252525;
     border: 1px solid #d1d4dc;
-    border-radius: 5px;
+    border-radius: 10px;
     padding: 20px;
     text-align: center;
     animation-duration: 0.5s;
@@ -405,7 +429,7 @@
     margin: 15px 15px 0 15px;
     padding: 5px;
     color: #d1d4dc;
-    border-radius: 5px;
+    border-radius: 10px;
     transition: all 0.3s ease-in-out;
     cursor: pointer;
 }
