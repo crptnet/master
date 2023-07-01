@@ -53,8 +53,8 @@ const Wallet = () => {
                 <span>Price</span>
                 <span>Sum</span>
               </div>
-            {coins.map(elem=>(
-              <div className='coinContainerWallet'>
+            {coins.map((elem,index)=>(
+              <div key={index} className='coinContainerWallet'>
                 <span>{elem.symbol}</span>
                 <span>{elem.ownInCoin}</span>
                 <span>{elem.price}&nbsp;$</span>
@@ -77,8 +77,8 @@ const Wallet = () => {
               <span>Sell</span>
               <span>Gained</span>
             </div>
-            {trades.map(elem => (
-              <div className={`tradeContainerWallet ${elem.gainedLost < 0 ? 'red' : 'green'}`}>
+            {trades.map((elem,index) => (
+              <div key={index} className={`tradeContainerWallet ${elem.gainedLost < 0 ? 'red' : 'green'}`}>
                 <span>{elem.amountBuy}&nbsp;{elem.symbolBuy}</span>
                 <span>{elem.amountSell}&nbsp;{elem.symbolSell}</span>
                 <span>{elem.gainedLost}&nbsp;$</span>

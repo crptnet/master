@@ -14,7 +14,7 @@ const Btn = (props) => {
 }
 const SideButtons = ({ active }) => {
   return sidebtns.map((btn) => {
-    return <Btn key={btn.id} btn={btn} active={btn.id == active}></Btn>;
+    return <Btn key={btn.id} btn={btn} active={'/'+btn.title.toLowerCase() == active}></Btn>;
   });
 };
 

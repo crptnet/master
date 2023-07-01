@@ -50,7 +50,7 @@ export const sidebtns = [
     {
         id: 9,
         img: 'https://3.8.190.201.nip.io/upload/help_dark.png',
-        title: 'Help'
+        title: 'FAQ'
     }
     ,
     {

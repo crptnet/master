@@ -1,3 +1,8 @@
+#model2{
+    position: absolute;
+    z-index: 1500;
+ }
+
 * {
     margin: 0;
     padding: 0;
@@ -238,12 +243,20 @@ tr.blueHigh {
 }
 
 .listHeaderList {
+    position: fixed;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     font-weight: bold;
-}
+    box-shadow: 0 0 4px #252525,
+            0 4px 4px #252525,
+            0 -4px 4px #252525,
+            4px 0 4px #252525,
+            -4px 0 4px #252525;
+    background-color: #252525;
+    z-index: 1000;
+    }
 
 .searchSortListOuter {
     width: calc(100vw - 80px);
@@ -259,13 +272,15 @@ tr.blueHigh {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    margin-top: 75px;
 }
 
 .input-search-list {
     width: calc(100vw - 80px);
     height: 30px;
+    margin-top: 10px;
     text-align: center;
-    color: white;
+    color: #d1d4dc;
     background-color: #333333;
     border: none;
     border-radius: 5px;
@@ -277,7 +292,7 @@ tr.blueHigh {
 }
 
 .input-search-list::placeholder {
-    color: white;
+    color: #d1d4dc;
     font-weight: bold;
 }
 
@@ -318,4 +333,24 @@ tr.blueHigh {
 .addToWatch-remove
 {
     filter: brightness(0.5);
+}
+
+.forwardConfirmBtn {
+    font-size: 0.8rem;
+    margin: 15px 15px 0 15px;
+    padding: 5px;
+    color: #d1d4dc;
+    border-radius: 10px;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+    text-decoration: none;
+    background-color: #5CC082;
+    border: 2px #5CC082 solid;
+    transition: all 0.3s ease-in-out;
+}
+
+.forwardConfirmBtn:hover {
+    color: #5CC082;
+    background-color: #d1d4dc;
+    border: 2px #5CC082 solid;
 }
