@@ -1,12 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './settings.css';
-import {serverLink} from '../index';
-import { sidebarRoot, mainRoot, modelRoot } from '../index';
+import ServerLink from '../index';
+import { modelRoot } from '../roots';
 import SideUserBtns from './sideUserBtns';
-import MainUserData from './mainUserData';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import Google from './google';
-import {fetchAPIKeys} from "../components/Fetchs/FetchAPIKeys";
+import {fetchAPIKeys} from "../components/FetchAPIKeys";
 
 function SideUserData () {
 const [openEmailChange, setOpenEmailChange] = useState(false);
@@ -33,7 +31,7 @@ const getData = async () => {
       "Authorization": `Bearer ${localStorage.getItem('token')}`,
     };
     if(localStorage.getItem('token')) {
-      const response = await fetch(`${serverLink}api/current`, {
+      const response = await fetch(`${ServerLink}api/current`, {
         method: 'GET',
         headers: headersList
       });
@@ -55,7 +53,7 @@ const requestChangeEmail = async () => {
       "Content-Type": 'application/json'
     };
     if(localStorage.getItem('token')) {
-      const response = await fetch(`${serverLink}api/change-email  `, {
+      const response = await fetch(`${ServerLink}api/change-email  `, {
         method: 'POST',
         body: JSON.stringify({ email : newEmail }),
         headers: headersList
@@ -95,7 +93,7 @@ useEffect(() => {
           "Content-Type": 'application/json'
         };
         if(localStorage.getItem('token')) {
-          const response = await fetch(`${serverLink}api/change-email`, {
+          const response = await fetch(`${ServerLink}api/change-email`, {
             method: 'PUT',
             body: JSON.stringify({code:newCode}),
             headers: headersList
@@ -152,7 +150,7 @@ const requestChangePassword = async () => {
       "Content-Type": 'application/json'
     };
     if(localStorage.getItem('token')) {
-      const response = await fetch(`${serverLink}api/change-password-authed  `, {
+      const response = await fetch(`${ServerLink}api/change-password-authed  `, {
         method: 'PUT',
         body: JSON.stringify({currecntPassword:oldPassword,password:newPassword}),
         headers: headersList
@@ -341,15 +339,17 @@ const SideButtons = () => {
       }
     };
     fetchAPIKeys().then((res) => {
-      setAPIKeysAdded(res.data.length)
+      if(Array.isArray(res.data)) {     //TRY TO FIX THE BUG
+        setAPIKeysAdded(res.data.length)
+      }
     })
     fetchData();
   }, [username, email, active, googleActive]);
   
-  return SideUserBtns.map((element) => {
+  return SideUserBtns.map((element,index) => {
     if(googleActive==false||(element.title != 'Reset Email'&&element.title!='Reset Password'&&element.title!='Google'&&element.title!='Email Authentication'))
     {
-      return <SideDiv id={element.id} img={element.img} title={element.title} status={element.title=='Email Authentication'?(active?'Bound':'Un Bound'): element.id == 5 ? `${APIKeysAdded} ${APIKeysAdded == 1 ? 'key' : 'keys'} added` :element.status} btn={element.title=='Email Authentication'?(active?'Un Bind':'Bind'):element.btn} email={email}></SideDiv>;
+      return <SideDiv key={index} id={element.id} img={element.img} title={element.title} status={element.title=='Email Authentication'?(active?'Bound':'Un Bound'): element.id == 5 ? `${APIKeysAdded} ${APIKeysAdded == 1 ? 'key' : 'keys'} added` :element.status} btn={element.title=='Email Authentication'?(active?'Un Bind':'Bind'):element.btn} email={email}></SideDiv>;
     }
     return;
   });

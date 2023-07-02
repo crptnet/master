@@ -3,9 +3,10 @@ import ReactDOM from 'react-dom/client';
 import { v4 as uuidv4 } from 'uuid';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import ReactPaginate from 'react-paginate';
-import GetListOfCoins from '../../listOfCoinsAPI';
-import '../../charts/charts.css';
-import { modelRoot } from '../../index';
+import GetListOfCoins from '../../components/Fetches/dataDisplay/listOfCoinsAPI';
+import { modelRoot } from '../../roots';
+
+import '../../styles/charts.css';
 
 const Bookmarks = (props) => {
   const length = props.props;

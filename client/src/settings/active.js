@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
-import {serverLink} from '../index';
-import './active.css';
-const mainRoot = document.getElementById('main');
+import ServerLink from '../index';
 
+import '../styles/active.css';
 
 const ActiveAccountPage = (props) => {
   const [message, setMessage] = useState("Verifying account...");
@@ -14,7 +13,7 @@ const ActiveAccountPage = (props) => {
         const key = queryParams.get("key");
         const id = queryParams.get("id");
         try {
-            const response = await fetch(`${serverLink}api/activate?key=${key}&id=${id}`, {
+            const response = await fetch(`${ServerLink}api/activate?key=${key}&id=${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

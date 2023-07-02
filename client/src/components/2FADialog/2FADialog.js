@@ -4,8 +4,8 @@ import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import StepContent from '@mui/material/StepContent';
-import { FetchUserData } from '../Fetchs/FetchUserData';
-import { serverLink } from '../..';
+import { FetchUserData } from '../Fetches/ApiKeys/FetchUserData';
+import ServerLink from '../..';
 import { Box, Button, Stack } from '@mui/material';
 import styled from '@emotion/styled';
 import { ThemeProvider } from '@emotion/react';
@@ -42,7 +42,7 @@ import OtpInput from 'react-otp-input';
   ];
 
   const fetchQRCode = async () => {
-    fetch(`${serverLink}api/auth/otpt/create`, {
+    fetch(`${ServerLink}api/auth/otpt/create`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -74,7 +74,7 @@ import OtpInput from 'react-otp-input';
   
   const handleCodeSubmit = async () => {
     console.log(code)
-    return await fetch(`${serverLink}api/auth/otpt/verify`, {
+    return await fetch(`${ServerLink}api/auth/otpt/verify`, {
       method : 'POST',
       headers : {
         'Accept': 'application/json',

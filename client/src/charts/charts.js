@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
-import ReactDOM from 'react-dom/client';
 import { v4 as uuidv4 } from 'uuid';
 import { io } from 'socket.io-client';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import GetListOfCoins from '../listOfCoinsAPI';
-import symbols from '../positions/coinList';
-import { modelRoot, serverLink } from '../index';
-import './charts.css';
-import ReactPaginate from 'react-paginate';
-const socket = io('http://localhost:5000/coins');
+import GetListOfCoins from '../components/Fetches/dataDisplay/listOfCoinsAPI';
+import { modelRoot } from '../roots';
+import ServerLink from '../index';
+
+import '../styles/charts.css';
+
+const socket = io('http://localhost:5000/coins'); //IMPLEMENT SERVERLINK
+
 const Charts = () => {
   const [listOfSymb, setListOfSymb] = useState([]);
   const [prevListOfSymb, setPrevListOfSymb] = useState([]);
@@ -537,7 +538,7 @@ useEffect(() => {
       );
     };
     async function handleAddDiv() {
-      const link = `${serverLink}api/coins?limit=1&offset=0&orderby=rank_asc`;
+      const link = `${ServerLink}api/coins?limit=1&offset=0&orderby=rank_asc`;
       const response = await fetch(link, {
         method: 'GET',
         mode: 'cors',
@@ -629,7 +630,7 @@ useEffect(() => {
         useEffect(()=>{
           const handleSort = async () => {
             sortedData = {};
-            const link = `${serverLink}api/coins?limit=${coinsPerPage}&offset=${coinsPerPage * (currentPage - 1)}&orderby=${sortOrder}`;
+            const link = `${ServerLink}api/coins?limit=${coinsPerPage}&offset=${coinsPerPage * (currentPage - 1)}&orderby=${sortOrder}`;
             const response = await fetch(link, {
               method: 'GET',
               mode: 'cors',

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './subscriptionView.css';
 import axios from 'axios';
-import { serverLink } from '../../..';
+import ServerLink from '../../..';
 
 const _SubscriptionView = () => {
     const [plan, setPlan] = useState(null)
@@ -11,7 +11,7 @@ const _SubscriptionView = () => {
 
     useEffect(() => {
         const FetchSubData = async () => {
-            const response = await axios(`${serverLink}api/user-subscription`, {
+            const response = await axios(`${ServerLink}api/user-subscription`, {
                 method : 'GET', 
                 headers : {
                   Authorization : `Bearer ${localStorage.getItem('token')}`

@@ -1,6 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
-import ReactDOM from 'react-dom/client';
-import '../terminal.css';
+import React, { useEffect, useRef } from 'react';
 
 let tvScriptLoadingPromise;
 

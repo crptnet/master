@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import './APiManager.css';
-import { serverLink } from '../../..';
+import ServerLink from '../../..';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as Select from '@radix-ui/react-select';
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon, Cross2Icon, FontSizeIcon } from '@radix-ui/react-icons';
 import * as Toast from '@radix-ui/react-toast';
 import axios from 'axios'
 import TwoFADialog from '../../2FADialog/2FADialog';
-import { FetchUserData } from '../../Fetchs/FetchUserData';
+import { FetchUserData } from '../../Fetches/ApiKeys/FetchUserData';
 import KeysTable from '../KeysTable/KeysTable';
 import { ThemeProvider } from '@emotion/react';
 import { darkTheme } from '../../../theme';
@@ -58,7 +58,7 @@ const DialogView = ({ selectedExchange, onSubmit, handleToast }) => {
     const privateKey = document.getElementById('input-private-key').value;
 
     try {
-      const res = await axios(`${serverLink}api/api-account`, {
+      const res = await axios(`${ServerLink}api/api-account`, {
         method : 'POST',
         headers : {
           Authorization : `Bearer ${localStorage.getItem('token')}`,

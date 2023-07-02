@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import ReactDOM from 'react-dom/client';
-import '../terminal.css';
+import React from 'react';
 
 const Orders = () => {
     return (

@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import ReactDOM from 'react-dom/client';
-import {serverLink} from '../index';
-import { sidebarRoot, mainRoot, modelRoot } from '../index';
-import './active.css';
+import ServerLink from '../index';
+import { mainRoot } from '../roots';
 
+import '../styles/active.css';
 
 const ResetEmailPage = (props) => {
     mainRoot.render(
@@ -20,7 +19,7 @@ const ResetEmailPage = (props) => {
             const queryParams = new URLSearchParams(props.location.search);
             const token = queryParams.get("token");
             try {
-                const response = await fetch(`${serverLink}api/reset-email?token=${token}&id=${id}`, {
+                const response = await fetch(`${ServerLink}api/reset-email?token=${token}&id=${id}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',

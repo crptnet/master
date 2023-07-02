@@ -1,18 +1,13 @@
-/*TO DO LIST*/
-//1.Fix bug with closing overlay when loading after pressing search/sort btns in overlay
-
-
-
-
 import React, { useState, useEffect, useRef } from "react";
-import './watchlist.css';
-import ReactDOM from 'react-dom/client';
+
 import { v4 as uuidv4 } from 'uuid';
 import { io } from 'socket.io-client';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import GetListOfCoins from '../listOfCoinsAPI';
-import { mainRoot, modelRoot, model2Root, sidebarRoot, serverLink } from '../index';
-import ReactPaginate from 'react-paginate';
+import GetListOfCoins from '../components/Fetches/dataDisplay/listOfCoinsAPI';
+import { modelRoot, model2Root } from '../roots';
+import ServerLink from "..";
+
+import '../styles/watchlist.css';
 
 const StarredList = () => {
     console.log("!")
@@ -35,7 +30,7 @@ const StarredList = () => {
   const [watchList, setWatchList] = useState([]);
   useEffect(()=>{
     const handleSort = async () => {
-      const link = `${serverLink}api/coins?limit=${coinsPerPage}&offset=${coinsPerPage * (currentPage - 1)}&orderby=${sortOrder}`;
+      const link = `${ServerLink}api/coins?limit=${coinsPerPage}&offset=${coinsPerPage * (currentPage - 1)}&orderby=${sortOrder}`;
       const response = await fetch(link, {
         method: 'GET',
         mode: 'cors',
@@ -77,7 +72,7 @@ const StarredList = () => {
   const fetchData = async (res) => {
     let output = [];
     for (const elem of res) {
-      const link = `${serverLink}api/coins?limit=1&offset=0&query=${elem}`;
+      const link = `${ServerLink}api/coins?limit=1&offset=0&query=${elem}`;
       try {
         const response = await fetch(link, {
           method: 'GET',
@@ -117,7 +112,7 @@ useEffect(() => {
         };
 
         if (localStorage.getItem('token')) {
-          const response = await fetch(`${serverLink}api/watchList/`, {
+          const response = await fetch(`${ServerLink}api/watchList/`, {
             method: 'GET',
             headers: headersList
           });
@@ -151,7 +146,7 @@ useEffect(() => {
 
 // useEffect(() => {
 //   const handleSort = async () => {
-//     const link = `${serverLink}api/coins?limit=${coinsPerPage}&offset=${coinsPerPage * (currentPage - 1)}&orderby=${sortOrder}`;
+//     const link = `${ServerLink}api/coins?limit=${coinsPerPage}&offset=${coinsPerPage * (currentPage - 1)}&orderby=${sortOrder}`;
 //     try {
 //       const response = await fetch(link, {
 //         method: 'GET',
@@ -178,7 +173,7 @@ useEffect(() => {
 
 // useEffect(() => { 
 //   const handleSearch = async () => {
-//     const link = `${serverLink}api/coins?limit=2500&offset=0&orderby=${sortOrder}&query=${searchTerm}`;
+//     const link = `${ServerLink}api/coins?limit=2500&offset=0&orderby=${sortOrder}&query=${searchTerm}`;
 //     const response = await fetch(link, {
 //       method: 'GET',
 //       mode: 'cors',
@@ -235,7 +230,7 @@ useEffect(() => {
       if(localStorage.getItem('token')) {
         const item = JSON.stringify({symbol: symbol});
         console.log(item)
-        const response = await fetch(`${serverLink}api/watchList/${action}`, {
+        const response = await fetch(`${ServerLink}api/watchList/${action}`, {
           method: method,
           body: item,
           headers: headersList

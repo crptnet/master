@@ -1,7 +1,7 @@
-﻿import { serverLink } from '../..'
+﻿import ServerLink from '..'
 
 export function fetchAPIKeys(){
-    return fetch(`${serverLink}api/api-account`, {
+    return fetch(`${ServerLink}api/api-account`, {
         method : 'GET',
         headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,

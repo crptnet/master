@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { serverLink } from '../..'
+import ServerLink from '../../..'
  /**
  * @param invokeTotp use when component works with TOTP Token 
  * Returns axios response.data in case of success
@@ -11,7 +11,7 @@ const FetchUserData = async (invokeTotp, invokeUser) => {
         window.location.replace('/settings')
     }
     if(invokeTotp && localStorage.getItem('totpToken')){
-        axios.get(`${serverLink}api/auth/otpt/ping`, {
+        axios.get(`${ServerLink}api/auth/otpt/ping`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`,
                 Totp : `Bearer ${localStorage.getItem('totpToken')}`
@@ -22,7 +22,7 @@ const FetchUserData = async (invokeTotp, invokeUser) => {
             return err.response
         })
     }
-    return axios.get(`${serverLink}api/current`, {
+    return axios.get(`${ServerLink}api/current`, {
         headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
         },

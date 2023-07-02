@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {serverLink} from '../index';
-import { sidebarRoot, mainRoot, modelRoot } from '../index';
+import ServerLink from '../index';
+import { mainRoot, modelRoot } from '../roots';
 import MainUserData from './mainUserData';
 import SideUserData from './sideUserData';
-import './settings.css';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import Google from './google';
 
@@ -47,7 +46,7 @@ const NotRegistered = () => {
     };
     
     if(localStorage.getItem('token')) {
-      const response = await fetch(`${serverLink}api/current`, {
+      const response = await fetch(`${ServerLink}api/current`, {
         method: 'GET',
         headers: headersList
       });
@@ -71,7 +70,7 @@ const NotRegistered = () => {
 
   const sendJSONToServer = async (userData) => {
     try {
-      const response = await fetch(`${serverLink}api/register`, {
+      const response = await fetch(`${ServerLink}api/register`, {
         method: 'POST',
         body: userData,
         headers: {
@@ -98,7 +97,7 @@ const NotRegistered = () => {
   
   const getToken = async (userData) => {
     try {
-      const response = await fetch(`${serverLink}api/login`, {
+      const response = await fetch(`${ServerLink}api/login`, {
         method: 'POST',
         body: userData,
         headers: {
@@ -201,7 +200,7 @@ const NotRegistered = () => {
         const headersList = {
           "Content-Type": 'application/json'
         };
-        const response = await fetch(`${serverLink}api/change-password`, {
+        const response = await fetch(`${ServerLink}api/change-password`, {
           method: 'POST',
           body: JSON.stringify({ email : emailToRecover }),
           headers: headersList

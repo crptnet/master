@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import axios from 'axios';
-import { serverLink } from '../../..';
+import ServerLink from '../../..';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -45,7 +45,7 @@ const KeysTable = () => {
   const [rows, setRows] = useState([]);
   const [dialogOpen, setDialogOpen] = useState(false)
   useEffect(() => {
-    axios(`${serverLink}api/api-account`, {
+    axios(`${ServerLink}api/api-account`, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,

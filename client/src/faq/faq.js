@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
-import './faq.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChartLine,faExchangeAlt,faDollarSign,faWallet,faCoins,faGift,faUser } from '@fortawesome/free-solid-svg-icons';
 import { FaGithub,FaCopyright,FaInstagram, FaTelegram, FaLinkedin } from 'react-icons/fa';
 
-const Help = () => {
+import '../styles/faq.css';
+
+const Faq = () => {
   const content = [
     {title:'CRPT.net features', 
     content:"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin sed vestibulum mi, nec facilisis nisi. Sed hendrerit metus eget lorem ullamcorper ultrices. Nulla facilisi. Suspendisse potenti. Curabitur blandit eleifend purus, eget interdum velit. Phasellus elementum nunc a malesuada rutrum. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Sed dapibus, neque in fermentum efficitur, nisi mi pellentesque turpis, eu pretium turpis tellus in enim. In eu erat leo. Sed sit amet nulla id sem consectetur auctor. Vivamus fringilla malesuada lectus, vel iaculis ligula faucibus id. Curabitur sed dui sed lacus dictum mattis. Aliquam tristique ligula vitae volutpat condimentum. Donec tincidunt pulvinar ipsum, id bibendum enim viverra vitae."},
@@ -121,24 +122,24 @@ const Help = () => {
 
   let i = 1;
   return (
-      <div className='helpContainerOuter'>
-        <div className='helpTitle'>Say Hi! to CRPT.net</div>
-        {content.map((elem, index) => (
-          <div className='helpSector' key={index}>
-            <div className='helpNum'>
-              {i++}.&nbsp;{elem.title}
-            </div>
-            <div className='helpIntroContent'>
-              {elem.title=='CRPT.net features' && <Features />}
-              {elem.title=='About authors' && <Authors />}
-              {elem.title=='Our contacts' && <Contacts />}
-              {elem.title=='Github source' && <GitHub />}
-              {elem.title=='Privacy policy' && <Policy />}
-            </div>
+    <div className='helpContainerOuter'>
+      <div className='helpTitle'>Say Hi! to CRPT.net</div>
+      {content.map((elem, index) => (
+        <div className='helpSector' key={index}>
+          <div className='helpNum'>
+            {i++}.&nbsp;{elem.title}
           </div>
-        ))}
-      </div>
-    );  
+          <div className='helpIntroContent'>
+            {elem.title=='CRPT.net features' && <Features />}
+            {elem.title=='About authors' && <Authors />}
+            {elem.title=='Our contacts' && <Contacts />}
+            {elem.title=='Github source' && <GitHub />}
+            {elem.title=='Privacy policy' && <Policy />}
+          </div>
+        </div>
+      ))}
+    </div>
+  );  
 };
 
-export default Help;
+export default Faq;

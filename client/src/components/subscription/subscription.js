@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './subscriptionPage.css';
-import { serverLink } from '../..';
+import ServerLink from '../..';
 import axios from 'axios';
 import * as Dialog from '@radix-ui/react-dialog';
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon, Cross2Icon, FontSizeIcon } from '@radix-ui/react-icons';
@@ -113,7 +113,7 @@ const SubscriptionDisplay = () => {
   const [toastMessage, setToastMessage] = useState('')
   useEffect(() => {
     const FetchSubData = async () => {
-        const response = await axios(`${serverLink}api/user-subscription`, {
+        const response = await axios(`${ServerLink}api/user-subscription`, {
             method : 'GET', 
             headers : {
               Authorization : `Bearer ${localStorage.getItem('token')}`
@@ -127,7 +127,7 @@ const SubscriptionDisplay = () => {
   }, [showDialog])
 
   const handleConfirmationSubmit = async () => {
-    const response = axios(`${serverLink}api/subscription-delete`, {
+    const response = axios(`${ServerLink}api/subscription-delete`, {
       method : 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -148,7 +148,7 @@ const SubscriptionDisplay = () => {
   }
 
   const createCheckOut = async () => {
-    const response = await fetch(`${serverLink}api/create-checkout-session?option=${option}`, {
+    const response = await fetch(`${ServerLink}api/create-checkout-session?option=${option}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -233,13 +233,13 @@ const SubscriptionDisplay = () => {
         </div>
         <div className='subscription-main'>
           <div className={`subscription basic-subscription${plan == 'basic' && status !== 'cancelled' ? ' button-inactive' : ''}`}>
-            <h2><img id="basic-ico"src={`${serverLink}upload/cat.svg`}/>Basic</h2>
+            <h2><img id="basic-ico"src={`${ServerLink}upload/cat.svg`}/>Basic</h2>
             <p>Basic subscription</p>
             <ul className='subscriptionFeatures'>
-              <li><img src={`${serverLink}upload/check.svg`}/>Feature 1</li>
-              <li><img src={`${serverLink}upload/check.svg`}/>Feature 2</li>
-              <li><img src={`${serverLink}upload/check.svg`}/>Feature 3</li>
-              <li><img src={`${serverLink}upload/check.svg`}/>Feature 4</li>
+              <li><img src={`${ServerLink}upload/check.svg`}/>Feature 1</li>
+              <li><img src={`${ServerLink}upload/check.svg`}/>Feature 2</li>
+              <li><img src={`${ServerLink}upload/check.svg`}/>Feature 3</li>
+              <li><img src={`${ServerLink}upload/check.svg`}/>Feature 4</li>
             </ul>
             <form onSubmit={(event) => handleSubmit(event, 1)}>
               <button type={plan !== 'basic' || status !== 'cancelled' ? "submit" : 'button'}>
@@ -248,13 +248,13 @@ const SubscriptionDisplay = () => {
             </form>
           </div>
           <div className={`subscription premium-subscription${plan == 'premium' && status !== 'cancelled' ? ' button-inactive' : ''}`}>
-            <h2><img src={`${serverLink}upload/dog.svg`}/>Premium</h2>
+            <h2><img src={`${ServerLink}upload/dog.svg`}/>Premium</h2>
             <p>Premium subscription</p>
             <ul className='subscriptionFeatures'>
-              <li><img src={`${serverLink}upload/check.svg`}/>Feature 1</li>
-              <li><img src={`${serverLink}upload/check.svg`}/>Feature 2</li>
-              <li><img src={`${serverLink}upload/check.svg`}/>Feature 3</li>
-              <li><img src={`${serverLink}upload/check.svg`}/>Feature 4</li>
+              <li><img src={`${ServerLink}upload/check.svg`}/>Feature 1</li>
+              <li><img src={`${ServerLink}upload/check.svg`}/>Feature 2</li>
+              <li><img src={`${ServerLink}upload/check.svg`}/>Feature 3</li>
+              <li><img src={`${ServerLink}upload/check.svg`}/>Feature 4</li>
             </ul>
             <form onSubmit={(event) => handleSubmit(event, 3)}>
               <button type={(plan !== 'premium' || status == 'cancelled') ? "submit" : 'button'}>Buy Premium</button>

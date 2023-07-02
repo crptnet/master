@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { serverLink } from '../index';
-import { mainRoot, modelRoot } from '../index';
-import SideUserData from './sideUserData';
+import ServerLink from '../index';
+import { mainRoot, modelRoot } from '../roots';
 import NotRegistered from './notRegistered';
-import './settings.css';
+
+import '../styles/settings.css';
 
 const getData = async () => {
   const headersList = {
@@ -13,7 +13,7 @@ const getData = async () => {
   };
   
   if (localStorage.getItem('token')) {
-    const response = await fetch(`${serverLink}api/current`, {
+    const response = await fetch(`${ServerLink}api/current`, {
       method: 'GET',
       headers: headersList,
     });
@@ -52,7 +52,7 @@ function MainUserData() {
 
   useEffect(() => {
     const FetchSubData = async () => {
-        const response = await axios(`${serverLink}api/user-subscription`, {
+        const response = await axios(`${ServerLink}api/user-subscription`, {
             method : 'GET', 
             headers : {
               Authorization : `Bearer ${localStorage.getItem('token')}`
@@ -70,7 +70,7 @@ function MainUserData() {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       };
       if (localStorage.getItem('token')) {
-        await fetch(`${serverLink}api/delete`, {
+        await fetch(`${ServerLink}api/delete`, {
           method: 'DELETE',
           headers: headersList,
         });
@@ -182,7 +182,7 @@ function MainUserData() {
         };
 
         try {
-          await axios.post(`${serverLink}api/profile-picture`, formData, {
+          await axios.post(`${ServerLink}api/profile-picture`, formData, {
             headers: headersList,
           });
           console.log('Successfully uploaded image');
@@ -190,7 +190,7 @@ function MainUserData() {
           console.error(error);
         }
       } else {
-        console.error('Invalid file');
+        console.error('Invalid file to load image');
       }
     }
 

@@ -1,6 +1,4 @@
 import React from 'react';
-import './index.css';
-import './settings/settings.css';
 import { createBrowserRouter } from "react-router-dom";
 
 import ActiveAccountPage from './settings/active';
@@ -11,11 +9,11 @@ import MainUserData from './settings/mainUserData';
 import SideUserData from './settings/sideUserData';
 import Convert from './convert/convert';
 import Faq from './faq/faq';
-import BinanceBTC from './positions/binanceCoins';
+import Positions from './positions/positions';
 import StarredList from './watchlist/starredList';
 import Terminal from './terminal/terminal';
 import Charts from './charts/charts';
-import Wallet from './wallet/wallet';
+import Wallet from './wallet/controller';
 import SubscriptionPage from './components/subscription/subscription';
 import NotFoundPage from './components/notFound/notFound';
 import SubscriptionView from './components/userProfile/subscriptionComponent/subscriptionView';
@@ -66,7 +64,7 @@ const router = createBrowserRouter([
     path:"/charts"
   },
   {
-    element:<BinanceBTC />,
+    element:<Positions />,
     path:"/list"
   },
   {

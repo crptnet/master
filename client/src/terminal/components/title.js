@@ -1,7 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import ReactDOM from 'react-dom/client';
-import '../terminal.css';
-import { serverLink } from '../../index';
+import React from 'react';
 
 const Title = () => {
     const dataLocalStorage = JSON.parse(localStorage.getItem("bookmarkList"));

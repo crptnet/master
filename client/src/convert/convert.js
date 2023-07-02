@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import ReactDOM from 'react-dom/client';
-import './convert.css';
 import { v4 as uuidv4 } from 'uuid';
-import { io } from 'socket.io-client';
-import GetListOfCoins from '../listOfCoinsAPI';
-import { modelRoot, serverLink } from '../index';
+import GetListOfCoins from '../components/Fetches/dataDisplay/listOfCoinsAPI';
+import { modelRoot } from '../roots';
+
+import '../styles/convert.css';
 
 function Convert() {
   const getCoinPrice = async (coin) => {

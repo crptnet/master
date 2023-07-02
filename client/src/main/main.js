@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom/client';
 import { Parallax, ParallaxLayer } from '@react-spring/parallax';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { useSpring, animated } from 'react-spring';
-import './main.css';
+
+import '../styles/main.css';
 
 const divs = [
   { id: "div1", content: "Div 1" },
