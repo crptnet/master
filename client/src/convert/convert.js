@@ -2,23 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import GetListOfCoins from '../components/Fetches/dataDisplay/listOfCoinsAPI';
 import { modelRoot } from '../roots';
+import getCoinPrice from '../components/Fetches/dataDisplay/getCoinPrice';
 
 import '../styles/convert.css';
 
 function Convert() {
-  const getCoinPrice = async (coin) => {
-    const link = `${serverLink}api/coins?limit=1&offset=0&query=${coin}`;
-    const response = await fetch(link, {
-      method: 'GET',
-      mode: 'cors',
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS"
-      },
-    });
-    const data = await response.json();
-    return data[0].quotes.USD.price;
-  }
 
   const fetchExchangeRates = async () => {
     try {

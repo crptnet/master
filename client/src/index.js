@@ -1,6 +1,6 @@
 import React from 'react';
 import { RouterProvider } from "react-router-dom";
-import SideBar from './sidebar/sideBar';
+import SideBar from './sidebar/view';
 import router from './routes';
 import { sidebarRoot, modelRoot, mainRoot } from './roots';
 

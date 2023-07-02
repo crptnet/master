@@ -1,5 +1,7 @@
+import ServerLink from "../../..";
+
 export default async function GetListOfCoins(limit,offset) {
-  const response = await fetch(`http://3.8.190.201/api/coins?limit=${limit}&offset=${offset}&orderby=rank_asc`, {
+  const response = await fetch(`${ServerLink}coins?limit=${limit}&offset=${offset}&orderby=rank_asc`, {
       method: 'GET',
       mode : 'cors',
       headers: {
